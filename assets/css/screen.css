@@ -1,0 +1,594 @@
+@import "tailwindcss";
+
+.wordmark-short { display: none; }
+
+@media (max-width: 480px) {
+  .back-label { display: none; }
+  /* Swap the full wordmark for initials on the smallest phones, where the
+     full name competes with the hamburger, search, bookmark, and avatar
+     for space in a fixed-height row. Initials are computed client-side in
+     main.js from the rendered site title, so this holds for whatever name
+     is configured in Ghost Admin. */
+  .wordmark-full { display: none; }
+  .wordmark-short { display: inline; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Search overlay show/hide — unconditional (not inside the
+   prefers-reduced-motion block below, which only adds the transition).
+   Without this, a Reduce Motion user would see the overlay's hidden
+   state never applied at all: a permanent full-screen backdrop with no
+   way to close it, since there'd be no display:none anywhere either. */
+#search-overlay {
+  opacity: 0;
+  visibility: hidden;
+}
+#search-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+#search-overlay .search-modal {
+  transform: scale(0.96) translateY(-8px);
+}
+#search-overlay.is-open .search-modal {
+  transform: scale(1) translateY(0);
+}
+
+/* Several inputs set outline:none inline with no replacement focus style.
+   :focus-visible (not :focus) so it only shows for keyboard navigation,
+   matching native browser behavior — !important is needed to win over the
+   inline outline:none, same as the responsive overrides below. */
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent, #f5c518) !important;
+  outline-offset: 2px;
+}
+
+/* Skip-to-content link — off-screen by default (not display:none, which
+   would remove it from the tab order), revealed on keyboard focus so
+   keyboard users can bypass the repeated header on every page. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 100;
+  background: #16130d;
+  color: #fff;
+  font: 700 13px/1 'Archivo', sans-serif;
+  padding: 12px 18px;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.skip-link:focus-visible {
+  top: 12px;
+  outline: 2px solid var(--accent, #f5c518);
+  outline-offset: 2px;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #fff;
+  color: #16130d;
+  font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+}
+
+a { -webkit-tap-highlight-color: transparent; }
+
+/* Primary navigation — rendered via the {{navigation}} helper through
+   partials/navigation.hbs, which emits plain .nav-link/.nav-link-current
+   anchors with no inline styles. Each call site (header tabs vs. mobile
+   drawer) gets its own visual treatment purely from the ancestor selector,
+   so one shared partial can serve both. */
+.header-nav-tabs .nav-link {
+  font: 600 12px/1 'Archivo';
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 4px 0;
+  color: #4a4437;
+  border-bottom: 2px solid transparent;
+}
+.header-nav-tabs .nav-link-current {
+  color: #16130d;
+  border-bottom-color: var(--accent, #f5c518);
+}
+
+#drawer-nav .nav-link {
+  font: 700 26px/1 'Archivo', sans-serif;
+  color: #fff;
+  text-decoration: none;
+  padding: 15px 0;
+  display: block;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+#drawer-nav .nav-link:last-child {
+  border-bottom: none;
+}
+
+/* Footer "Company" column — same shared navigation.hbs partial, driven by
+   Ghost's secondary navigation setting, restyled to match the footer's
+   dark background instead of the header treatment above. */
+.footer-nav-links .nav-link {
+  font: 400 14px/1 'Archivo';
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+}
+
+.article-body p:first-of-type::first-letter {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  float: left;
+  font-size: 78px;
+  line-height: 0.72;
+  padding: 8px 12px 0 0;
+  color: #16130d;
+}
+.article-body p { margin: 0 0 26px; }
+.page-prose p { margin: 0 0 26px; }
+
+/* Markdown/Koenig prose styles for .article-body (Ghost's {{content}}) */
+.article-body h2 {
+  font: 700 27px/1.2 'Archivo', sans-serif;
+  color: #16130d;
+  margin: 44px 0 20px;
+  letter-spacing: -0.01em;
+}
+.article-body h3 {
+  font: 700 21px/1.3 'Archivo', sans-serif;
+  color: #16130d;
+  margin: 36px 0 14px;
+}
+.article-body blockquote {
+  margin: 44px 0;
+  padding: 0 0 0 26px;
+  border-left: 3px solid var(--accent, #f5c518);
+}
+.article-body blockquote p {
+  font: 500 27px/1.32 'Archivo', sans-serif;
+  color: #16130d;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.article-body ul, .article-body ol {
+  margin: 0 0 26px 24px;
+  padding: 0;
+}
+.article-body li { margin-bottom: 8px; }
+.article-body strong { font-weight: 700; color: #16130d; }
+.article-body em { font-style: italic; }
+.article-body a { color: #16130d; text-decoration: underline; text-underline-offset: 3px; }
+.article-body hr {
+  border: none;
+  border-top: 1px solid #e6e3dc;
+  margin: 48px 0;
+}
+.article-body img,
+.article-body figure { max-width: 100%; height: auto; }
+.article-body figcaption {
+  font: 400 13px/1.4 'Archivo', sans-serif;
+  color: #6b6459;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Koenig editor card-width classes — .article-body is a fixed 680px reading
+   column, so "wide" bleeds to a wider column and "full" bleeds to the
+   viewport edge, same convention as Casper. */
+.article-body .kg-width-wide {
+  width: 1000px;
+  max-width: calc(100vw - 48px);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+.article-body .kg-width-full {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Koenig editor cards — bookmark, gallery, callout, toggle, button, header,
+   product, audio/video/file, and embed. Written by hand against Ghost's
+   documented card markup (no @tryghost/kg-default-cards dependency) so the
+   styling stays on the theme's own tokens (ink #16130d, muted #4a4437,
+   secondary #6b6459, hairline borders #eae7df/#e6e3dc, panel bg #f7f6f3). */
+.article-body .kg-card { margin: 32px 0; }
+
+/* Bookmark card */
+.article-body .kg-bookmark-card { margin: 32px 0; }
+.article-body .kg-bookmark-container {
+  display: flex;
+  min-height: 148px;
+  border: 1px solid #eae7df;
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+.article-body .kg-bookmark-content { display: flex; flex-direction: column; flex: 1 1 auto; padding: 20px 24px; order: 1; min-width: 0; }
+.article-body .kg-bookmark-title { font: 700 16px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 6px; }
+.article-body .kg-bookmark-description {
+  font: 400 14px/1.5 'Newsreader', Georgia, serif;
+  color: #6b6459;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-body .kg-bookmark-metadata {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 12px/1 'Archivo';
+  color: #6b6459;
+  margin-top: auto;
+}
+.article-body .kg-bookmark-icon { width: 18px; height: 18px; border-radius: 2px; }
+.article-body .kg-bookmark-thumbnail { flex: 0 0 33%; order: 2; overflow: hidden; }
+.article-body .kg-bookmark-thumbnail img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 640px) {
+  .article-body .kg-bookmark-container { flex-direction: column-reverse; }
+  .article-body .kg-bookmark-thumbnail { flex-basis: auto; height: 160px; }
+}
+
+/* Gallery card */
+.article-body .kg-gallery-card { margin: 32px 0; }
+.article-body .kg-gallery-container { display: flex; flex-direction: column; gap: 6px; }
+.article-body .kg-gallery-row { display: flex; gap: 6px; }
+.article-body .kg-gallery-image { flex: auto; margin: 0; }
+.article-body .kg-gallery-image img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 2px; }
+
+/* Callout card */
+.article-body .kg-callout-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 20px;
+  border-radius: 4px;
+  background: #f7f6f3;
+}
+.article-body .kg-callout-emoji { font-size: 20px; line-height: 1.4; flex: 0 0 auto; }
+.article-body .kg-callout-text { font: 400 16px/1.55 'Newsreader', Georgia, serif; color: #26221a; margin: 0; }
+.article-body .kg-callout-card-grey { background: #f7f6f3; }
+.article-body .kg-callout-card-white { background: #fff; border: 1px solid #eae7df; }
+.article-body .kg-callout-card-blue { background: #eaf1fb; }
+.article-body .kg-callout-card-green { background: #e9f5ec; }
+.article-body .kg-callout-card-yellow { background: #fdf3d8; }
+.article-body .kg-callout-card-red { background: #fbe9e7; }
+.article-body .kg-callout-card-pink { background: #fbe9f2; }
+.article-body .kg-callout-card-purple { background: #efe9fb; }
+.article-body .kg-callout-card-accent { background: var(--accent, #f5c518); }
+
+/* Toggle card — data-kg-toggle-state flipped by main.js */
+.article-body .kg-toggle-card { border: 1px solid #eae7df; border-radius: 4px; padding: 18px 22px; }
+.article-body .kg-toggle-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; }
+.article-body .kg-toggle-heading-text { font: 700 17px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0; }
+.article-body .kg-toggle-card-icon { background: none; border: none; padding: 4px; cursor: pointer; flex: 0 0 auto; color: #16130d; display: flex; }
+.article-body .kg-toggle-card-icon svg { width: 16px; height: 16px; }
+.article-body .kg-toggle-content {
+  font: 400 16px/1.6 'Newsreader', Georgia, serif;
+  color: #4a4437;
+  max-height: 0;
+  overflow: hidden;
+}
+.article-body .kg-toggle-content > :first-child { margin-top: 18px; }
+.article-body .kg-toggle-content > :last-child { margin-bottom: 0; }
+.article-body .kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-content { max-height: none; }
+.article-body .kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-card-icon { transform: rotate(180deg); }
+
+/* Button card */
+.article-body .kg-button-card { display: flex; margin: 32px 0; }
+.article-body .kg-btn {
+  display: inline-block;
+  font: 700 13px/1 'Archivo';
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: #16130d;
+  padding: 15px 28px;
+  border-radius: 2px;
+}
+.article-body .kg-btn-accent { background: var(--accent, #f5c518); color: #16130d; }
+.article-body .kg-button-card.kg-align-center { justify-content: center; }
+.article-body .kg-button-card.kg-align-left { justify-content: flex-start; }
+
+/* Header card */
+.article-body .kg-header-card {
+  text-align: center;
+  padding: clamp(40px, 6vw, 72px) 24px;
+  border-radius: 4px;
+  background: #16130d;
+  background-size: cover;
+  background-position: center;
+}
+.article-body .kg-header-card-header { font: 800 clamp(26px, 3.4vw, 38px)/1.15 'Archivo', sans-serif; color: #fff; margin: 0 0 12px; text-wrap: balance; }
+.article-body .kg-header-card-subheader { font: 400 17px/1.5 'Newsreader', Georgia, serif; color: rgba(255,255,255,0.8); margin: 0 0 24px; }
+.article-body .kg-header-card .kg-btn { background: var(--accent, #f5c518); color: #16130d; }
+.article-body .kg-header-card.kg-style-dark { background-color: #16130d; }
+.article-body .kg-header-card.kg-style-light { background-color: #f7f6f3; }
+.article-body .kg-header-card.kg-style-light .kg-header-card-header { color: #16130d; }
+.article-body .kg-header-card.kg-style-light .kg-header-card-subheader { color: #4a4437; }
+
+/* Product card */
+.article-body .kg-product-card { display: flex; gap: 20px; border: 1px solid #eae7df; border-radius: 4px; padding: 22px; }
+.article-body .kg-product-card-image { flex: 0 0 120px; }
+.article-body .kg-product-card-image img { width: 100%; border-radius: 3px; display: block; }
+.article-body .kg-product-card-title { font: 700 17px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 6px; }
+.article-body .kg-product-card-rating { margin: 0 0 8px; }
+.article-body .kg-product-card-rating svg { width: 14px; height: 14px; fill: var(--accent, #f5c518); }
+.article-body .kg-product-card-description { font: 400 15px/1.5 'Newsreader', Georgia, serif; color: #4a4437; margin: 0 0 14px; }
+.article-body .kg-product-card-button a { font: 700 12px/1 'Archivo'; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #16130d; padding: 12px 20px; border-radius: 2px; text-decoration: none; }
+@media (max-width: 480px) {
+  .article-body .kg-product-card { flex-direction: column; }
+  .article-body .kg-product-card-image { flex-basis: auto; max-width: 160px; }
+}
+
+/* Audio / video / file / embed cards */
+.article-body .kg-audio-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #eae7df;
+  border-radius: 4px;
+  padding: 16px 20px;
+}
+.article-body .kg-audio-title { font: 700 15px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 2px; }
+.article-body .kg-audio-thumbnail { width: 48px; height: 48px; border-radius: 3px; flex: 0 0 auto; }
+.article-body .kg-audio-play-icon { flex: 0 0 auto; }
+.article-body .kg-file-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #eae7df;
+  border-radius: 4px;
+  padding: 18px 22px;
+}
+.article-body .kg-file-card-title { font: 700 15px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 4px; }
+.article-body .kg-file-card-caption { font: 400 13px/1.4 'Archivo'; color: #6b6459; }
+.article-body .kg-file-card-button {
+  flex: 0 0 auto;
+  font: 700 12px/1 'Archivo';
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #16130d;
+  padding: 11px 20px;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.article-body .kg-embed-card iframe { max-width: 100%; }
+.article-body .kg-video-card video { width: 100%; border-radius: 3px; display: block; }
+
+/* Ghost's custom fonts setting (Admin > Design > Fonts) injects these
+   variables at :root — the theme's own font-family declarations fall
+   back to Archivo/Newsreader when the site owner hasn't customized. */
+:root {
+  --gh-font-heading: 'Archivo', system-ui, -apple-system, sans-serif;
+  --gh-font-body: 'Newsreader', Georgia, serif;
+}
+h1, h2, h3, h4, h5, h6 { font-family: var(--gh-font-heading); }
+.article-body, .page-prose { font-family: var(--gh-font-body); }
+
+/* Ghost's native member signup/signin forms (data-members-form) toggle
+   .success/.error/.loading classes on the <form> itself on submit — these
+   rules show the matching message and are unconditional, unlike the
+   hover/motion rules below. */
+.message-success, .message-error { display: none; }
+form[data-members-form].success .message-success { display: block; }
+form[data-members-form].error .message-error { display: block; }
+form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
+
+/* Micro-interactions — hover lift + image zoom on card links, an
+   animated underline on text links, and a subtle scroll-reveal for grid
+   sections. All wrapped in prefers-reduced-motion so motion-sensitive
+   users get the content instantly with no transforms/fades at all,
+   rather than a reduced version of the same animation. */
+@media (prefers-reduced-motion: no-preference) {
+  .card-link {
+    display: block;
+    transition: transform 0.25s ease;
+  }
+  .card-link:hover, .card-link:focus-visible {
+    transform: translateY(-4px);
+  }
+  .card-link .article-image-frame img {
+    transition: transform 0.5s ease;
+  }
+  .card-link:hover .article-image-frame img,
+  .card-link:focus-visible .article-image-frame img {
+    transform: scale(1.06);
+  }
+  .card-link h2, .card-link h3 {
+    transition: color 0.2s ease;
+  }
+  .card-link:hover h2, .card-link:hover h3,
+  .card-link:focus-visible h2, .card-link:focus-visible h3 {
+    color: #4a4437;
+  }
+
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.25s ease;
+  }
+  .link-underline:hover::after, .link-underline:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Every button gets press feedback for free — a raw element selector
+     rather than a class so it covers current and future buttons alike,
+     same reasoning as the input:focus-visible override above. Opacity
+     alone reads as barely-there on bright/filled buttons, so it's
+     paired with a lift — the position change is what actually reads as
+     "this responded", the opacity dim reinforces it. */
+  button:not(:disabled) {
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  button:not(:disabled):hover { opacity: 0.7; transform: translateY(-1px); }
+  button:not(:disabled):active { opacity: 1; transform: scale(0.96); }
+
+  /* Bookmark "pop" — briefly added by JS when a story is saved. */
+  @keyframes bookmark-pop {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.35); }
+    65% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+  }
+  .bookmark-pop { animation: bookmark-pop 0.4s ease; }
+
+  /* Subcategory filter chips swap background/border/color via JS on
+     click — this makes that swap animate instead of snapping, plus a
+     real yellow hover preview on unselected chips (the selected chip
+     is excluded so hovering it doesn't fight its black active state). */
+  [data-chip] {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  /* Chips opt out of the global button opacity-dim entirely — the solid
+     active chip would otherwise wash out to grey on hover too. */
+  [data-chip]:hover {
+    opacity: 1 !important;
+  }
+  [data-chip]:not(.chip-active):hover {
+    border-color: var(--accent, #f5c518) !important;
+    background: var(--accent, #f5c518) !important;
+    color: #16130d !important;
+  }
+
+  /* Category nav tabs: hover preview on inactive tabs only — the active
+     tab's accent underline must stay untouched. Uses the accent color at
+     reduced weight, same "yellow = hover" language as the chips above,
+     since plain gray read as invisible. */
+  .header-nav-tabs .nav-link {
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .header-nav-tabs .nav-link:not(.nav-link-current):hover {
+    color: #16130d;
+    border-bottom-color: rgba(245, 197, 24, 0.6) !important;
+  }
+
+  /* Sticky header gains a shadow once the page is scrolled — toggled by
+     a scroll listener in main.js, this is just the visual half. */
+  header {
+    transition: box-shadow 0.25s ease;
+  }
+  header.header-scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Search overlay fade + scale entrance — the transition only. The
+     underlying show/hide (opacity/visibility) is unconditional, below,
+     so the overlay still correctly hides when this block doesn't apply. */
+  #search-overlay {
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+  #search-overlay.is-open {
+    transition: opacity 0.2s ease, visibility 0s linear 0s;
+  }
+  #search-overlay .search-modal {
+    transition: transform 0.2s ease;
+  }
+
+  /* Saved-stories loading text pulses gently instead of sitting static
+     while localStorage resolves. */
+  @keyframes loading-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  .loading-pulse { animation: loading-pulse 1.4s ease-in-out infinite; }
+
+  /* Accent ring around circular avatars (Writers grid, About team) on
+     card hover — separate from the generic image-zoom so it only
+     applies where explicitly opted in, since a ring reads oddly on a
+     rectangular article thumbnail. */
+  .avatar-ring {
+    transition: box-shadow 0.25s ease;
+    border-radius: 50%;
+  }
+  .card-link:hover .avatar-ring, .card-link:focus-visible .avatar-ring {
+    box-shadow: 0 0 0 3px var(--accent, #f5c518);
+  }
+
+  /* Membership pricing tier cards aren't links (each has its own CTA),
+     but still benefit from a hover highlight while comparing plans. */
+  .tier-card {
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .tier-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent, #f5c518) !important;
+  }
+
+  /* Small accent square in the wordmark gets a playful hover wiggle
+     when the logo link itself is hovered. */
+  .logo-mark {
+    transition: transform 0.25s ease;
+  }
+  a:hover .logo-mark {
+    transform: translateY(-2px) rotate(12deg) scale(1.15);
+  }
+
+  /* Koenig toggle card chevron — rotates open/closed; the max-height
+     open/close itself is left unanimated since browsers can't transition
+     to/from "none" without extra JS to measure content height. */
+  .kg-toggle-card-icon {
+    transition: transform 0.2s ease;
+  }
+}
+
+.article-image-frame { overflow: hidden; }
+
+/* Tag/author story grids show the first 5/6 cards by default, revealing the
+   rest via the "Load More" button — collapsed here in CSS (no flash of
+   extra content) so main.js only has to toggle a class, not compute which
+   cards to hide. */
+#cat-grid > .card-link:nth-child(n+6) { display: none; }
+#cat-grid.show-all > .card-link { display: flex !important; }
+#author-grid > .card-link:nth-child(n+7) { display: none; }
+#author-grid.show-all > .card-link { display: flex !important; }
+
+@media (max-width: 640px) {
+  .cards-2-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 24px 16px !important; }
+  .latest-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .editors-pick-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .latest-rail { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 24px 16px !important; }
+  .rail-head { grid-column: 1 / -1 !important; margin-bottom: 0 !important; }
+  .rail-item { flex-direction: column !important; gap: 10px !important; padding: 0 !important; border-bottom: none !important; }
+  .rail-thumb { width: 100% !important; height: auto !important; aspect-ratio: 16 / 9 !important; }
+  .stats-row { grid-template-columns: repeat(2, 1fr) !important; gap: 32px 20px !important; }
+  .values-grid { grid-template-columns: 1fr !important; }
+  .team-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .story-grid { grid-template-columns: 1fr !important; }
+  .author-hero { flex-direction: column !important; text-align: center !important; align-items: center !important; }
+  .author-hero .author-meta { justify-content: center !important; }
+  .author-hero .author-actions { justify-content: center !important; }
+  .header-utility-strip { display: none !important; }
+  .header-nav-tabs { display: none !important; }
+  .header-user-name { display: none !important; }
+}

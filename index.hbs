@@ -1,0 +1,219 @@
+{{!< default}}
+
+{{> "site-header"}}
+
+<main id="main-content">
+
+<!-- HERO — most recent post marked "featured" in Admin -->
+{{#get "posts" filter="featured:true" limit="1" page="1" include="tags,authors" as |heroPosts|}}
+{{#foreach heroPosts}}
+<a href="{{url}}" style="display:block;position:relative;width:100%;height:clamp(480px,74vh,720px);clip-path:inset(0);background-color:#2b3a55;text-decoration:none;">
+  {{#if feature_image}}<img src="{{img_url feature_image size="xl"}}" alt="{{title}}" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0;" />{{/if}}
+  <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(10,14,16,0.86) 0%, rgba(10,14,16,0.35) 45%, rgba(10,14,16,0.05) 75%);z-index:1;"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;z-index:2;">
+    <div style="max-width:1280px;margin:0 auto;padding:0 24px 54px;">
+      <div style="max-width:760px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
+          <span style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">{{primary_tag.name}}</span>
+        </div>
+        <h1 style="font:800 clamp(38px,5.4vw,68px)/1.02 'Archivo',sans-serif;letter-spacing:-0.01em;color:#fff;margin:0 0 18px;text-wrap:balance;">{{title}}</h1>
+        {{#if custom_excerpt}}<p style="font:400 clamp(17px,1.5vw,20px)/1.5 'Newsreader',Georgia,serif;color:rgba(255,255,255,0.88);margin:0 0 22px;max-width:600px;">{{custom_excerpt}}</p>{{/if}}
+        <div style="font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.7);">By {{primary_author.name}} · {{reading_time}}</div>
+      </div>
+    </div>
+  </div>
+</a>
+{{/foreach}}
+{{/get}}
+
+<!-- LATEST — 2nd featured post as the lead, next 6 non-featured posts as the rail -->
+<section style="max-width:1280px;margin:0 auto;padding:56px 24px 8px;">
+  <div class="latest-grid" style="display:grid;grid-template-columns:1.7fr 1fr;gap:48px;align-items:start;">
+    {{#get "posts" filter="featured:true" limit="1" page="2" include="tags,authors" as |latestFeatured|}}
+    {{#foreach latestFeatured}}
+    <a href="{{url}}" style="text-decoration:none;color:inherit;display:block;">
+      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:16/10;margin-bottom:20px;background:#2b3a55;">
+        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
+        <span style="font:700 11px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+      </div>
+      <h2 style="font:700 clamp(28px,3vw,38px)/1.08 'Archivo',sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 14px;text-wrap:balance;">{{title}}</h2>
+      {{#if custom_excerpt}}<p style="font:400 18px/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0 0 14px;max-width:620px;">{{custom_excerpt}}</p>{{/if}}
+      <div style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}} · {{reading_time}}</div>
+    </a>
+    {{/foreach}}
+    {{/get}}
+
+    <div class="latest-rail">
+      <div class="rail-head" style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="font:800 15px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">Latest</span>
+        <span style="flex:1;height:2px;background:#16130d;display:block;"></span>
+      </div>
+      {{#get "posts" filter="featured:false" limit="6" include="tags"}}
+      {{#foreach posts}}
+      <a class="rail-item card-link" href="{{url}}" style="display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-bottom:1px solid #e6e3dc;text-decoration:none;color:inherit;">
+        <div class="article-image-frame" style="position:relative;overflow:hidden;flex:0 0 auto;width:96px;height:70px;background:#2b3a55;">
+          {{#if feature_image}}<img src="{{img_url feature_image size="xs"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        </div>
+        <div>
+          <div style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#7a5c0a;margin-bottom:6px;">{{primary_tag.name}}</div>
+          <div style="font:600 15px/1.28 'Archivo',sans-serif;color:#16130d;">{{title}}</div>
+        </div>
+      </a>
+      {{/foreach}}
+      {{/get}}
+    </div>
+  </div>
+</section>
+
+{{!-- Spotlight rows — driven by the "Spotlight category 1/2" theme settings.
+      Each renders as its own homepage row when the tag has non-featured
+      posts; silently skipped otherwise (e.g. tag doesn't exist yet). --}}
+{{#get "posts" filter="primary_tag:{{@custom.spotlight_category_1}}+featured:false" limit="4" include="tags"}}
+{{#if posts}}
+<section class="reveal" style="max-width:1280px;margin:0 auto;padding:40px 24px;">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #16130d;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
+      <h2 style="font:800 24px/1 'Archivo';letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
+    </div>
+    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 12px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
+  </div>
+  <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
+    {{#foreach posts}}
+    <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
+      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;margin-bottom:14px;background:#2b3a55;">
+        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+        <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
+        <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+      </div>
+      <h3 style="font:600 19px/1.22 'Archivo',sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
+    </a>
+    {{/foreach}}
+  </div>
+</section>
+{{/if}}
+{{/get}}
+
+<!-- PHOTO OF THE DAY — post tagged #photo-of-day in Admin. Ghost's tag:
+     filter matches by slug, not the "#name" typed into the editor — that
+     name slugifies to "hash-photo-of-day", which is what's filtered on
+     here (confirmed against the Content API directly). -->
+{{#get "posts" filter="tag:hash-photo-of-day" limit="1" include="tags,authors"}}
+{{#foreach posts}}
+<section style="position:relative;width:100%;height:clamp(420px,64vh,640px);clip-path:inset(0);margin:24px 0;">
+  {{#if feature_image}}<img src="{{img_url feature_image size="xl"}}" alt="" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0;" />{{/if}}
+  <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(10,8,6,0.78) 0%, rgba(10,8,6,0.25) 50%, rgba(10,8,6,0) 100%);"></div>
+  <div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;">
+    <div style="width:100%;max-width:1280px;margin:0 auto;padding:0 24px;">
+      <div style="max-width:440px;">
+        <div style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);margin-bottom:16px;">Photo of the Day</div>
+        <h2 style="font:700 clamp(26px,3vw,36px)/1.1 'Archivo',sans-serif;color:#fff;margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
+        {{#if custom_excerpt}}<p style="font:400 17px/1.55 'Newsreader',Georgia,serif;color:rgba(255,255,255,0.82);margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
+        <div style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Photograph by {{primary_author.name}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+{{/foreach}}
+{{/get}}
+
+{{!-- Spotlight row 2 --}}
+{{#get "posts" filter="primary_tag:{{@custom.spotlight_category_2}}+featured:false" limit="4" include="tags"}}
+{{#if posts}}
+<section class="reveal" style="max-width:1280px;margin:0 auto;padding:40px 24px;">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #16130d;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
+      <h2 style="font:800 24px/1 'Archivo';letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
+    </div>
+    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 12px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
+  </div>
+  <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
+    {{#foreach posts}}
+    <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
+      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;margin-bottom:14px;background:#2b3a55;">
+        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+        <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
+        <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+      </div>
+      <h3 style="font:600 19px/1.22 'Archivo',sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
+    </a>
+    {{/foreach}}
+  </div>
+</section>
+{{/if}}
+{{/get}}
+
+<!-- VIDEO FEATURE — configured via the "Featured video" theme settings -->
+{{#if @custom.featured_video_youtube_id}}
+<section style="background:#16130d;padding:64px 0;margin-top:24px;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+      <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
+      <span style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">Watch</span>
+    </div>
+    <!-- Click-to-play YouTube embed — the iframe only loads once clicked,
+         so an unplayed feature costs nothing on page load. -->
+    <div id="video-feature" data-youtube-id="{{@custom.featured_video_youtube_id}}" style="position:relative;width:100%;aspect-ratio:21/9;overflow:hidden;cursor:pointer;background:#2b3a55;">
+      {{#if @custom.featured_video_thumbnail}}<img src="{{@custom.featured_video_thumbnail}}" alt="{{@custom.featured_video_title}}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />{{/if}}
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.15));display:flex;align-items:center;justify-content:center;">
+        <button type="button" aria-label="Play video" style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <span style="display:block;width:0;height:0;border-left:24px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:7px;"></span>
+        </button>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;">
+        <h2 style="font:700 clamp(24px,2.6vw,34px)/1.1 'Archivo',sans-serif;color:#fff;margin:0;max-width:640px;text-wrap:balance;">{{@custom.featured_video_title}}</h2>
+      </div>
+    </div>
+  </div>
+</section>
+{{/if}}
+
+<!-- EDITOR'S PICK — 3rd featured post — + MOST READ -->
+{{#get "posts" filter="featured:true" limit="1" page="3" include="tags" as |editorsPick|}}
+{{#foreach editorsPick}}
+<section class="reveal" style="max-width:1280px;margin:0 auto;padding:64px 24px;">
+  <div class="editors-pick-grid" style="display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:start;">
+    <a href="{{url}}" style="text-decoration:none;color:inherit;display:block;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
+        <span style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#16130d;">Editor's Pick</span>
+      </div>
+      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:18px;background:#2b3a55;">
+        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+      </div>
+      <h2 style="font:700 clamp(24px,2.4vw,32px)/1.12 'Archivo',sans-serif;color:#16130d;margin:0 0 12px;text-wrap:balance;">{{title}}</h2>
+      {{#if custom_excerpt}}<p style="font:400 18px/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0;max-width:520px;">{{custom_excerpt}}</p>{{/if}}
+    </a>
+    <div>
+      <div style="font:800 15px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;padding-bottom:14px;border-bottom:2px solid #16130d;margin-bottom:4px;">Most Read</div>
+      {{#get "posts" filter="featured:false+id:-{{id}}" limit="5" include="tags"}}
+      {{#foreach posts}}
+      <a class="card-link" href="{{url}}" style="display:flex;gap:18px;align-items:baseline;padding:18px 0;border-bottom:1px solid #e6e3dc;text-decoration:none;color:inherit;">
+        <span style="font:800 26px/1 'Archivo';color:#7a5c0a;flex:0 0 auto;width:34px;">{{@number}}</span>
+        <div>
+          <div style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#6b6459;margin-bottom:6px;">{{primary_tag.name}}</div>
+          <div style="font:600 17px/1.28 'Archivo',sans-serif;color:#16130d;">{{title}}</div>
+        </div>
+      </a>
+      {{/foreach}}
+      {{/get}}
+    </div>
+  </div>
+</section>
+{{/foreach}}
+{{/get}}
+
+{{> "newsletter"}}
+</main>
+
+{{> "site-footer"}}
+{{> "nav-drawer"}}

@@ -1,0 +1,26 @@
+{{#if @member}}
+{{#if show_saved}}
+<a href="/saved/" title="Saved" style="display:flex;align-items:center;text-decoration:none;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16130d" stroke-width="2" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
+</a>
+{{/if}}
+<div style="position:relative;">
+  <button type="button" id="acct-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="acct-dropdown" style="display:flex;align-items:center;gap:9px;cursor:pointer;background:none;border:none;padding:0;font:inherit;">
+    <div style="width:32px;height:32px;border-radius:50%;background:#6b6459;color:#fff;display:flex;align-items:center;justify-content:center;font:700 13px/1 'Archivo';">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </div>
+    <span class="header-user-name" style="font:700 13px/1 'Archivo';color:#16130d;">{{@member.name}}</span>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6459" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </button>
+  <div id="acct-dropdown" style="position:absolute;top:46px;right:0;width:214px;background:#fff;border:1px solid #e6e3dc;border-radius:4px;box-shadow:0 12px 34px rgba(0,0,0,0.14);padding:8px;z-index:60;display:none;">
+    <div style="padding:8px 12px 10px;border-bottom:1px solid #efece5;margin-bottom:6px;">
+      <div style="font:700 13px/1.2 'Archivo';color:#16130d;">{{@member.name}}</div>
+      <div style="font:400 12px/1.2 'Archivo';color:#6b6459;margin-top:3px;">{{@member.email}}</div>
+    </div>
+    <button type="button" data-portal="account" style="display:block;width:100%;text-align:left;padding:9px 12px;font:600 13px/1 'Archivo';color:#16130d;background:none;border:none;border-radius:3px;cursor:pointer;">Your account</button>
+    <a href="/saved/" style="display:block;padding:9px 12px;font:600 13px/1 'Archivo';color:#16130d;text-decoration:none;border-radius:3px;">Saved stories</a>
+  </div>
+</div>
+{{else}}
+<button type="button" data-portal="signin" style="background:var(--accent,{{@custom.accent_color}});color:#16130d;font:700 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:11px 20px;border:none;border-radius:2px;cursor:pointer;white-space:nowrap;">Sign In</button>
+{{/if}}

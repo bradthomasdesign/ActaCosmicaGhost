@@ -1,0 +1,122 @@
+{
+  "name": "acta-cosmica",
+  "description": "A photo-forward news and magazine theme for Ghost",
+  "version": "1.0.0",
+  "engines": {
+    "ghost": ">=5.0.0"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Bradley Thomas",
+    "email": "brad.thomas@gmail.com",
+    "url": "https://bradleyt.com"
+  },
+  "keywords": [
+    "ghost-theme",
+    "news",
+    "magazine",
+    "blog",
+    "editorial"
+  ],
+  "gpm": {
+    "type": "theme",
+    "categories": [
+      "Editorial",
+      "Magazine"
+    ]
+  },
+  "config": {
+    "posts_per_page": 12,
+    "image_sizes": {
+      "xs": { "width": 320 },
+      "s": { "width": 640 },
+      "m": { "width": 960 },
+      "l": { "width": 1280 },
+      "xl": { "width": 1920 }
+    },
+    "card_assets": true,
+    "custom": {
+      "accent_color": {
+        "type": "color",
+        "default": "#f5c518"
+      },
+      "spotlight_category_1": {
+        "type": "text",
+        "default": "science",
+        "group": "homepage"
+      },
+      "spotlight_category_2": {
+        "type": "text",
+        "default": "travel",
+        "group": "homepage"
+      },
+      "footer_description": {
+        "type": "text",
+        "default": "An independent, reader-funded newsroom covering science, nature, and the people exploring both — with rigor and beauty in equal measure."
+      },
+      "show_footer_credit": {
+        "type": "boolean",
+        "default": true
+      },
+      "footer_credit_label": {
+        "type": "text",
+        "default": "designed and built by"
+      },
+      "footer_credit_name": {
+        "type": "text",
+        "default": ""
+      },
+      "footer_credit_url": {
+        "type": "text",
+        "default": ""
+      },
+      "social_bluesky": {
+        "type": "text",
+        "default": ""
+      },
+      "social_mastodon": {
+        "type": "text",
+        "default": ""
+      },
+      "social_instagram": {
+        "type": "text",
+        "default": ""
+      },
+      "social_youtube": {
+        "type": "text",
+        "default": ""
+      },
+      "content_api_key": {
+        "type": "text",
+        "default": ""
+      },
+      "featured_video_youtube_id": {
+        "type": "text",
+        "default": "",
+        "group": "homepage"
+      },
+      "featured_video_title": {
+        "type": "text",
+        "default": "",
+        "group": "homepage"
+      },
+      "featured_video_thumbnail": {
+        "type": "image",
+        "group": "homepage"
+      }
+    }
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.3.2",
+    "@tailwindcss/cli": "^4.3.2",
+    "gscan": "^6.4.1",
+    "gray-matter": "^4.0.3",
+    "marked": "^14.1.0"
+  },
+  "scripts": {
+    "build": "tailwindcss -i ./assets/css/screen.css -o ./assets/built/screen.css --minify",
+    "dev": "tailwindcss -i ./assets/css/screen.css -o ./assets/built/screen.css --watch",
+    "test": "gscan .",
+    "migrate": "node scripts/migrate-from-astro.mjs"
+  }
+}
