@@ -195,10 +195,16 @@ a { -webkit-tap-highlight-color: transparent; }
    documented card markup (no @tryghost/kg-default-cards dependency) so the
    styling stays on the theme's own tokens (ink #16130d, muted #4a4437,
    secondary #6b6459, hairline borders #eae7df/#e6e3dc, panel bg #f7f6f3). */
-.article-body .kg-card { margin: 32px 0; }
+/* margin-top/-bottom only, deliberately — a margin:_ 0 shorthand here would
+   reset margin-left/-right to 0 too, which ties in specificity against
+   .kg-width-wide/.kg-width-full's own margin-left, and (being later in this
+   file) would silently win, breaking their centering. This is exactly the
+   bug that shipped: gallery cards using kg-width-wide rendered shifted off
+   the left edge instead of centered. */
+.article-body .kg-card { margin-top: 32px; margin-bottom: 32px; }
 
 /* Bookmark card */
-.article-body .kg-bookmark-card { margin: 32px 0; }
+.article-body .kg-bookmark-card { margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-bookmark-container {
   display: flex;
   min-height: 148px;
@@ -236,7 +242,7 @@ a { -webkit-tap-highlight-color: transparent; }
 }
 
 /* Gallery card */
-.article-body .kg-gallery-card { margin: 32px 0; }
+.article-body .kg-gallery-card { margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-gallery-container { display: flex; flex-direction: column; gap: 6px; }
 .article-body .kg-gallery-row { display: flex; gap: 6px; }
 .article-body .kg-gallery-image { flex: auto; margin: 0; }
@@ -281,7 +287,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body .kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-card-icon { transform: rotate(180deg); }
 
 /* Button card */
-.article-body .kg-button-card { display: flex; margin: 32px 0; }
+.article-body .kg-button-card { display: flex; margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-btn {
   display: inline-block;
   font: 700 13px/1 'Archivo';
@@ -347,7 +353,7 @@ a { -webkit-tap-highlight-color: transparent; }
    for this card as of Ghost 6.51, so it's fully theme-owned. The range
    input drives --kg-before-position, read by the clip-path below; see
    the matching JS in main.js for the input listener. */
-.article-body .kg-before-after-card { position: relative; margin: 32px 0; }
+.article-body .kg-before-after-card { position: relative; margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-before-after-card-slider {
   position: relative;
   overflow: hidden;
