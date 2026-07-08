@@ -5,7 +5,7 @@
 <aside id="nav-drawer" style="position:fixed;top:0;left:0;bottom:0;width:min(400px,88vw);z-index:71;background:#16130d;color:#fff;transform:translateX(-100%);transition:transform .34s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:0 0 60px rgba(0,0,0,0.4);">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid rgba(255,255,255,0.12);">
     <div style="display:flex;align-items:baseline;gap:2px;">
-      <span style="font:800 22px/1 'Archivo';color:#fff;">{{@site.title}}</span>
+      <span style="font:800 22px/1 var(--gh-font-heading,'Archivo');color:#fff;">{{@site.title}}</span>
       <span class="logo-mark" style="width:7px;height:7px;background:var(--accent,{{@custom.accent_color}});display:inline-block;"></span>
     </div>
     <button data-close-menu aria-label="Close menu" style="background:none;border:none;cursor:pointer;padding:6px;display:flex;">
@@ -16,14 +16,14 @@
     {{navigation}}
   </nav>
   <div style="padding:22px 28px;border-top:1px solid rgba(255,255,255,0.12);display:flex;flex-direction:column;gap:16px;">
-    <a href="/membership/" style="background:var(--accent,{{@custom.accent_color}});color:var(--accent-text,#16130d);font:700 13px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:15px;text-align:center;text-decoration:none;border-radius:2px;">Membership</a>
+    <a href="/membership/" style="background:var(--accent,{{@custom.accent_color}});color:var(--accent-text,#16130d);font:700 13px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;padding:15px;text-align:center;text-decoration:none;border-radius:2px;">Membership</a>
     <div style="display:flex;gap:24px;">
       {{#if @member}}
-      <button type="button" data-portal="account" style="background:none;border:none;padding:0;font:600 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);cursor:pointer;">Your account</button>
+      <button type="button" data-portal="account" style="background:none;border:none;padding:0;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);cursor:pointer;">Your account</button>
       {{else}}
-      <button type="button" data-portal="signin" style="background:none;border:none;padding:0;font:600 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);cursor:pointer;">Sign In</button>
+      <button type="button" data-portal="signin" style="background:none;border:none;padding:0;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);cursor:pointer;">Sign In</button>
       {{/if}}
-      <a href="/#newsletter" style="font:600 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);text-decoration:none;">Newsletters</a>
+      <a href="/#newsletter" style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);text-decoration:none;">Newsletters</a>
     </div>
   </div>
 </aside>

@@ -271,47 +271,6 @@
     });
   });
 
-  // Save for later — deliberately localStorage-only, keyed on Ghost post id.
-  // This is device/browser-scoped by design (same as the original Astro
-  // theme, which had no backend at all): saving on a phone won't show up
-  // on a desktop, even for a signed-in member. Real cross-device sync would
-  // need a small backend service writing to per-member storage server-side
-  // — a deliberate scope decision to leave this as-is for now.
-  const SAVE_KEY = 'acta_saved';
-  function getSaved() {
-    try { return JSON.parse(localStorage.getItem(SAVE_KEY) || '[]'); } catch { return []; }
-  }
-  const saveBtn = document.querySelector('[data-save-btn]');
-  if (saveBtn) {
-    const id = saveBtn.getAttribute('data-save-btn');
-    const icon = saveBtn.querySelector('[data-save-icon]');
-    function paintSaveState() {
-      const isSaved = id ? getSaved().includes(id) : false;
-      if (icon) {
-        icon.setAttribute('fill', isSaved ? 'var(--accent,#f5c518)' : 'none');
-        icon.setAttribute('stroke', isSaved ? 'var(--accent,#f5c518)' : '#16130d');
-      }
-      const label = isSaved ? 'Remove from saved' : 'Save story';
-      saveBtn.setAttribute('aria-label', label);
-      saveBtn.title = isSaved ? 'Remove from saved' : 'Save for later';
-    }
-    saveBtn.addEventListener('click', () => {
-      if (!id) return;
-      const list = getSaved();
-      const idx = list.indexOf(id);
-      const nowSaved = idx === -1;
-      if (nowSaved) list.push(id); else list.splice(idx, 1);
-      localStorage.setItem(SAVE_KEY, JSON.stringify(list));
-      paintSaveState();
-      if (nowSaved && icon) {
-        icon.classList.remove('bookmark-pop');
-        void icon.getBoundingClientRect();
-        icon.classList.add('bookmark-pop');
-      }
-    });
-    paintSaveState();
-  }
-
   // --- Tag page: dynamic subcategory chips + filtering + load more -------
   const catGrid = document.getElementById('cat-grid');
   if (catGrid) {
@@ -398,77 +357,6 @@
       catGrid.classList.add('show-all');
       if (moreWrap) moreWrap.style.display = 'none';
     });
-  }
-
-  // --- Saved stories page --------------------------------------------------
-  const savedGrid = document.getElementById('saved-grid');
-  if (savedGrid) {
-    const SAVE_KEY = 'acta_saved';
-    const subtitle = document.getElementById('saved-subtitle');
-    const emptyState = document.getElementById('saved-empty-state');
-
-    function getSavedIds() {
-      try { return JSON.parse(localStorage.getItem(SAVE_KEY) || '[]'); } catch { return []; }
-    }
-    function setSavedIds(list) {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(list));
-    }
-
-    function cardHTML(a) {
-      const imageBlock = a.image
-        ? `<img src="${a.image}" alt="${a.title}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">`
-        : `<div style="position:absolute;inset:0;background-color:${a.bg};background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 12px, rgba(255,255,255,0) 12px 24px);"></div>`;
-      return `
-        <a class="card-link" href="${a.url}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
-          <div class="article-image-frame" style="position:relative;width:100%;aspect-ratio:3/2;margin-bottom:15px;overflow:hidden;">
-            ${imageBlock}
-            <button class="unsave-btn" type="button" data-id="${a.id}" title="Remove from saved" style="position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(22,19,13,0.55);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent,#f5c518)" stroke="var(--accent,#f5c518)" stroke-width="2" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
-            </button>
-          </div>
-          <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
-            <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-            <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">${a.kicker}</span>
-          </div>
-          <h3 style="font:600 21px/1.2 'Archivo',sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">${a.title}</h3>
-          <p style="font:400 15px/1.5 'Newsreader',Georgia,serif;color:#6b6459;margin:0 0 10px;">${a.dek}</p>
-          <div style="font:600 11px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">${a.date}${a.date && a.readTime ? ' · ' : ''}${a.readTime}</div>
-        </a>
-      `;
-    }
-
-    function render(index) {
-      const savedIds = getSavedIds();
-      const items = index.filter((a) => savedIds.includes(a.id));
-      const n = items.length;
-
-      if (subtitle) {
-        subtitle.classList.remove('loading-pulse');
-        subtitle.textContent = n > 0
-          ? `${n} ${n === 1 ? 'story' : 'stories'} you've bookmarked to read later.`
-          : 'Nothing here right now.';
-      }
-
-      if (n === 0) {
-        savedGrid.style.display = 'none';
-        if (emptyState) emptyState.style.display = 'block';
-        return;
-      }
-
-      savedGrid.style.display = 'grid';
-      savedGrid.innerHTML = items.map(cardHTML).join('');
-      savedGrid.querySelectorAll('.unsave-btn').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setSavedIds(getSavedIds().filter((id) => id !== btn.dataset.id));
-          render(index);
-        });
-      });
-      if (emptyState) emptyState.style.display = 'none';
-    }
-
-    getSearchIndex().then(render);
   }
 
   // --- Author page: load more ---------------------------------------------

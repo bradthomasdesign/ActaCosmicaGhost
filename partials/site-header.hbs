@@ -3,11 +3,11 @@
   {{#unless slim}}
   <div class="header-utility-strip" style="border-bottom:1px solid #efece5;">
     <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:34px;display:flex;align-items:center;justify-content:space-between;">
-      <span data-today style="font:600 11px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#6b6459;"></span>
+      <span data-today style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#6b6459;"></span>
       <div style="display:flex;align-items:center;gap:18px;">
-        <a href="/#newsletter" style="font:600 11px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">Newsletters</a>
-        <a href="/about/" style="font:600 11px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">About</a>
-        <a href="/membership/" style="font:600 11px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">Membership</a>
+        <a href="/#newsletter" style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">Newsletters</a>
+        <a href="/about/" style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">About</a>
+        <a href="/membership/" style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:#4a4437;text-decoration:none;">Membership</a>
         <span style="width:1px;height:12px;background:#d9d5cc;display:block;"></span>
         <div style="display:flex;align-items:center;gap:13px;">
           {{#if @custom.social_bluesky}}
@@ -51,14 +51,14 @@
         <span style="width:20px;height:2px;background:#16130d;display:block;"></span>
       </button>
       <a href="{{@site.url}}" style="display:flex;align-items:baseline;gap:2px;text-decoration:none;">
-        <span class="wordmark wordmark-full" style="font:800 24px/1 'Archivo';letter-spacing:.02em;color:#16130d;white-space:nowrap;">{{@site.title}}</span>
-        <span class="wordmark-short" style="font:800 24px/1 'Archivo';letter-spacing:.02em;color:#16130d;"></span>
+        <span class="wordmark wordmark-full" style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;color:#16130d;white-space:nowrap;">{{@site.title}}</span>
+        <span class="wordmark-short" style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;color:#16130d;"></span>
         <span class="logo-mark" style="width:7px;height:7px;background:var(--accent,{{@custom.accent_color}});display:inline-block;"></span>
       </a>
     </div>
     <div style="display:flex;align-items:center;gap:20px;">
       {{#if back_label}}
-      <a href="{{back_href}}" style="display:flex;align-items:center;gap:6px;font:600 12px/1 'Archivo';letter-spacing:.11em;text-transform:uppercase;color:#16130d;text-decoration:none;white-space:nowrap;">
+      <a href="{{back_href}}" style="display:flex;align-items:center;gap:6px;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.11em;text-transform:uppercase;color:#16130d;text-decoration:none;white-space:nowrap;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16130d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         <span class="back-label">Back to {{back_label}}</span>
       </a>
@@ -75,8 +75,8 @@
         <span style="width:20px;height:2px;background:#16130d;display:block;"></span>
       </button>
       <a href="{{@site.url}}" style="display:flex;align-items:baseline;gap:2px;text-decoration:none;">
-        <span class="wordmark wordmark-full" style="font:800 26px/1 'Archivo';letter-spacing:.02em;color:#16130d;white-space:nowrap;">{{@site.title}}</span>
-        <span class="wordmark-short" style="font:800 26px/1 'Archivo';letter-spacing:.02em;color:#16130d;"></span>
+        <span class="wordmark wordmark-full" style="font:800 26px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;color:#16130d;white-space:nowrap;">{{@site.title}}</span>
+        <span class="wordmark-short" style="font:800 26px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;color:#16130d;"></span>
         <span class="logo-mark" style="width:8px;height:8px;background:var(--accent,{{@custom.accent_color}});display:inline-block;"></span>
       </a>
     </div>
@@ -84,7 +84,7 @@
       <button id="search-toggle" aria-label="Search" style="background:none;border:none;padding:6px;cursor:pointer;display:flex;align-items:center;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16130d" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
       </button>
-      {{> "account-controls" show_saved=true}}
+      {{> "account-controls"}}
     </div>
   </div>
 

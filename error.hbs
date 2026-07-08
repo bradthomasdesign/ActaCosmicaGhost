@@ -4,12 +4,12 @@
 
 <main id="main-content">
 <section style="max-width:680px;margin:0 auto;padding:clamp(80px,14vw,160px) 24px clamp(96px,12vw,140px);text-align:center;">
-  <div style="font:800 clamp(84px,13vw,150px)/1 'Archivo',sans-serif;letter-spacing:-0.02em;color:var(--accent,{{@custom.accent_color}});margin:0 0 4px;">{{statusCode}}</div>
-  <h1 style="font:800 clamp(26px,3.2vw,38px)/1.2 'Archivo',sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{message}}</h1>
-  <p style="font:400 18px/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0 0 32px;">The story you're looking for may have moved, or never existed.</p>
+  <div style="font:800 clamp(84px,13vw,150px)/1 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.02em;color:var(--accent,{{@custom.accent_color}});margin:0 0 4px;">{{statusCode}}</div>
+  <h1 style="font:800 clamp(26px,3.2vw,38px)/1.2 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{message}}</h1>
+  <p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;margin:0 0 32px;">The story you're looking for may have moved, or never existed.</p>
   <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-    <a href="{{@site.url}}" style="display:inline-block;background:#16130d;color:#fff;font:700 12px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;padding:15px 32px;text-decoration:none;border-radius:2px;">Back to homepage</a>
-    <button type="button" id="error-search-toggle" style="display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid #948d80;color:#16130d;font:700 12px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;padding:15px 26px;border-radius:2px;cursor:pointer;">
+    <a href="{{@site.url}}" style="display:inline-block;background:#16130d;color:#fff;font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;padding:15px 32px;text-decoration:none;border-radius:2px;">Back to homepage</a>
+    <button type="button" id="error-search-toggle" style="display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid #948d80;color:#16130d;font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;padding:15px 26px;border-radius:2px;cursor:pointer;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16130d" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
       Search stories
     </button>

@@ -54,7 +54,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible {
   z-index: 100;
   background: #16130d;
   color: #fff;
-  font: 700 13px/1 'Archivo', sans-serif;
+  font: 700 13px/1 var(--gh-font-heading,'Archivo'), sans-serif;
   padding: 12px 18px;
   border-radius: 2px;
   text-decoration: none;
@@ -71,7 +71,7 @@ body {
   text-rendering: optimizeLegibility;
   background: #fff;
   color: #16130d;
-  font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+  font-family: var(--gh-font-heading,'Archivo'), system-ui, -apple-system, sans-serif;
 }
 
 a { -webkit-tap-highlight-color: transparent; }
@@ -82,7 +82,7 @@ a { -webkit-tap-highlight-color: transparent; }
    drawer) gets its own visual treatment purely from the ancestor selector,
    so one shared partial can serve both. */
 .header-nav-tabs .nav-link {
-  font: 600 12px/1 'Archivo';
+  font: 600 12px/1 var(--gh-font-heading,'Archivo');
   letter-spacing: .11em;
   text-transform: uppercase;
   text-decoration: none;
@@ -97,7 +97,7 @@ a { -webkit-tap-highlight-color: transparent; }
 }
 
 #drawer-nav .nav-link {
-  font: 700 26px/1 'Archivo', sans-serif;
+  font: 700 26px/1 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #fff;
   text-decoration: none;
   padding: 15px 0;
@@ -112,13 +112,13 @@ a { -webkit-tap-highlight-color: transparent; }
    Ghost's secondary navigation setting, restyled to match the footer's
    dark background instead of the header treatment above. */
 .footer-nav-links .nav-link {
-  font: 400 14px/1 'Archivo';
+  font: 400 14px/1 var(--gh-font-heading,'Archivo');
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
 }
 
 .article-body p:first-of-type::first-letter {
-  font-family: 'Archivo', sans-serif;
+  font-family: var(--gh-font-heading,'Archivo'), sans-serif;
   font-weight: 800;
   float: left;
   font-size: 78px;
@@ -131,13 +131,13 @@ a { -webkit-tap-highlight-color: transparent; }
 
 /* Markdown/Koenig prose styles for .article-body (Ghost's {{content}}) */
 .article-body h2 {
-  font: 700 27px/1.2 'Archivo', sans-serif;
+  font: 700 27px/1.2 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #16130d;
   margin: 44px 0 20px;
   letter-spacing: -0.01em;
 }
 .article-body h3 {
-  font: 700 21px/1.3 'Archivo', sans-serif;
+  font: 700 21px/1.3 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #16130d;
   margin: 36px 0 14px;
 }
@@ -147,7 +147,7 @@ a { -webkit-tap-highlight-color: transparent; }
   border-left: 3px solid var(--accent, #f5c518);
 }
 .article-body blockquote p {
-  font: 500 27px/1.32 'Archivo', sans-serif;
+  font: 500 27px/1.32 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #16130d;
   margin: 0;
   letter-spacing: -0.01em;
@@ -168,7 +168,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body img,
 .article-body figure { max-width: 100%; height: auto; }
 .article-body figcaption {
-  font: 400 13px/1.4 'Archivo', sans-serif;
+  font: 400 13px/1.4 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #6b6459;
   margin-top: 10px;
   text-align: center;
@@ -215,9 +215,9 @@ a { -webkit-tap-highlight-color: transparent; }
   color: inherit;
 }
 .article-body .kg-bookmark-content { display: flex; flex-direction: column; flex: 1 1 auto; padding: 20px 24px; order: 1; min-width: 0; }
-.article-body .kg-bookmark-title { font: 700 16px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 6px; }
+.article-body .kg-bookmark-title { font: 700 16px/1.3 var(--gh-font-heading,'Archivo'), sans-serif; color: #16130d; margin: 0 0 6px; }
 .article-body .kg-bookmark-description {
-  font: 400 14px/1.5 'Newsreader', Georgia, serif;
+  font: 400 14px/1.5 var(--gh-font-body,'Newsreader'), Georgia, serif;
   color: #6b6459;
   margin: 0 0 16px;
   display: -webkit-box;
@@ -229,7 +229,7 @@ a { -webkit-tap-highlight-color: transparent; }
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 600 12px/1 'Archivo';
+  font: 600 12px/1 var(--gh-font-heading,'Archivo');
   color: #6b6459;
   margin-top: auto;
 }
@@ -258,7 +258,7 @@ a { -webkit-tap-highlight-color: transparent; }
   background: #f7f6f3;
 }
 .article-body .kg-callout-emoji { font-size: 20px; line-height: 1.4; flex: 0 0 auto; }
-.article-body .kg-callout-text { font: 400 16px/1.55 'Newsreader', Georgia, serif; color: #26221a; margin: 0; }
+.article-body .kg-callout-text { font: 400 16px/1.55 var(--gh-font-body,'Newsreader'), Georgia, serif; color: #26221a; margin: 0; }
 .article-body .kg-callout-card-grey { background: #f7f6f3; }
 .article-body .kg-callout-card-white { background: #fff; border: 1px solid #eae7df; }
 .article-body .kg-callout-card-blue { background: #eaf1fb; }
@@ -272,11 +272,11 @@ a { -webkit-tap-highlight-color: transparent; }
 /* Toggle card — data-kg-toggle-state flipped by main.js */
 .article-body .kg-toggle-card { border: 1px solid #eae7df; border-radius: 4px; padding: 18px 22px; }
 .article-body .kg-toggle-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; }
-.article-body .kg-toggle-heading-text { font: 700 17px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0; }
+.article-body .kg-toggle-heading-text { font: 700 17px/1.3 var(--gh-font-heading,'Archivo'), sans-serif; color: #16130d; margin: 0; }
 .article-body .kg-toggle-card-icon { background: none; border: none; padding: 4px; cursor: pointer; flex: 0 0 auto; color: #16130d; display: flex; }
 .article-body .kg-toggle-card-icon svg { width: 16px; height: 16px; }
 .article-body .kg-toggle-content {
-  font: 400 16px/1.6 'Newsreader', Georgia, serif;
+  font: 400 16px/1.6 var(--gh-font-body,'Newsreader'), Georgia, serif;
   color: #4a4437;
   max-height: 0;
   overflow: hidden;
@@ -290,7 +290,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body .kg-button-card { display: flex; margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-btn {
   display: inline-block;
-  font: 700 13px/1 'Archivo';
+  font: 700 13px/1 var(--gh-font-heading,'Archivo');
   letter-spacing: .06em;
   text-transform: uppercase;
   text-decoration: none;
@@ -341,7 +341,7 @@ a { -webkit-tap-highlight-color: transparent; }
    "quote style" toggle) — larger, centered, and italic vs. the left-rule
    default in .article-body blockquote above. */
 .article-body .kg-blockquote-alt {
-  font: 500 italic clamp(24px,2.6vw,30px)/1.5 'Archivo', sans-serif;
+  font: 500 italic clamp(24px,2.6vw,30px)/1.5 var(--gh-font-heading,'Archivo'), sans-serif;
   text-align: center;
   color: #16130d;
   border: none;
@@ -498,15 +498,6 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
   button:not(:disabled):hover { opacity: 0.7; transform: translateY(-1px); }
   button:not(:disabled):active { opacity: 1; transform: scale(0.96); }
 
-  /* Bookmark "pop" — briefly added by JS when a story is saved. */
-  @keyframes bookmark-pop {
-    0% { transform: scale(1); }
-    35% { transform: scale(1.35); }
-    65% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-  }
-  .bookmark-pop { animation: bookmark-pop 0.4s ease; }
-
   /* Subcategory filter chips swap background/border/color via JS on
      click — this makes that swap animate instead of snapping, plus a
      real yellow hover preview on unselected chips (the selected chip
@@ -558,14 +549,6 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
   #search-overlay .search-modal {
     transition: transform 0.2s ease;
   }
-
-  /* Saved-stories loading text pulses gently instead of sitting static
-     while localStorage resolves. */
-  @keyframes loading-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.45; }
-  }
-  .loading-pulse { animation: loading-pulse 1.4s ease-in-out infinite; }
 
   /* Accent ring around circular avatars (Writers grid, About team) on
      card hover — separate from the generic image-zoom so it only

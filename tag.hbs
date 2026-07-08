@@ -6,7 +6,7 @@
 
 <!-- MASTHEAD -->
 <section style="max-width:1280px;margin:0 auto;padding:48px 24px 30px;">
-  <div style="font:600 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:18px;">
+  <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:18px;">
     <a href="{{@site.url}}" style="color:#6b6459;text-decoration:none;">Home</a>
     <span style="margin:0 8px;">›</span>
     <span style="color:#16130d;">{{#tag}}{{name}}{{/tag}}</span>
@@ -14,8 +14,8 @@
   <div style="display:flex;align-items:flex-start;gap:16px;max-width:820px;">
     <span style="width:14px;align-self:stretch;background:var(--accent,#f5c518);display:block;flex:0 0 auto;"></span>
     <div>
-      <h1 style="font:800 clamp(44px,6.5vw,80px)/0.98 'Archivo',sans-serif;letter-spacing:-0.02em;color:#16130d;margin:0 0 16px;">{{#tag}}{{name}}{{/tag}}</h1>
-      {{#tag}}{{#if description}}<p style="font:400 clamp(18px,1.7vw,22px)/1.5 'Newsreader',Georgia,serif;color:#4a4437;margin:0;">{{description}}</p>{{/if}}{{/tag}}
+      <h1 style="font:800 clamp(44px,6.5vw,80px)/0.98 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.02em;color:#16130d;margin:0 0 16px;">{{#tag}}{{name}}{{/tag}}</h1>
+      {{#tag}}{{#if description}}<p style="font:400 clamp(18px,1.7vw,22px)/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;margin:0;">{{description}}</p>{{/if}}{{/tag}}
     </div>
   </div>
   <!-- Chip bar is populated client-side from the [data-sub] attributes
@@ -37,11 +37,11 @@
     <div style="flex:1 1 340px;min-width:0;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;">
         <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 12px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}} · The Big Story</span>
+        <span style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}} · The Big Story</span>
       </div>
-      <h2 style="font:700 clamp(30px,3.4vw,44px)/1.06 'Archivo',sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
-      {{#if custom_excerpt}}<p style="font:400 19px/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
-      <div style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}} · {{reading_time}}</div>
+      <h2 style="font:700 clamp(30px,3.4vw,44px)/1.06 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
+      {{#if custom_excerpt}}<p style="font:400 19px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
+      <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}} · {{reading_time}}</div>
     </div>
   </a>
 </section>
@@ -52,8 +52,8 @@
 {{#if pagination.total}}
 <section class="reveal" style="max-width:1280px;margin:0 auto;padding:8px 24px 80px;">
   <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px;padding-bottom:14px;border-bottom:2px solid #16130d;">
-    <h2 style="font:800 22px/1 'Archivo';letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">Latest in {{#tag}}{{name}}{{/tag}}</h2>
-    <span id="cat-count" style="font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;color:#6b6459;">{{pagination.total}} stories</span>
+    <h2 style="font:800 22px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">Latest in {{#tag}}{{name}}{{/tag}}</h2>
+    <span id="cat-count" style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;color:#6b6459;">{{pagination.total}} stories</span>
   </div>
   <div id="cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:36px 32px;">
     {{#foreach posts}}
@@ -64,18 +64,18 @@
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+        <span style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
       </div>
-      <h3 style="font:600 21px/1.2 'Archivo',sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
-      {{#if custom_excerpt}}<p style="font:400 15px/1.5 'Newsreader',Georgia,serif;color:#6b6459;margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
-      <div style="font:600 11px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}}</div>
+      <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
+      {{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#6b6459;margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
+      <div style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}}</div>
     </a>
     {{/unless}}
     {{/foreach}}
   </div>
-  <p id="cat-empty" style="display:none;font:400 20px/1.6 'Newsreader',Georgia,serif;color:#4a4437;text-align:center;padding:32px 0 12px;">No stories in this filter yet.</p>
+  <p id="cat-empty" style="display:none;font:400 20px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;text-align:center;padding:32px 0 12px;">No stories in this filter yet.</p>
   <div id="load-more-wrap" style="display:none;justify-content:center;margin-top:48px;">
-    <button id="load-more-btn" style="background:none;border:1.5px solid #16130d;color:#16130d;font:700 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:15px 40px;border-radius:2px;cursor:pointer;">Load More Stories</button>
+    <button id="load-more-btn" style="background:none;border:1.5px solid #16130d;color:#16130d;font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;padding:15px 40px;border-radius:2px;cursor:pointer;">Load More Stories</button>
   </div>
   {{#if pagination.next}}{{pagination}}{{/if}}
 </section>
@@ -83,7 +83,7 @@
 
 {{else}}
 <section style="max-width:820px;margin:0 auto;padding:40px 24px 120px;text-align:center;">
-  <p style="font:400 20px/1.6 'Newsreader',Georgia,serif;color:#4a4437;">No stories in this tag yet.</p>
+  <p style="font:400 20px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;">No stories in this tag yet.</p>
 </section>
 {{/if}}
 

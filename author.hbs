@@ -7,7 +7,7 @@
 <!-- AUTHOR HERO -->
 {{#author}}
 <section style="max-width:1120px;margin:0 auto;padding:56px 24px 40px;">
-  <div style="font:600 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:28px;">
+  <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:28px;">
     <a href="{{@site.url}}" style="color:#6b6459;text-decoration:none;">Home</a>
     <span style="margin:0 8px;">›</span>
     <a href="/writers/" style="color:#6b6459;text-decoration:none;">Writers</a>
@@ -24,22 +24,22 @@
       {{#if meta_title}}
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
         <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#16130d;">{{meta_title}}</span>
+        <span style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:#16130d;">{{meta_title}}</span>
       </div>
       {{/if}}
-      <h1 style="font:800 clamp(38px,5vw,60px)/1.0 'Archivo',sans-serif;letter-spacing:-0.02em;color:#16130d;margin:0 0 18px;">{{name}}</h1>
-      {{#if bio}}<p style="font:400 clamp(17px,1.6vw,21px)/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0 0 22px;max-width:620px;">{{bio}}</p>{{/if}}
+      <h1 style="font:800 clamp(38px,5vw,60px)/1.0 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.02em;color:#16130d;margin:0 0 18px;">{{name}}</h1>
+      {{#if bio}}<p style="font:400 clamp(17px,1.6vw,21px)/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;margin:0 0 22px;max-width:620px;">{{bio}}</p>{{/if}}
       <div class="author-meta" style="display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;margin-bottom:26px;">
-        {{#if ../pagination.total}}<span style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{../pagination.total}} stories</span>{{/if}}
+        {{#if ../pagination.total}}<span style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{../pagination.total}} stories</span>{{/if}}
         {{#if location}}
         <span style="width:4px;height:4px;border-radius:50%;background:#c9c4ba;display:block;"></span>
-        <span style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{location}}</span>
+        <span style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{location}}</span>
         {{/if}}
       </div>
       <div class="author-actions" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
-        {{#if website}}<a href="{{website}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">Website</a>{{/if}}
-        {{#if twitter}}<a href="https://x.com/{{twitter}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">X (Twitter)</a>{{/if}}
-        {{#if facebook}}<a href="https://facebook.com/{{facebook}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">Facebook</a>{{/if}}
+        {{#if website}}<a href="{{website}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">Website</a>{{/if}}
+        {{#if twitter}}<a href="https://x.com/{{twitter}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">X (Twitter)</a>{{/if}}
+        {{#if facebook}}<a href="https://facebook.com/{{facebook}}" style="border:1px solid #948d80;color:#16130d;font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;padding:13px 18px;text-decoration:none;border-radius:2px;">Facebook</a>{{/if}}
       </div>
     </div>
   </div>
@@ -49,8 +49,8 @@
 <!-- STORIES -->
 <section class="reveal" style="max-width:1120px;margin:0 auto;padding:20px 24px 24px;">
   <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px;padding-bottom:14px;border-bottom:2px solid #16130d;">
-    <h2 style="font:800 22px/1 'Archivo';letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">Latest by {{#author}}{{name}}{{/author}}</h2>
-    {{#if pagination.total}}<span style="font:600 12px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;color:#6b6459;">{{pagination.total}} total</span>{{/if}}
+    <h2 style="font:800 22px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">Latest by {{#author}}{{name}}{{/author}}</h2>
+    {{#if pagination.total}}<span style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;color:#6b6459;">{{pagination.total}} total</span>{{/if}}
   </div>
   {{#if posts}}
   <div id="author-grid" class="story-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:36px 32px;">
@@ -61,20 +61,20 @@
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+        <span style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
       </div>
-      <h3 style="font:600 21px/1.2 'Archivo',sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
-      {{#if custom_excerpt}}<p style="font:400 15px/1.5 'Newsreader',Georgia,serif;color:#6b6459;margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
-      <div style="font:600 11px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{date published_at format="MMM D, YYYY"}} · {{reading_time}}</div>
+      <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
+      {{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#6b6459;margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
+      <div style="font:600 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">{{date published_at format="MMM D, YYYY"}} · {{reading_time}}</div>
     </a>
     {{/foreach}}
   </div>
   <div id="author-load-more-wrap" style="display:none;justify-content:center;margin-top:48px;">
-    <button id="author-load-more-btn" style="background:none;border:1.5px solid #16130d;color:#16130d;font:700 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:15px 40px;border-radius:2px;cursor:pointer;">Load More Stories</button>
+    <button id="author-load-more-btn" style="background:none;border:1.5px solid #16130d;color:#16130d;font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.1em;text-transform:uppercase;padding:15px 40px;border-radius:2px;cursor:pointer;">Load More Stories</button>
   </div>
   {{#if pagination.next}}{{pagination}}{{/if}}
   {{else}}
-  <p style="font:400 18px/1.6 'Newsreader',Georgia,serif;color:#6b6459;">No stories published yet.</p>
+  <p style="font:400 18px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#6b6459;">No stories published yet.</p>
   {{/if}}
 </section>
 
