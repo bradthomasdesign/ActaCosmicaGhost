@@ -261,6 +261,16 @@
     });
   });
 
+  // Koenig before/after cards — no Ghost core default exists for this one
+  // (unlike audio/video/product/file/nft, which are covered by card_assets
+  // in package.json), so the drag-slider behavior is fully theme-owned.
+  document.querySelectorAll('.kg-before-after-card-slider').forEach((slider) => {
+    const input = slider.querySelector('.kg-before-after-card-slider-input');
+    input?.addEventListener('input', () => {
+      slider.style.setProperty('--kg-before-position', `${input.value}%`);
+    });
+  });
+
   // Save for later — deliberately localStorage-only, keyed on Ghost post id.
   // This is device/browser-scoped by design (same as the original Astro
   // theme, which had no backend at all): saving on a phone won't show up

@@ -1,6 +1,9 @@
 # dependencies
 node_modules/
 
+# packaged theme zip (regenerate with `npm run package`)
+dist-theme/
+
 # leftover Astro source from this folder's origin as a copy of the
 # markur/actacosmica Astro project — not part of the Ghost theme, kept
 # on disk for reference only, authoritative copy lives in ~/Sites/markur

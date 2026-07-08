@@ -34,7 +34,9 @@
       "l": { "width": 1280 },
       "xl": { "width": 1920 }
     },
-    "card_assets": true,
+    "card_assets": {
+      "include": ["audio", "video", "nft", "product", "file"]
+    },
     "custom": {
       "accent_color": {
         "type": "color",
@@ -117,6 +119,7 @@
     "build": "tailwindcss -i ./assets/css/screen.css -o ./assets/built/screen.css --minify",
     "dev": "tailwindcss -i ./assets/css/screen.css -o ./assets/built/screen.css --watch",
     "test": "gscan .",
-    "migrate": "node scripts/migrate-from-astro.mjs"
+    "migrate": "node scripts/migrate-from-astro.mjs",
+    "package": "npm run build && node scripts/package-theme.mjs"
   }
 }

@@ -4,8 +4,8 @@
 
 <main id="main-content">
 <section style="max-width:680px;margin:0 auto;padding:clamp(80px,14vw,160px) 24px clamp(96px,12vw,140px);text-align:center;">
-  <div style="font:800 clamp(84px,13vw,150px)/1 'Archivo',sans-serif;letter-spacing:-0.02em;color:var(--accent,{{@custom.accent_color}});margin:0 0 4px;">{{error.statusCode}}</div>
-  <h1 style="font:800 clamp(26px,3.2vw,38px)/1.2 'Archivo',sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{error.message}}</h1>
+  <div style="font:800 clamp(84px,13vw,150px)/1 'Archivo',sans-serif;letter-spacing:-0.02em;color:var(--accent,{{@custom.accent_color}});margin:0 0 4px;">{{statusCode}}</div>
+  <h1 style="font:800 clamp(26px,3.2vw,38px)/1.2 'Archivo',sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 16px;text-wrap:balance;">{{message}}</h1>
   <p style="font:400 18px/1.55 'Newsreader',Georgia,serif;color:#4a4437;margin:0 0 32px;">The story you're looking for may have moved, or never existed.</p>
   <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
     <a href="{{@site.url}}" style="display:inline-block;background:#16130d;color:#fff;font:700 12px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;padding:15px 32px;text-decoration:none;border-radius:2px;">Back to homepage</a>

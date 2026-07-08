@@ -314,56 +314,102 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body .kg-header-card.kg-style-light .kg-header-card-header { color: #16130d; }
 .article-body .kg-header-card.kg-style-light .kg-header-card-subheader { color: #4a4437; }
 
-/* Product card */
-.article-body .kg-product-card { display: flex; gap: 20px; border: 1px solid #eae7df; border-radius: 4px; padding: 22px; }
-.article-body .kg-product-card-image { flex: 0 0 120px; }
-.article-body .kg-product-card-image img { width: 100%; border-radius: 3px; display: block; }
-.article-body .kg-product-card-title { font: 700 17px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 6px; }
-.article-body .kg-product-card-rating { margin: 0 0 8px; }
-.article-body .kg-product-card-rating svg { width: 14px; height: 14px; fill: var(--accent, #f5c518); }
-.article-body .kg-product-card-description { font: 400 15px/1.5 'Newsreader', Georgia, serif; color: #4a4437; margin: 0 0 14px; }
-.article-body .kg-product-card-button a { font: 700 12px/1 'Archivo'; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: #16130d; padding: 12px 20px; border-radius: 2px; text-decoration: none; }
-@media (max-width: 480px) {
-  .article-body .kg-product-card { flex-direction: column; }
-  .article-body .kg-product-card-image { flex-basis: auto; max-width: 160px; }
+/* Audio, video, product, file, and NFT cards are complex interactive
+   components (players, sliders, star ratings) that Ghost core ships
+   pixel-tested default CSS/JS for via the card_assets loader — see
+   package.json's card_assets.include. Reimplementing them here would
+   just be a worse copy, and previously *was* one: this theme used to
+   hand-roll CSS against guessed class names that didn't match Ghost's
+   actual markup at all, so those cards rendered completely unstyled.
+   Only cards NOT in that include list need theme-owned CSS below. */
+.article-body .kg-embed-card iframe { max-width: 100%; }
+
+/* Bookmark card — author/publisher byline spans, alongside the icon
+   already styled under .kg-bookmark-metadata above. */
+.article-body .kg-bookmark-author,
+.article-body .kg-bookmark-publisher { display: inline; }
+.article-body .kg-bookmark-publisher {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+.article-body .kg-bookmark-metadata > *:not(img) { opacity: 0.7; }
+.article-body .kg-bookmark-author + .kg-bookmark-publisher::before {
+  content: "•";
+  margin: 0 6px;
 }
 
-/* Audio / video / file / embed cards */
-.article-body .kg-audio-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  border: 1px solid #eae7df;
+/* Alternate pull-quote style blockquote (Koenig's blockquote card has a
+   "quote style" toggle) — larger, centered, and italic vs. the left-rule
+   default in .article-body blockquote above. */
+.article-body .kg-blockquote-alt {
+  font: 500 italic clamp(24px,2.6vw,30px)/1.5 'Archivo', sans-serif;
+  text-align: center;
+  color: #16130d;
+  border: none;
+  padding: 0 clamp(20px,6vw,80px);
+  margin: 44px 0;
+}
+
+/* Before/after image comparison slider — no Ghost core default exists
+   for this card as of Ghost 6.51, so it's fully theme-owned. The range
+   input drives --kg-before-position, read by the clip-path below; see
+   the matching JS in main.js for the input listener. */
+.article-body .kg-before-after-card { position: relative; margin: 32px 0; }
+.article-body .kg-before-after-card-slider {
+  position: relative;
+  overflow: hidden;
   border-radius: 4px;
-  padding: 16px 20px;
+  --kg-before-position: 50%;
 }
-.article-body .kg-audio-title { font: 700 15px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 2px; }
-.article-body .kg-audio-thumbnail { width: 48px; height: 48px; border-radius: 3px; flex: 0 0 auto; }
-.article-body .kg-audio-play-icon { flex: 0 0 auto; }
-.article-body .kg-file-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border: 1px solid #eae7df;
-  border-radius: 4px;
-  padding: 18px 22px;
+.article-body .kg-before-after-card-image-after,
+.article-body .kg-before-after-card-image-before {
+  margin: 0;
+  line-height: 0;
 }
-.article-body .kg-file-card-title { font: 700 15px/1.3 'Archivo', sans-serif; color: #16130d; margin: 0 0 4px; }
-.article-body .kg-file-card-caption { font: 400 13px/1.4 'Archivo'; color: #6b6459; }
-.article-body .kg-file-card-button {
-  flex: 0 0 auto;
-  font: 700 12px/1 'Archivo';
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: #fff;
-  background: #16130d;
-  padding: 11px 20px;
-  border-radius: 2px;
-  text-decoration: none;
+.article-body .kg-before-after-card-image-after img,
+.article-body .kg-before-after-card-image-before img {
+  width: 100%;
+  display: block;
 }
-.article-body .kg-embed-card iframe { max-width: 100%; }
-.article-body .kg-video-card video { width: 100%; border-radius: 3px; display: block; }
+.article-body .kg-before-after-card-image-before {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--kg-before-position)) 0 0);
+}
+.article-body .kg-before-after-card-slider-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  appearance: none;
+}
+.article-body .kg-before-after-card-slider-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--kg-before-position);
+  width: 3px;
+  background: #fff;
+  transform: translateX(-50%);
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+}
+.article-body .kg-before-after-card-slider-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
 
 /* Ghost's custom fonts setting (Admin > Design > Fonts) injects these
    variables at :root — the theme's own font-family declarations fall
