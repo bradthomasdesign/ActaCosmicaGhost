@@ -117,7 +117,14 @@ a { -webkit-tap-highlight-color: transparent; }
   text-decoration: none;
 }
 
-.article-body p:first-of-type::first-letter {
+/* Direct-child combinator (>) is deliberate — :first-of-type only means
+   "first <p> among its own siblings within its immediate parent", not
+   "first <p> in the whole article", so a bare descendant selector here
+   was giving a drop cap to the first paragraph inside every gallery
+   caption, callout, toggle card, etc. too (each is the first <p> of its
+   own little container). Restricting to direct children of .article-body
+   scopes it to the article's actual opening paragraph only. */
+.article-body > p:first-of-type::first-letter {
   font-family: var(--gh-font-heading,'Archivo'), sans-serif;
   font-weight: 800;
   float: left;
