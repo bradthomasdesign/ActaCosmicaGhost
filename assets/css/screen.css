@@ -299,7 +299,7 @@ a { -webkit-tap-highlight-color: transparent; }
   padding: 15px 28px;
   border-radius: 2px;
 }
-.article-body .kg-btn-accent { background: var(--accent, #f5c518); color: #16130d; }
+.article-body .kg-btn-accent { background: var(--accent, #f5c518); color: var(--accent-text, #16130d); }
 .article-body .kg-button-card.kg-align-center { justify-content: center; }
 .article-body .kg-button-card.kg-align-left { justify-content: flex-start; }
 

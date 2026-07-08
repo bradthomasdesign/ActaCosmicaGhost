@@ -115,7 +115,7 @@
         <div style="font:700 12px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);margin-bottom:16px;">Photo of the Day</div>
         <h2 style="font:700 clamp(26px,3vw,36px)/1.1 'Archivo',sans-serif;color:#fff;margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
         {{#if custom_excerpt}}<p style="font:400 17px/1.55 'Newsreader',Georgia,serif;color:rgba(255,255,255,0.82);margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
-        <div style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Photograph by {{primary_author.name}}</div>
+        <div style="font:600 12px/1 'Archivo';letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,0.65);">{{#if feature_image_caption}}{{{feature_image_caption}}}{{else}}Photograph by {{primary_author.name}}{{/if}}</div>
       </div>
     </div>
   </div>

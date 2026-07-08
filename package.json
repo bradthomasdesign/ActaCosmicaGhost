@@ -42,6 +42,11 @@
         "type": "color",
         "default": "#f5c518"
       },
+      "accent_text_light": {
+        "type": "boolean",
+        "default": false,
+        "description": "Turn on if a dark accent color makes button text hard to read"
+      },
       "spotlight_category_1": {
         "type": "text",
         "default": "science",
