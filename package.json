@@ -131,6 +131,7 @@
     "dev": "tailwindcss -i ./assets/css/screen.css -o ./assets/built/screen.css --watch",
     "test": "gscan .",
     "migrate": "node scripts/migrate-from-astro.mjs",
+    "create-legal-pages": "node scripts/create-legal-pages.mjs",
     "package": "npm run build && node scripts/package-theme.mjs"
   }
 }
