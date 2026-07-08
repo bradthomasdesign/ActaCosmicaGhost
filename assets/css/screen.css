@@ -297,22 +297,14 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body .kg-button-card.kg-align-center { justify-content: center; }
 .article-body .kg-button-card.kg-align-left { justify-content: flex-start; }
 
-/* Header card */
-.article-body .kg-header-card {
-  text-align: center;
-  padding: clamp(40px, 6vw, 72px) 24px;
-  border-radius: 4px;
-  background: #16130d;
-  background-size: cover;
-  background-position: center;
-}
-.article-body .kg-header-card-header { font: 800 clamp(26px, 3.4vw, 38px)/1.15 'Archivo', sans-serif; color: #fff; margin: 0 0 12px; text-wrap: balance; }
-.article-body .kg-header-card-subheader { font: 400 17px/1.5 'Newsreader', Georgia, serif; color: rgba(255,255,255,0.8); margin: 0 0 24px; }
-.article-body .kg-header-card .kg-btn { background: var(--accent, #f5c518); color: #16130d; }
-.article-body .kg-header-card.kg-style-dark { background-color: #16130d; }
-.article-body .kg-header-card.kg-style-light { background-color: #f7f6f3; }
-.article-body .kg-header-card.kg-style-light .kg-header-card-header { color: #16130d; }
-.article-body .kg-header-card.kg-style-light .kg-header-card-subheader { color: #4a4437; }
+/* Header card is served by Ghost core's own header_v2 default asset (see
+   card_assets in package.json) — the current Koenig editor only produces
+   the "v2" header card structure (.kg-header-card-heading/-subheading
+   inside .kg-header-card-content > .kg-header-card-text, background color
+   set inline by the editor itself), which doesn't match the older
+   structure this theme used to hand-style here. Reimplementing it against
+   the wrong class names left every header card completely unstyled in
+   production, so it's Ghost-owned now instead of guessed at again. */
 
 /* Audio, video, product, file, and NFT cards are complex interactive
    components (players, sliders, star ratings) that Ghost core ships

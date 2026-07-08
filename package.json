@@ -35,7 +35,7 @@
       "xl": { "width": 1920 }
     },
     "card_assets": {
-      "include": ["audio", "video", "nft", "product", "file"]
+      "include": ["audio", "video", "nft", "product", "file", "header_v2"]
     },
     "custom": {
       "accent_color": {
