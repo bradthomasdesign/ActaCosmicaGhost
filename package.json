@@ -47,6 +47,12 @@
         "default": false,
         "description": "Turn on if a dark accent color makes button text hard to read"
       },
+      "hero_video_url": {
+        "type": "text",
+        "default": "",
+        "group": "homepage",
+        "description": "Direct .mp4/.webm URL — autoplays as the top story's background instead of its feature image"
+      },
       "spotlight_category_1": {
         "type": "text",
         "default": "science",

@@ -8,7 +8,13 @@
 {{#get "posts" filter="featured:true" limit="1" page="1" include="tags,authors" as |heroPosts|}}
 {{#foreach heroPosts}}
 <a href="{{url}}" style="display:block;position:relative;width:100%;height:clamp(480px,74vh,720px);clip-path:inset(0);background-color:#2b3a55;text-decoration:none;">
+  {{#if @custom.hero_video_url}}
+  <video class="hero-video" autoplay muted loop playsinline aria-hidden="true" {{#if feature_image}}poster="{{img_url feature_image size="xl"}}"{{/if}} style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0;">
+    <source src="{{@custom.hero_video_url}}" />
+  </video>
+  {{else}}
   {{#if feature_image}}<img src="{{img_url feature_image size="xl"}}" alt="{{title}}" style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0;" />{{/if}}
+  {{/if}}
   <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(10,14,16,0.86) 0%, rgba(10,14,16,0.35) 45%, rgba(10,14,16,0.05) 75%);z-index:1;"></div>
   <div style="position:absolute;left:0;right:0;bottom:0;z-index:2;">
     <div style="max-width:1280px;margin:0 auto;padding:0 24px 54px;">

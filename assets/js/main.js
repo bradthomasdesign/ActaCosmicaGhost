@@ -4,6 +4,17 @@
   const today = `${new Date().toLocaleDateString('en-US', { weekday: 'long' })} · ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
   document.querySelectorAll('[data-today]').forEach((el) => { el.textContent = today; });
 
+  // Hero background video — autoplay is set directly in the HTML (muted
+  // autoplay is reliably exempt from browser gesture requirements; a JS
+  // .play() call at load time isn't equally reliable). Reduced-motion
+  // visitors get paused on the poster frame (their feature image, if set)
+  // instead, rather than gating playback on JS running successfully.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.hero-video').forEach((video) => {
+      video.pause();
+    });
+  }
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');
