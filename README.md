@@ -38,7 +38,8 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 - **Native Ghost membership & paywall** — free/members-only/paid post gating via `{{#unless access}}`, with a branded subscribe CTA; tier pricing on the membership page pulls live from **Settings → Membership**
 - **Native comments, search, and newsletters** — Ghost's built-in commenting, a custom weighted full-text search overlay (⌘K shortcut) powered by the Content API, and a newsletter signup wired to Ghost's newsletter feature
 - **Full Koenig editor card support** — bookmark, gallery, callout, toggle, button, header, and before/after image-comparison cards are styled directly by the theme; audio, video, NFT, product, and file cards are served by Ghost's own default card assets (see `card_assets` in `package.json`) rather than reimplemented, so they stay in sync with Ghost core
-- **Reader UX** — reading progress bar, save-for-later bookmarking (localStorage-based, per-device), a writers directory with live story counts, and a branded 404 page
+- **Reader UX** — reading progress bar, a writers directory with live story counts, and a branded 404 page
+- **Optional autoplaying hero video** — swap the top story's background for a looping video via a custom setting, no per-post upload needed
 - **Fully responsive**, accessible (skip link, focus-visible states, reduced-motion support throughout), and SEO-ready via Ghost's own `{{ghost_head}}` output
 
 ---
@@ -52,7 +53,6 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 | `page.hbs` | Generic pages (About, Contact, legal pages, etc.) |
 | `page-membership.hbs` | Membership page — live tier pricing from Settings → Membership |
 | `page-writers.hbs` | Writers directory |
-| `page-saved.hbs` | Saved stories (client-side, localStorage) |
 | `tag.hbs` | Category/tag archive |
 | `author.hbs` | Author profile |
 | `error.hbs` | 404 and other error pages |
@@ -66,6 +66,8 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 | Setting | Purpose |
 |---|---|
 | `accent_color` | Site-wide accent color (progress bar, kickers, buttons, accent squares) |
+| `accent_text_light` | Turn on if a dark accent color makes button text hard to read (swaps button text from dark to white) |
+| `hero_video_url` | Direct `.mp4`/`.webm` URL — autoplays as the top story's background instead of its feature image |
 | `spotlight_category_1` / `spotlight_category_2` | Tag slugs featured as their own homepage rows |
 | `footer_description` | Footer masthead blurb |
 | `show_footer_credit`, `footer_credit_label`, `footer_credit_name`, `footer_credit_url` | Optional "designed and built by" footer credit |
@@ -76,6 +78,10 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 Site navigation and secondary (footer) navigation are managed the standard Ghost way, under **Settings → Navigation**.
 
 ---
+
+## Support
+
+Questions, bug reports, or licensing questions: **brad.thomas@gmail.com**.
 
 ## License
 
