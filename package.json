@@ -47,6 +47,11 @@
         "default": false,
         "description": "Turn on if a dark accent color makes button text hard to read"
       },
+      "drop_cap_on_pages": {
+        "type": "boolean",
+        "default": false,
+        "description": "Turn on to also drop-cap the opening paragraph of pages (About, Privacy, etc.), not just posts"
+      },
       "hero_video_url": {
         "type": "text",
         "default": "",

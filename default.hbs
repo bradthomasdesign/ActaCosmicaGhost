@@ -22,7 +22,7 @@
   <style>:root { --accent: {{@custom.accent_color}}; --accent-text: {{#if @custom.accent_text_light}}#fff{{else}}#16130d{{/if}}; }</style>
   {{ghost_head}}
 </head>
-<body class="{{body_class}}">
+<body class="{{body_class}}{{#if @custom.drop_cap_on_pages}} drop-cap-pages{{/if}}">
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- reading progress bar -->

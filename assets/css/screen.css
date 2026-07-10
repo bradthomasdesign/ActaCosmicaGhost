@@ -123,8 +123,15 @@ a { -webkit-tap-highlight-color: transparent; }
    was giving a drop cap to the first paragraph inside every gallery
    caption, callout, toggle card, etc. too (each is the first <p> of its
    own little container). Restricting to direct children of .article-body
-   scopes it to the article's actual opening paragraph only. */
-.article-body > p:first-of-type::first-letter {
+   scopes it to the article's actual opening paragraph only.
+
+   Scoped to .post-template so it only applies to actual articles, not
+   every generic page (About, Privacy, Terms, etc., which also reuse
+   .article-body for shared prose styling but don't want a drop cap by
+   default). The drop_cap_on_pages custom setting adds the .drop-cap-pages
+   body class (see default.hbs) to opt individual sites back in. */
+.post-template .article-body > p:first-of-type::first-letter,
+.drop-cap-pages .article-body > p:first-of-type::first-letter {
   font-family: var(--gh-font-heading,'Archivo'), sans-serif;
   font-weight: 800;
   float: left;
