@@ -12,10 +12,17 @@ local folder `~/Sites/ActaCosmicaGhost`. Started as a copy of the Astro repo
 git history — no Astro commits, no Astro source tracked. `~/Sites/markur`
 remains the separate, untouched live Astro site.
 
-**Distribution plan:** Ghost's official theme marketplace (marketplace.ghost.org)
-first, plus direct sale via Lemon Squeezy. Ghost's marketplace links out to
-wherever the theme is actually sold (same model as Astro's own marketplace) —
-it doesn't process payment itself.
+**Distribution plan — changed 2026-07-27: free, not paid.** Brad's decision:
+the Ghost version is given away **free to newsletter subscribers of
+bradthomas.io**, not sold. This supersedes the Standard/Extended paid-license
+plan below for this theme specifically — the Astro version's own pricing/
+Lemon Squeezy plan (`~/Sites/markur/MARKETPLACE_PLAN.md`) is untouched, still
+paid. **Open question, not yet decided:** what actually delivers the file to
+a subscriber — still routing through the already-configured Lemon Squeezy
+listing at a $0 price (keeps license/download tracking), or gating it as a
+bradthomas.io newsletter/member perk (e.g. a Ghost members-only download link,
+since bradthomas.io itself may be Ghost-powered) with no Lemon Squeezy
+involved at all? Confirm before touching the Lemon Squeezy listing config.
 
 Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
@@ -83,37 +90,204 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Launch checklist — go-to-market mechanics (open)
+## Launch checklist — go-to-market mechanics (updated 2026-07-15)
 
-- [~] **Live hosting** — Ghost on PikaPods + Mailgun for transactional email,
-      in progress (Brad's side, outside this repo).
-- [ ] **Real demo content** — currently only has whatever
-      `migrate-from-astro.mjs` pulls in, plus leftover test posts from local
-      QA (delete the "Koenig Card Test Post" before this goes anywhere
-      public). Needs either a proper migration run or fresh demo articles.
-- [ ] **Properly licensed demo photography** — carried over from the Astro
-      plan: the original demo images have no recoverable source/license.
-      A public demo site needs real, cleared photos regardless of which
-      version (Astro or Ghost) is showing them.
-- [ ] **Stripe configured** — needed for the membership/paywall demo to be
-      clickable end-to-end; currently off locally (`paid_members_enabled:
-      false`, no Stripe keys).
-- [ ] **Screenshots** — both Ghost Marketplace and Lemon Squeezy need real
-      preview images; blocked on the live site having real content first.
-- [ ] **Storefront listing copy** — the Astro version's drafted copy
-      (features, pitch, "Perfect For" list) is a reasonable structural
-      starting point but needs a full rewrite for Ghost specifics: Koenig
-      editor instead of Markdown/Content Collections, native
-      membership/Stripe instead of a stub account page, Ghost's own
-      SEO/sitemap/RSS instead of `@astrojs/*` integrations, etc. Not started.
-- [ ] **Ghost Marketplace submission requirements** — not yet researched.
-      Ghost's process is different from Astro's; don't assume anything from
-      the old plan (repo-visibility requirements, screenshot specs, review
-      process, etc. all need fresh verification directly against
-      marketplace.ghost.org's current submission flow).
-- [ ] **Lemon Squeezy product** — not created. No listing, no price set, no
-      file uploaded yet. `dist-theme/acta-cosmica.zip` is ready to attach
-      once the listing exists.
+- [~] **Live hosting** — decided: **MagicPages** (switched from the earlier
+      PikaPods + Mailgun plan). MagicPages is Ghost-specific managed hosting,
+      so transactional email (member magic-links, etc.) should be handled by
+      the platform rather than a separately configured Mailgun instance —
+      worth confirming during setup rather than assuming. Not yet live.
+- [~] **Real demo content** — decision made: same content as the Astro
+      demo. `scripts/migrate-from-astro.mjs` already does exactly this (pulls
+      `~/Sites/markur`'s articles/authors/tags into a live Ghost instance via
+      the Admin API) — it just needs to be **run against the MagicPages site**
+      once it's up (`GHOST_URL=<magicpages-url> GHOST_ADMIN_KEY=<id:secret>
+      npm run migrate`, per the usage comment at the top of the script).
+      Still needs the leftover "Koenig Card Test Post" deleted before the
+      site goes public.
+- [ ] **Properly licensed demo photography — discrepancy found, needs a
+      decision.** Brad's recollection was that this art was sourced from
+      Pexels/Unsplash. Checked `~/Sites/markur/ATTRIBUTIONS.md` (the
+      authoritative record) directly and that's only true for **one** image:
+      `author-alvarez.jpg` (Pexels, Jordan Bergendahl, no attribution
+      required). Every other image — all article photography, the other 4
+      author portraits, homepage imagery — is logged there as **unverified,
+      no recoverable source** (no EXIF/IPTC metadata, original sourcing never
+      recorded). That file is the ground truth for what actually happened,
+      not this note or memory of the session that picked the images. Two
+      ways forward: (a) re-source the unverified images fresh from
+      Pexels/Unsplash now, recording source + photographer + license in
+      `ATTRIBUTIONS.md` as each one is added (the Alvarez row is the
+      template), or (b) if there's a receipt/download history somewhere else
+      (a Pexels/Unsplash account's download log, browser history from when
+      they were added) that would verify the existing files, check that
+      before treating them as unverified. Blocks a public demo either way —
+      shipping unverified stock photography on a for-sale product's demo
+      site is a real risk if any of them turn out not to be actually free.
+- [x] **Stripe configured** — done (Brad's side).
+- [~] **Screenshots** — Astro version's screenshots exist and can serve as
+      layout/shot-list reference, but Ghost's rendered UI differs enough
+      (paywall CTA, comments, membership page pricing pulled from Settings)
+      that new screenshots are still needed once the MagicPages demo has
+      real content. Not blocked on anything except live content existing.
+- [x] **Storefront listing copy** — Ghost-specific version drafted below,
+      grounded in `README.md`'s verified feature list (not copied from the
+      Astro copy's Astro-specific claims). Ready for Brad's review before
+      posting anywhere.
+- [x] **Ghost Marketplace submission requirements** — researched. Summary:
+  - Theme must pass **GScan** (already does — `npm test`, 0 errors/warnings).
+  - Responsive/mobile-friendly; support the latest 2 versions of Chrome,
+    Firefox, Safari, and Edge.
+  - All assets must be loaded via Ghost's `{{asset}}` helper — confirmed
+    true throughout this theme (checked for any hardcoded `/assets/` or
+    `/public/` paths outside the helper; found none).
+  - Must include a **"Published with Ghost" link to Ghost.org** — already
+    present (`partials/site-footer.hbs:57`, `{{t "Powered by Ghost"}}` →
+    `https://ghost.org/`). No action needed.
+  - Needs a **working demo on a URL with a valid SSL cert, embeddable via
+    iframe from `*.ghost.org`** — i.e. the MagicPages demo must not send an
+    `X-Frame-Options`/CSP `frame-ancestors` header that blocks embedding from
+    ghost.org. Worth testing directly once the demo is live (open it in an
+    iframe, or check response headers) — MagicPages being Ghost-focused
+    hosting makes this likely fine by default, but "likely" isn't
+    "confirmed."
+  - Needs a **sane file structure** and a **detailed README.md** — this
+    theme's `README.md` (94 lines: install steps, feature list, full
+    template table, custom-settings table, support/license/credits) should
+    satisfy this.
+  - Biggest rejection reason per Ghost's own guidance: **lack of
+    originality** — looking like yet another Casper fork. Worth keeping in
+    mind for the listing copy/screenshots: lead with what's genuinely custom
+    (the before/after image-comparison card, the weighted search overlay,
+    the photo-of-the-day homepage feature), not generic "responsive theme"
+    claims.
+  - Sources: [Ghost Marketplace: Submit your theme](https://ghost.org/themes/submit/), [Ghost Marketplace](https://ghost.org/marketplace/)
+- [~] **Lemon Squeezy — status unclear after the 2026-07-27 free-giveaway
+      decision.** Was marked done (listing/product configured, paid), but
+      that predates the decision to give this away free to bradthomas.io
+      subscribers instead of selling it. Don't assume the existing paid
+      listing is still the plan — confirm whether it gets repurposed as a $0
+      listing, replaced by a bradthomas.io-native delivery mechanism, or left
+      as-is for a possible future paid SKU. `dist-theme/acta-cosmica.zip`
+      itself is still current either way.
+
+---
+
+## Storefront listing copy — Ghost version (drafted 2026-07-15)
+
+Adapted from the Astro version's copy (`~/Sites/markur/MARKETPLACE_PLAN.md`,
+same CyberTech-inspired structure), but every feature claim below is
+re-verified against **this** codebase's own `README.md` and templates —
+nothing Astro-specific (Content Collections, static-site claims, the stub
+account/saved-stories pages that don't exist in the Ghost port) carried over
+unchecked.
+
+---
+
+### Acta Cosmica — News & Magazine Theme for Ghost
+
+Acta Cosmica is a premium news and magazine theme for [Ghost](https://ghost.org),
+built for online publishers, independent journalists, niche digital
+newsrooms, and content-driven media brands that want to publish with the
+polish of a real newsroom and convert readers into loyal subscribers and
+members.
+
+Designed around real editorial workflows, Acta Cosmica combines
+photo-forward storytelling, a fully configurable category system, and
+considered typographic design — backed by Ghost's own native membership,
+comments, and newsletter tools, so subscriber conversion isn't bolted on
+after the fact.
+
+**This Theme Requires Ghost 5.0.0+ 🎉**
+
+Ported from the original Astro version of Acta Cosmica into a native Ghost
+theme, so publishers get Ghost's built-in Koenig editor, memberships,
+comments, search, and newsletters instead of a static-site content pipeline.
+
+**🚀 What Makes Acta Cosmica Stand Out**
+- **Fully configurable category system** — categories are Ghost tags; nav,
+  footer, and homepage spotlight rows are driven by the theme's custom
+  settings and Ghost's own navigation settings, no template edits needed
+- **Native Ghost membership & paywall** — free/members-only/paid post gating
+  with a branded subscribe CTA; tier pricing on the membership page pulls
+  live from Settings → Membership, no manual syncing
+- **Native comments, search, and newsletters** — Ghost's built-in commenting,
+  a custom weighted full-text search overlay (⌘K shortcut) powered by the
+  Content API, and a newsletter signup wired to Ghost's own newsletter
+  feature
+- **Full Koenig editor card support** — bookmark, gallery, callout, toggle,
+  button, header, and a fully custom before/after image-comparison card are
+  styled directly by the theme; audio, video, NFT, product, and file cards
+  stay in sync with Ghost core's own defaults
+- **Reader UX** — a reading progress bar, a writers directory with live
+  story counts, and a branded 404 page
+- **Optional autoplaying hero video** — swap the top story's background for
+  a looping video via a custom setting, no per-post upload needed
+
+**🎯 Design DNA**
+- **Editorial Broadsheet Aesthetic** — warm cream backgrounds against
+  near-black ink, with a single configurable accent color
+- **Considered Typography** — Archivo, a bold grotesque sans, for display
+  type and UI; Newsreader, a literary serif, for body copy
+- **Photo-First Layouts** — full-bleed hero imagery, a photo-of-the-day
+  homepage feature, and Koenig's wide/full-bleed image support tuned to the
+  theme's own reading column
+- **Fully responsive**, accessible (skip link, focus-visible states,
+  reduced-motion support throughout)
+
+**📦 Included (Fully Coded)**
+✔ Homepage — hero, latest-stories rail, configurable category spotlight rows, photo-of-the-day, click-to-play video
+✔ Article page — hero, byline, share links, paywall CTA, related stories, native comments
+✔ Generic pages (About, Contact, legal pages, and more)
+✔ Membership page with live tier pricing from Settings → Membership
+✔ Writers directory with live story counts
+✔ Category/tag archive
+✔ Author profile pages
+✔ Branded 404 page
+
+**⚙️ Built On**
+- Ghost 5.0.0+ — native Koenig editor, memberships, comments, newsletters
+- Tailwind CSS v4 — compiled to a static stylesheet, no runtime dependency
+- Google Fonts — Archivo + Newsreader
+- Hand-tuned inline SVG icons — no icon library dependency
+- Vanilla JS — nav drawer, reading progress bar, search overlay; no
+  client-side JS framework
+- SEO-ready via Ghost's own `{{ghost_head}}` output (meta tags, Open
+  Graph/Twitter cards, canonical URLs, sitemap, RSS)
+
+**⚡ Quick Setup**
+1. Download `acta-cosmica.zip`
+2. In Ghost Admin: Settings → Design → Change theme → Upload theme
+3. Activate it
+4. Configure custom settings under Settings → Design → Brand (accent color,
+   spotlight categories, social links, and more)
+
+**🎁 Perfect For**
+- Online Newspapers & Magazines
+- Independent Journalists & Newsletter Writers
+- Niche Vertical Publishers (science, tech, culture, local news, and more)
+- Membership-Funded Newsrooms
+- Local News Outlets
+- Photography & Photojournalism-Led Publications
+- Content-Driven Media Brands
+- Anyone launching a subscription or reader-funded publication on Ghost
+
+**Pricing: free for bradthomas.io newsletter subscribers** (decided
+2026-07-27) — not sold via Standard/Extended license like the Astro version.
+`LICENSE.md` still needs a look before publishing: its current text describes
+a paid Standard/Extended structure, which no longer matches how this theme is
+actually being distributed — worth a pass to make sure the license terms
+still make sense for a free subscriber giveaway (e.g. can a subscriber use it
+on unlimited projects, or does some restriction still apply?).
+
+**🆓 Free Updates & Support — still undecided**, independent of the
+free-vs-paid pricing question above. Don't add a commitment like "free
+lifetime updates" without Brad actually deciding what's being promised —
+that's a support obligation, not marketing copy.
+
+*(Suggested tags, not verified against Ghost's actual current tag taxonomy:
+news, magazine, editorial, blog, journalism, photography, membership — check
+these against the live submission form rather than assuming.)*
 
 ---
 
