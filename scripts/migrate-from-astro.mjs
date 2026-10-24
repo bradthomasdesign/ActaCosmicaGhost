@@ -13,6 +13,34 @@
 // author" exists in core Ghost). Run `npm run migrate -- invite-authors`
 // first, have each person accept their invite email, then run
 // `npm run migrate` (no args) to create tags/authors/posts.
+//
+// Author bio/photo/location can't be set by the Admin API integration key —
+// Ghost restricts editing OTHER staff members' profiles to a real logged-in
+// session (403s otherwise). To set all 5 authors' profiles in one shot
+// instead of doing it by hand in Settings → Staff for each one, run:
+//
+//   GHOST_URL=http://localhost:2368 \
+//   GHOST_ADMIN_KEY=<id:secret> \
+//   GHOST_OWNER_EMAIL=<your Ghost owner login email> \
+//   GHOST_OWNER_PASSWORD=<your Ghost owner login password> \
+//   ASTRO_SOURCE_DIR=/path/to/markur \
+//   npm run migrate -- fix-author-photos
+//
+// This logs in as the owner (the same auth Ghost Admin's own UI uses) just
+// for that one step — your password is only ever read from the environment
+// on your own machine, never written anywhere or sent anywhere but Ghost's
+// own /session/ endpoint.
+//
+// If posts already exist on the target site (e.g. imported via Ghost's own
+// Settings → Advanced → Export/Import, which preserves feature_image as a
+// URL pointing back at wherever the export was taken from — useless once
+// that source isn't reachable) but are missing their feature image, fix
+// them up in place by slug instead of re-importing/duplicating:
+//
+//   GHOST_URL=https://your-site.magicpages.co \
+//   GHOST_ADMIN_KEY=<id:secret> \
+//   ASTRO_SOURCE_DIR=/path/to/markur \
+//   npm run migrate -- fix-feature-images
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -75,6 +103,48 @@ async function api(pathname, opts = {}) {
   return json;
 }
 
+// Owner session login — the same auth Ghost Admin's own web UI uses. Needed
+// only for PUT /users/:id/ on someone else's profile, which a JWT
+// integration token is deliberately not allowed to do. Never logs the
+// password; reads it from the environment once and discards it.
+async function getOwnerSessionCookie() {
+  const email = process.env.GHOST_OWNER_EMAIL;
+  const password = process.env.GHOST_OWNER_PASSWORD;
+  if (!email || !password) return null;
+  const res = await fetch(`${GHOST_URL}/ghost/api/admin/session/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: GHOST_URL },
+    body: JSON.stringify({ username: email, password }),
+  });
+  if (!res.ok) {
+    console.error('Owner session login failed', res.status, await res.text());
+    return null;
+  }
+  const setCookie = res.headers.get('set-cookie');
+  if (!setCookie) return null;
+  // A single Set-Cookie header can carry multiple cookies separated by
+  // comma-space in some fetch implementations; Ghost only ever sets one
+  // session cookie here, so just take the first cookie-pair segment.
+  return setCookie.split(';')[0];
+}
+
+// Ghost's session auth checks the Origin header against the site's own URL
+// as CSRF protection on state-changing requests — same requirement as
+// getOwnerSessionCookie above.
+async function apiAsOwner(pathname, sessionCookie, opts = {}) {
+  const res = await fetch(`${GHOST_URL}/ghost/api/admin${pathname}`, {
+    ...opts,
+    headers: { Cookie: sessionCookie, Origin: GHOST_URL, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+  });
+  const text = await res.text();
+  const json = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    console.error(`FAILED (owner session) ${opts.method || 'GET'} ${pathname} -> ${res.status}`, JSON.stringify(json));
+    return null;
+  }
+  return json;
+}
+
 const MIME_TYPES = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml' };
 
 const imageUrlCache = new Map();
@@ -118,7 +188,7 @@ async function inviteAuthors() {
   console.log('\nHave each person accept their invite email, then re-run without the invite-authors argument.');
 }
 
-async function resolveAuthors() {
+async function resolveAuthors(sessionCookie = null) {
   const map = {};
   let profileUpdatesBlocked = false;
   for (const author of AUTHORS) {
@@ -131,19 +201,21 @@ async function resolveAuthors() {
     map[author.id] = user.id;
 
     // Admin API integration tokens can't edit OTHER staff members' profiles
-    // (only their own, session-only) — this consistently 403s. Attempted
-    // once per run so it's obvious if Ghost ever changes this; otherwise
-    // each author fills in their own bio/photo after signing in, same as
-    // any real newsroom onboarding a writer.
+    // (only their own, session-only) — this consistently 403s. With an
+    // owner session cookie (see getOwnerSessionCookie / fix-author-photos)
+    // this succeeds instead; otherwise each author fills in their own
+    // bio/photo after signing in, same as any real newsroom onboarding a
+    // writer.
     const imageUrl = await uploadImage(path.join(IMAGES_DIR, author.image));
-    const res = await api(`/users/${user.id}/`, {
-      method: 'PUT',
-      body: JSON.stringify({ users: [{ bio: author.bio, location: author.location, meta_title: author.role, profile_image: imageUrl, updated_at: user.updated_at }] }),
-    });
+    const body = JSON.stringify({ users: [{ bio: author.bio, location: author.location, meta_title: author.role, profile_image: imageUrl, updated_at: user.updated_at }] });
+    const res = sessionCookie
+      ? await apiAsOwner(`/users/${user.id}/`, sessionCookie, { method: 'PUT', body })
+      : await api(`/users/${user.id}/`, { method: 'PUT', body });
     if (!res) profileUpdatesBlocked = true;
+    else if (sessionCookie) console.log(`${author.email} profile updated (bio/location/photo)`);
   }
-  if (profileUpdatesBlocked) {
-    console.warn('\n⚠ Could not set author bio/photo/location — Ghost restricts editing other staff profiles to logged-in sessions, not API integrations. Each author can fill theirs in from Settings → Staff after signing in, or you can do it for them as the owner.');
+  if (profileUpdatesBlocked && !sessionCookie) {
+    console.warn('\n⚠ Could not set author bio/photo/location — Ghost restricts editing other staff profiles to logged-in sessions, not API integrations. Run `npm run migrate -- fix-author-photos` with GHOST_OWNER_EMAIL/GHOST_OWNER_PASSWORD set to fix all of them in one shot, or each author can fill theirs in from Settings → Staff after signing in.');
   }
   return map;
 }
@@ -243,9 +315,76 @@ async function reassignAuthors(authorMap) {
   }
 }
 
+const ASTRO_LIVE_URL = process.env.ASTRO_LIVE_URL || 'https://actacosmica.com';
+
+// Pulls the og:image URL off the live Astro site's own article page — that
+// site's images are already confirmed working in production (verified via
+// a Lighthouse audit against it). Used as the source of truth instead of
+// uploading a fresh copy through Ghost's own image storage, which on this
+// particular target site accepts uploads (200 response, a URL comes back)
+// but the resulting file 404s — confirmed both via the Admin API upload
+// and a manual drag-and-drop upload straight in the Ghost editor. Whatever
+// the actual cause on the hosting side, hotlinking a known-good URL sidesteps
+// it entirely: no file storage step on the target site to fail.
+async function fetchAstroLiveImageUrl(slug) {
+  const res = await fetch(`${ASTRO_LIVE_URL}/article/${slug}`);
+  if (!res.ok) return null;
+  const html = await res.text();
+  const match = html.match(/property="og:image" content="([^"]+)"/);
+  return match ? match[1] : null;
+}
+
+// Fixes up posts that already exist on the target site but are missing (or
+// have a broken) feature image — e.g. from a plain Ghost JSON export/import,
+// which preserves feature_image as a URL pointing back at the *source* site
+// rather than an actual file, or from Ghost's own image storage not actually
+// persisting uploads on this target site (see fetchAstroLiveImageUrl above).
+// This only sets a URL string on the post — no file upload involved, so it
+// doesn't depend on the target site's storage working at all.
+async function fixFeatureImages() {
+  const files = fs.readdirSync(ARTICLES_DIR).filter((f) => f.endsWith('.md'));
+  for (const file of files) {
+    const raw = fs.readFileSync(path.join(ARTICLES_DIR, file), 'utf8');
+    const { data: fm } = matter(raw);
+    const slug = file.replace(/\.md$/, '');
+    if (!fm.image) continue;
+
+    const found = await api(`/posts/?filter=${encodeURIComponent('slug:' + slug)}`);
+    const post = found?.posts?.[0];
+    if (!post) { console.warn(slug, 'not found on target site, skipping'); continue; }
+
+    const imageUrl = await fetchAstroLiveImageUrl(slug);
+    if (!imageUrl) { console.warn(slug, `couldn't read og:image from ${ASTRO_LIVE_URL}/article/${slug} — is the live Astro site up?`); continue; }
+
+    const res = await api(`/posts/${post.id}/`, {
+      method: 'PUT',
+      body: JSON.stringify({ posts: [{ feature_image: imageUrl, feature_image_caption: stripCaptionPrefix(fm.label), updated_at: post.updated_at }] }),
+    });
+    console.log(slug, res ? `feature image set -> ${imageUrl}` : 'FAILED');
+  }
+}
+
 async function main() {
   if (process.argv[2] === 'invite-authors') {
     await inviteAuthors();
+    return;
+  }
+
+  if (process.argv[2] === 'fix-author-photos') {
+    const sessionCookie = await getOwnerSessionCookie();
+    if (!sessionCookie) {
+      throw new Error('Set GHOST_OWNER_EMAIL and GHOST_OWNER_PASSWORD (your Ghost owner login) to run this — an Admin API integration key cannot edit other staff members\' profiles, only a real logged-in session can.');
+    }
+    console.log('Logged in as owner. Setting author bio/location/photo for everyone who has accepted their invite...');
+    await resolveAuthors(sessionCookie);
+    console.log('Done.');
+    return;
+  }
+
+  if (process.argv[2] === 'fix-feature-images') {
+    console.log('Fixing missing/broken feature images on already-imported posts...');
+    await fixFeatureImages();
+    console.log('Done.');
     return;
   }
 

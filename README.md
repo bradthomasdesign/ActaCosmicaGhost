@@ -38,6 +38,8 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 - **Native Ghost membership & paywall** — free/members-only/paid post gating via `{{#unless access}}`, with a branded subscribe CTA; tier pricing on the membership page pulls live from **Settings → Membership**
 - **Native comments, search, and newsletters** — Ghost's built-in commenting, a custom weighted full-text search overlay (⌘K shortcut) powered by the Content API, and a newsletter signup wired to Ghost's newsletter feature
 - **Full Koenig editor card support** — bookmark, gallery, callout, toggle, button, header, and before/after image-comparison cards are styled directly by the theme; audio, video, NFT, product, and file cards are served by Ghost's own default card assets (see `card_assets` in `package.json`) rather than reimplemented, so they stay in sync with Ghost core
+- **Saved stories** — readers can bookmark any article with the bookmark button in the byline bar; bookmarks live in `localStorage` (no account required) and are displayed on a dedicated `/saved` page with one-tap removal
+- **Native share sheet on mobile** — on iOS and Android, the share buttons in the article byline collapse to a single "Share" tap that opens the OS share sheet; falls back to the individual social buttons on desktop
 - **Reader UX** — reading progress bar, a writers directory with live story counts, and a branded 404 page
 - **Optional autoplaying hero video** — swap the top story's background for a looping video via a custom setting, no per-post upload needed
 - **Fully responsive**, accessible (skip link, focus-visible states, reduced-motion support throughout), and SEO-ready via Ghost's own `{{ghost_head}}` output
@@ -52,6 +54,7 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 | `post.hbs` | Article page — hero, byline, share, paywall CTA, related stories |
 | `page.hbs` | Generic pages (About, Contact, legal pages, etc.) |
 | `page-membership.hbs` | Membership page — live tier pricing from Settings → Membership |
+| `page-saved.hbs` | Saved stories — auto-assigned to any Ghost page with the slug `saved` |
 | `page-writers.hbs` | Writers directory |
 | `tag.hbs` | Category/tag archive |
 | `author.hbs` | Author profile |
@@ -76,6 +79,19 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 | `featured_video_youtube_id`, `featured_video_title`, `featured_video_thumbnail` | Homepage click-to-play video feature |
 
 Site navigation and secondary (footer) navigation are managed the standard Ghost way, under **Settings → Navigation**.
+
+---
+
+## Saved Stories setup
+
+The saved stories feature requires a one-time step in Ghost Admin:
+
+1. Go to **Pages → New page**.
+2. Set the title to anything (e.g. "Saved Stories") and the **slug to `saved`** — Ghost auto-assigns `page-saved.hbs` to any page with this slug.
+3. Publish the page.
+4. Optionally add `/saved/` to your site navigation under **Settings → Navigation**.
+
+Bookmarks are stored in `localStorage` under the key `acta_saved` — the same key used by the original Astro build, so any reader who bookmarked stories there will see them carry over automatically. No account or login is required. The `content_api_key` custom setting must be configured for the saved page to fetch and display post data.
 
 ---
 

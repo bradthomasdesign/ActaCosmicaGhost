@@ -152,9 +152,9 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
     hosting makes this likely fine by default, but "likely" isn't
     "confirmed."
   - Needs a **sane file structure** and a **detailed README.md** — this
-    theme's `README.md` (94 lines: install steps, feature list, full
-    template table, custom-settings table, support/license/credits) should
-    satisfy this.
+    theme's `README.md` covers install steps, feature list, full template
+    table, custom-settings table, a Saved Stories setup section, and
+    support/license/credits. Should satisfy this.
   - Biggest rejection reason per Ghost's own guidance: **lack of
     originality** — looking like yet another Casper fork. Worth keeping in
     mind for the listing copy/screenshots: lead with what's genuinely custom
@@ -178,8 +178,7 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 Adapted from the Astro version's copy (`~/Sites/markur/MARKETPLACE_PLAN.md`,
 same CyberTech-inspired structure), but every feature claim below is
 re-verified against **this** codebase's own `README.md` and templates —
-nothing Astro-specific (Content Collections, static-site claims, the stub
-account/saved-stories pages that don't exist in the Ghost port) carried over
+nothing Astro-specific (Content Collections, static-site claims) carried over
 unchecked.
 
 ---
@@ -219,6 +218,12 @@ comments, search, and newsletters instead of a static-site content pipeline.
   button, header, and a fully custom before/after image-comparison card are
   styled directly by the theme; audio, video, NFT, product, and file cards
   stay in sync with Ghost core's own defaults
+- **Saved stories** — readers can bookmark any article with a single tap;
+  bookmarks live in the browser (no account required) and are displayed on a
+  dedicated `/saved` page with one-tap removal
+- **Mobile-native sharing** — on iOS and Android, the article share bar
+  collapses to a single "Share" button that opens the OS share sheet; falls
+  back to individual social links on desktop
 - **Reader UX** — a reading progress bar, a writers directory with live
   story counts, and a branded 404 page
 - **Optional autoplaying hero video** — swap the top story's background for
@@ -237,11 +242,12 @@ comments, search, and newsletters instead of a static-site content pipeline.
 
 **📦 Included (Fully Coded)**
 ✔ Homepage — hero, latest-stories rail, configurable category spotlight rows, photo-of-the-day, click-to-play video
-✔ Article page — hero, byline, share links, paywall CTA, related stories, native comments
+✔ Article page — hero, byline, share links (native OS share sheet on mobile), bookmark button, paywall CTA, related stories, native comments
+✔ Saved stories page — browser-local bookmarks, no account required
 ✔ Generic pages (About, Contact, legal pages, and more)
 ✔ Membership page with live tier pricing from Settings → Membership
 ✔ Writers directory with live story counts
-✔ Category/tag archive
+✔ Category/tag archive with subcategory chip filtering
 ✔ Author profile pages
 ✔ Branded 404 page
 

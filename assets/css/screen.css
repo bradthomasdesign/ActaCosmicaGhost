@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Ghost core auto-injects its own "subscribers only" CTA into the
+   {{content}} HTML for member-restricted posts (.gh-post-upgrade-cta),
+   plus its own <style id="gh-members-styles"> block that Ghost places
+   after this stylesheet in <head> and sets display:flex on the same
+   class — so a plain display:none here loses the cascade. post.hbs also
+   renders its own custom-styled paywall section after {{content}}, so
+   without !important the two stack on top of each other for logged-out
+   visitors. */
+.gh-post-upgrade-cta { display: none !important; }
+
 .wordmark-short { display: none; }
 
 @media (max-width: 480px) {
@@ -54,7 +64,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible {
   z-index: 100;
   background: #16130d;
   color: #fff;
-  font: 700 13px/1 var(--gh-font-heading,'Archivo'), sans-serif;
+  font: 700 14px/1 var(--gh-font-heading,'Archivo'), sans-serif;
   padding: 12px 18px;
   border-radius: 2px;
   text-decoration: none;
@@ -82,7 +92,7 @@ a { -webkit-tap-highlight-color: transparent; }
    drawer) gets its own visual treatment purely from the ancestor selector,
    so one shared partial can serve both. */
 .header-nav-tabs .nav-link {
-  font: 600 12px/1 var(--gh-font-heading,'Archivo');
+  font: 600 14px/1 var(--gh-font-heading,'Archivo');
   letter-spacing: .11em;
   text-transform: uppercase;
   text-decoration: none;
@@ -182,13 +192,13 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body img,
 .article-body figure { max-width: 100%; height: auto; }
 .article-body figcaption {
-  font: 400 13px/1.4 var(--gh-font-heading,'Archivo'), sans-serif;
+  font: 400 14px/1.4 var(--gh-font-heading,'Archivo'), sans-serif;
   color: #6b6459;
   margin-top: 10px;
   text-align: center;
 }
 
-/* Koenig editor card-width classes — .article-body is a fixed 680px reading
+/* Koenig editor card-width classes — .article-body is a fixed 760px reading
    column, so "wide" bleeds to a wider column and "full" bleeds to the
    viewport edge, same convention as Casper. */
 .article-body .kg-width-wide {
@@ -202,6 +212,17 @@ a { -webkit-tap-highlight-color: transparent; }
   max-width: 100vw;
   margin-left: 50%;
   transform: translateX(-50%);
+}
+/* The figure's own width is correctly full-bleed above, but the img/video
+   inside only has max-width:100% (line ~193), which caps oversized media —
+   it doesn't stretch an image whose native resolution is narrower than the
+   breakout width. Without this, a photo smaller than the viewport renders
+   at its own intrinsic size and leaves a gap on the right. */
+.article-body .kg-width-wide img,
+.article-body .kg-width-wide video,
+.article-body .kg-width-full img,
+.article-body .kg-width-full video {
+  width: 100%;
 }
 
 /* Koenig editor cards — bookmark, gallery, callout, toggle, button, header,
@@ -243,7 +264,7 @@ a { -webkit-tap-highlight-color: transparent; }
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 600 12px/1 var(--gh-font-heading,'Archivo');
+  font: 600 14px/1 var(--gh-font-heading,'Archivo');
   color: #6b6459;
   margin-top: auto;
 }
@@ -304,7 +325,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .article-body .kg-button-card { display: flex; margin-top: 32px; margin-bottom: 32px; }
 .article-body .kg-btn {
   display: inline-block;
-  font: 700 13px/1 var(--gh-font-heading,'Archivo');
+  font: 700 14px/1 var(--gh-font-heading,'Archivo');
   letter-spacing: .06em;
   text-transform: uppercase;
   text-decoration: none;
@@ -490,12 +511,17 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
     transform-origin: left;
   }
 
-  .reveal {
+  /* Scoped to html.js-reveal (set by main.js) rather than a bare .reveal
+     selector — content must never depend on JS running to become visible.
+     If the script is blocked, errors out, or the observer just doesn't
+     fire for some edge case, .reveal sections stay fully visible by
+     default instead of permanently stuck at opacity:0. */
+  html.js-reveal .reveal {
     opacity: 0;
     transform: translateY(16px);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .reveal.is-visible {
+  html.js-reveal .reveal.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
@@ -609,7 +635,6 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
    rest via the "Load More" button — collapsed here in CSS (no flash of
    extra content) so main.js only has to toggle a class, not compute which
    cards to hide. */
-#cat-grid > .card-link:nth-child(n+6) { display: none; }
 #cat-grid.show-all > .card-link { display: flex !important; }
 #author-grid > .card-link:nth-child(n+7) { display: none; }
 #author-grid.show-all > .card-link { display: flex !important; }
@@ -624,6 +649,7 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
   .rail-thumb { width: 100% !important; height: auto !important; aspect-ratio: 16 / 9 !important; }
   .stats-row { grid-template-columns: repeat(2, 1fr) !important; gap: 32px 20px !important; }
   .values-grid { grid-template-columns: 1fr !important; }
+  .tier-grid { grid-template-columns: 1fr !important; }
   .team-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .story-grid { grid-template-columns: 1fr !important; }
   .author-hero { flex-direction: column !important; text-align: center !important; align-items: center !important; }

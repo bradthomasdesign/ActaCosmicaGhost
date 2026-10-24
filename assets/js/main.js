@@ -1,9 +1,4 @@
 (function () {
-  // Masthead date — set client-side so it's always the visitor's current
-  // date regardless of when the page was cached/rendered.
-  const today = `${new Date().toLocaleDateString('en-US', { weekday: 'long' })} · ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
-  document.querySelectorAll('[data-today]').forEach((el) => { el.textContent = today; });
-
   // Hero background video — autoplay is set directly in the HTML (muted
   // autoplay is reliably exempt from browser gesture requirements; a JS
   // .play() call at load time isn't equally reliable). Reduced-motion
@@ -48,19 +43,30 @@
   // Nav drawer
   const drawer = document.getElementById('nav-drawer');
   const scrim = document.getElementById('nav-scrim');
+  const drawerTrap = drawer ? makeFocusTrap(drawer, () => closeMenu()) : null;
+  let menuReturnFocus = null;
+
   function openMenu() {
     if (!drawer || !scrim) return;
+    menuReturnFocus = document.activeElement;
     drawer.style.transform = 'translateX(0)';
+    drawer.setAttribute('aria-hidden', 'false');
     scrim.style.opacity = '1';
     scrim.style.pointerEvents = 'auto';
     document.body.style.overflow = 'hidden';
+    drawerTrap?.activate();
+    drawer.querySelector('[data-close-menu]')?.focus();
   }
   function closeMenu() {
     if (!drawer || !scrim) return;
+    drawerTrap?.deactivate();
     drawer.style.transform = 'translateX(-100%)';
+    drawer.setAttribute('aria-hidden', 'true');
     scrim.style.opacity = '0';
     scrim.style.pointerEvents = 'none';
     document.body.style.overflow = '';
+    menuReturnFocus?.focus();
+    menuReturnFocus = null;
   }
   document.querySelectorAll('[data-hamburger]').forEach((el) => el.addEventListener('click', openMenu));
   document.querySelectorAll('[data-close-menu]').forEach((el) => el.addEventListener('click', closeMenu));
@@ -102,7 +108,15 @@
   // viewport. The CSS only applies under prefers-reduced-motion:
   // no-preference, so this observer is harmless (just adds a class
   // nothing reacts to) for motion-sensitive users or unsupported browsers.
+  //
+  // The opacity:0 starting state in CSS is scoped to html.js-reveal,
+  // added here rather than baked into .reveal unconditionally — content
+  // must never be able to get stuck invisible if this script is blocked,
+  // errors, or an observer just never fires for some edge case. Only
+  // commit to hiding anything once we're actually about to manage
+  // revealing it.
   if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
     const revealObserver = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
@@ -112,8 +126,13 @@
       }
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
-  } else {
-    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+    // Safety net: if an observed element somehow never fires (e.g. zero
+    // height at observe-time, tab backgrounded through the whole
+    // intersection window), force it visible after a few seconds rather
+    // than leaving it hidden indefinitely.
+    setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => el.classList.add('is-visible'));
+    }, 4000);
   }
 
   // --- Search -----------------------------------------------------------
@@ -121,6 +140,42 @@
   // longer baked in at build time — it's fetched once from Ghost's Content
   // API (public, read-only key configured as a theme setting) and cached
   // in memory for the rest of the session.
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+
+  // Shared focus-trap utility. Returns activate/deactivate functions.
+  // While active, Tab/Shift+Tab cycle within `container` and Escape calls `onEscape`.
+  function makeFocusTrap(container, onEscape) {
+    const FOCUSABLE = 'a[href],button:not([disabled]),input,textarea,select,[tabindex]:not([tabindex="-1"])';
+    function getFocusable() {
+      return Array.from(container.querySelectorAll(FOCUSABLE));
+    }
+    function handleKeydown(e) {
+      if (e.key === 'Escape') { onEscape?.(); return; }
+      if (e.key !== 'Tab') return;
+      const els = getFocusable();
+      if (!els.length) { e.preventDefault(); return; }
+      const first = els[0];
+      const last = els[els.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    return {
+      activate() { container.addEventListener('keydown', handleKeydown); },
+      deactivate() { container.removeEventListener('keydown', handleKeydown); },
+    };
+  }
+
   const overlay = document.getElementById('search-overlay');
   const input = document.getElementById('search-overlay-input');
   const panel = document.getElementById('search-results-panel');
@@ -185,40 +240,48 @@
 
     if (results.length === 0) {
       panel.style.display = 'block';
-      panel.innerHTML = `<div style="padding:28px 24px;text-align:center;font:400 16px/1.5 'Newsreader',Georgia,serif;color:#6b6459;">No results for "<strong style="color:#16130d;">${q}</strong>"</div>`;
+      panel.innerHTML = `<div style="padding:28px 24px;text-align:center;font:400 16px/1.5 'Newsreader',Georgia,serif;color:#6b6459;">No results for "<strong style="color:#16130d;">${escapeHtml(q)}</strong>"</div>`;
       return;
     }
 
     panel.style.display = 'block';
     panel.innerHTML = results.map((a, i) => `
-      <a class="card-link" href="${a.url}" style="display:flex;gap:16px;align-items:center;padding:14px 20px;text-decoration:none;color:inherit;${i < results.length - 1 ? 'border-bottom:1px solid #f0ede8;' : ''}">
+      <a class="card-link" href="${escapeHtml(a.url)}" style="display:flex;gap:16px;align-items:center;padding:14px 20px;text-decoration:none;color:inherit;${i < results.length - 1 ? 'border-bottom:1px solid #f0ede8;' : ''}">
         <div class="article-image-frame" style="flex:0 0 auto;width:68px;height:50px;border-radius:4px;overflow:hidden;background:${a.bg};">
-          ${a.image ? `<img src="${a.image}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">` : ''}
+          ${a.image ? `<img src="${escapeHtml(a.image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">` : ''}
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font:600 10px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:5px;">${a.kicker}</div>
-          <div style="font:600 15px/1.25 'Archivo',sans-serif;color:#16130d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.title}</div>
-          <div style="font:400 12px/1 'Archivo';color:#6b6459;margin-top:4px;">${a.byline}${a.byline && a.readTime ? ' · ' : ''}${a.readTime}</div>
+          <div style="font:600 14px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:5px;">${escapeHtml(a.kicker)}</div>
+          <div style="font:600 15px/1.25 'Archivo',sans-serif;color:#16130d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(a.title)}</div>
+          <div style="font:400 14px/1 'Archivo';color:#6b6459;margin-top:4px;">${escapeHtml(a.byline)}${a.byline && a.readTime ? ' · ' : ''}${escapeHtml(a.readTime)}</div>
         </div>
       </a>
     `).join('');
   }
 
+  const searchTrap = overlay ? makeFocusTrap(overlay, () => closeSearch()) : null;
+  let searchReturnFocus = null;
+
   function openSearch() {
     if (!overlay) return;
+    searchReturnFocus = document.activeElement;
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    searchTrap?.activate();
     getSearchIndex();
     setTimeout(() => input?.focus(), 30);
   }
   function closeSearch() {
     if (!overlay) return;
+    searchTrap?.deactivate();
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     if (input) input.value = '';
     if (panel) { panel.innerHTML = ''; panel.style.display = 'none'; }
+    searchReturnFocus?.focus();
+    searchReturnFocus = null;
   }
   window.openSiteSearch = openSearch;
 
@@ -257,7 +320,7 @@
       if (!url) return;
       await navigator.clipboard.writeText(url);
       const original = btn.innerHTML;
-      btn.innerHTML = '<span style="font:700 10px/1 Archivo;color:#16130d;">Copied</span>';
+      btn.innerHTML = '<span style="font:700 14px/1 Archivo;color:#16130d;">Copied</span>';
       setTimeout(() => { btn.innerHTML = original; }, 1500);
     });
   });
@@ -292,6 +355,8 @@
     const moreWrap = document.getElementById('load-more-wrap');
     const cards = Array.from(catGrid.children);
     const total = (hero ? 1 : 0) + cards.length;
+    const nextAnchor = document.getElementById('cat-next-page');
+    let nextPageUrl = nextAnchor ? nextAnchor.href : null;
 
     const subs = [];
     [hero, ...cards].forEach((el) => {
@@ -315,7 +380,7 @@
 
       const chips = Array.from(chipBar.children);
       function paintChip(el, active) {
-        el.style.font = "600 12px/1 'Archivo'";
+        el.style.font = "600 14px/1 'Archivo'";
         el.style.letterSpacing = '.06em';
         el.style.textTransform = 'uppercase';
         el.style.padding = '9px 15px';
@@ -347,7 +412,7 @@
             if (show) visible++;
           }
         });
-        if (moreWrap) moreWrap.style.display = filter === '' && cards.length > 5 ? 'flex' : 'none';
+        if (moreWrap) moreWrap.style.display = filter === '' && nextPageUrl ? 'flex' : 'none';
         if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
         if (count) count.textContent = `${filter === '' ? total : visible} stories`;
       }
@@ -360,14 +425,36 @@
       });
 
       applyFilter('');
-    } else if (moreWrap && cards.length > 5) {
+    } else if (moreWrap && nextPageUrl) {
       moreWrap.style.display = 'flex';
     }
 
-    document.getElementById('load-more-btn')?.addEventListener('click', () => {
-      catGrid.classList.add('show-all');
-      if (moreWrap) moreWrap.style.display = 'none';
-    });
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', async () => {
+        if (!nextPageUrl) return;
+        loadMoreBtn.textContent = 'Loading…';
+        loadMoreBtn.disabled = true;
+        try {
+          const res = await fetch(nextPageUrl);
+          const html = await res.text();
+          const parser = new DOMParser();
+          const nextDoc = parser.parseFromString(html, 'text/html');
+          const newCards = Array.from(nextDoc.querySelectorAll('#cat-grid .card-link'));
+          newCards.forEach((c) => catGrid.appendChild(c.cloneNode(true)));
+          const nextNextAnchor = nextDoc.getElementById('cat-next-page');
+          nextPageUrl = nextNextAnchor ? nextNextAnchor.href : null;
+          loadMoreBtn.textContent = 'Load More Stories';
+          loadMoreBtn.disabled = false;
+          if (!nextPageUrl && moreWrap) moreWrap.style.display = 'none';
+          const newTotal = (hero ? 1 : 0) + catGrid.children.length;
+          if (count) count.textContent = `${newTotal}${nextPageUrl ? '+' : ''} stories`;
+        } catch (e) {
+          loadMoreBtn.textContent = 'Load More Stories';
+          loadMoreBtn.disabled = false;
+        }
+      });
+    }
   }
 
   // --- Author page: load more ---------------------------------------------
@@ -380,4 +467,155 @@
       if (wrap) wrap.style.display = 'none';
     });
   }
+
+  // --- Saved articles (localStorage, no login required) ------------------
+  const SAVE_KEY = 'acta_saved';
+  function getSavedSlugs() {
+    try { return JSON.parse(localStorage.getItem(SAVE_KEY) || '[]'); } catch { return []; }
+  }
+  function setSavedSlugs(list) {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch {}
+  }
+
+  // Saved page — fetches matching posts from the Content API and renders them.
+  const savedGrid = document.getElementById('saved-grid');
+  if (savedGrid) {
+    const subtitle = document.getElementById('saved-subtitle');
+    const emptyState = document.getElementById('saved-empty');
+
+    function savedCardHTML(p) {
+      const kicker = escapeHtml((p.tags && p.tags[0] && p.tags[0].name) || '');
+      const title = escapeHtml(p.title || '');
+      const dek = escapeHtml(p.custom_excerpt || '');
+      const readTime = p.reading_time ? `${p.reading_time} min read` : '';
+      const date = p.published_at
+        ? new Date(p.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : '';
+      const img = p.feature_image || null;
+      return `
+        <a class="card-link" href="${escapeHtml(p.url)}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
+          <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:15px;background:#2b3a55;">
+            ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">` : ''}
+            <button class="unsave-btn" type="button" data-slug="${escapeHtml(p.slug)}" aria-label="Remove from saved" style="position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(22,19,13,0.55);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent,#f5c518)" stroke="var(--accent,#f5c518)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
+            <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
+            <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">${kicker}</span>
+          </div>
+          <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">${title}</h3>
+          ${dek ? `<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#6b6459;margin:0 0 10px;">${dek}</p>` : ''}
+          <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">${date}${date && readTime ? ' · ' : ''}${readTime}</div>
+        </a>`;
+    }
+
+    function renderSaved(posts) {
+      const n = posts.length;
+      if (subtitle) {
+        subtitle.textContent = n > 0
+          ? `${n} ${n === 1 ? 'story' : 'stories'} you've bookmarked to read later.`
+          : 'Nothing saved yet.';
+      }
+      if (n === 0) {
+        savedGrid.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+      }
+      savedGrid.style.display = 'grid';
+      if (emptyState) emptyState.style.display = 'none';
+      savedGrid.innerHTML = posts.map(savedCardHTML).join('');
+      savedGrid.querySelectorAll('.unsave-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setSavedSlugs(getSavedSlugs().filter((s) => s !== btn.dataset.slug));
+          btn.closest('a')?.remove();
+          const remaining = savedGrid.querySelectorAll('.card-link').length;
+          if (remaining === 0) renderSaved([]);
+          else if (subtitle) subtitle.textContent = `${remaining} ${remaining === 1 ? 'story' : 'stories'} you've bookmarked to read later.`;
+        });
+      });
+    }
+
+    const slugs = getSavedSlugs();
+    if (slugs.length === 0) {
+      renderSaved([]);
+    } else {
+      const { url: apiUrl, key: apiKey } = window.ACTA_CONTENT_API || {};
+      if (apiUrl && apiKey) {
+        const filter = encodeURIComponent(`slug:[${slugs.join(',')}]`);
+        const fields = 'slug,title,custom_excerpt,feature_image,reading_time,url,published_at';
+        fetch(`${apiUrl}/ghost/api/content/posts/?key=${apiKey}&filter=${filter}&include=tags&fields=${fields}&limit=all`)
+          .then((r) => r.json())
+          .then((data) => {
+            // preserve the user's save order
+            const map = Object.fromEntries((data.posts || []).map((p) => [p.slug, p]));
+            renderSaved(slugs.map((s) => map[s]).filter(Boolean));
+          })
+          .catch(() => renderSaved([]));
+      } else {
+        if (subtitle) subtitle.textContent = 'Configure the Content API key in theme settings to load saved stories.';
+      }
+    }
+  }
+
+  // Bookmark toggle — on post pages, sync the button state with localStorage.
+  const bookmarkBtn = document.querySelector('[data-bookmark]');
+  if (bookmarkBtn) {
+    const slug = bookmarkBtn.getAttribute('data-bookmark');
+    const icon = bookmarkBtn.querySelector('.bookmark-icon');
+
+    function updateBookmarkUI(saved) {
+      bookmarkBtn.setAttribute('aria-pressed', String(saved));
+      bookmarkBtn.setAttribute('aria-label', saved ? 'Remove from saved' : 'Save for later');
+      if (icon) {
+        icon.setAttribute('fill', saved ? 'var(--accent,#f5c518)' : 'none');
+        icon.setAttribute('stroke', saved ? 'var(--accent,#f5c518)' : '#16130d');
+      }
+    }
+
+    updateBookmarkUI(getSavedSlugs().includes(slug));
+
+    bookmarkBtn.addEventListener('click', () => {
+      const current = getSavedSlugs();
+      const isSaved = current.includes(slug);
+      setSavedSlugs(isSaved ? current.filter((s) => s !== slug) : [...current, slug]);
+      updateBookmarkUI(!isSaved);
+    });
+  }
+
+  // --- Native share sheet (mobile) ---------------------------------------
+  // On devices that support navigator.share (iOS/Android), swap the
+  // individual social buttons for a single native share button.
+  const nativeShareBtn = document.getElementById('native-share-btn');
+  if (nativeShareBtn && navigator.share && window.matchMedia('(hover:none),(pointer:coarse)').matches) {
+    const shareBar = document.getElementById('share-bar');
+    // Hide the individual share controls, show the native button
+    if (shareBar) {
+      shareBar.querySelectorAll('[data-share],[data-copy-link],.share-label').forEach((el) => {
+        el.style.display = 'none';
+      });
+    }
+    nativeShareBtn.style.display = 'flex';
+    nativeShareBtn.addEventListener('click', async () => {
+      try {
+        await navigator.share({ title: document.title, url: location.href });
+      } catch (err) {
+        if (err.name !== 'AbortError') console.warn('Share failed:', err);
+      }
+    });
+  }
+
+  // --- External links in article body ------------------------------------
+  // Add target="_blank" + rel="noopener noreferrer" to any external link
+  // inside the article body that an editor may have written without them.
+  document.querySelectorAll('.article-body a[href]').forEach((a) => {
+    try {
+      if (new URL(a.href).origin !== location.origin) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch {}
+  });
 })();

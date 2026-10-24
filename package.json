@@ -26,7 +26,7 @@
     ]
   },
   "config": {
-    "posts_per_page": 12,
+    "posts_per_page": 9,
     "image_sizes": {
       "xs": { "width": 320 },
       "s": { "width": 640 },
@@ -41,6 +41,11 @@
       "accent_color": {
         "type": "color",
         "default": "#f5c518"
+      },
+      "show_logo_mark": {
+        "type": "boolean",
+        "default": true,
+        "description": "Show the accent-color square beside the site name in the header and footer"
       },
       "accent_text_light": {
         "type": "boolean",

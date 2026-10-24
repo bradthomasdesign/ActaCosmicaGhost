@@ -21,11 +21,11 @@
       <div style="max-width:760px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
           <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-          <span style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">{{primary_tag.name}}</span>
+          <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">{{primary_tag.name}}</span>
         </div>
         <h1 style="font:800 clamp(38px,5.4vw,68px)/1.02 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:#fff;margin:0 0 18px;text-wrap:balance;">{{title}}</h1>
         {{#if custom_excerpt}}<p style="font:400 clamp(17px,1.5vw,20px)/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.88);margin:0 0 22px;max-width:600px;">{{custom_excerpt}}</p>{{/if}}
-        <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.7);">By {{primary_author.name}} · {{reading_time}}</div>
+        <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.7);">By {{primary_author.name}} · {{reading_time}}</div>
       </div>
     </div>
   </div>
@@ -44,11 +44,11 @@
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 11px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
       </div>
       <h2 style="font:700 clamp(28px,3vw,38px)/1.08 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:#16130d;margin:0 0 14px;text-wrap:balance;">{{title}}</h2>
       {{#if custom_excerpt}}<p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#4a4437;margin:0 0 14px;max-width:620px;">{{custom_excerpt}}</p>{{/if}}
-      <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}} · {{reading_time}}</div>
+      <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">By {{primary_author.name}} · {{reading_time}}</div>
     </a>
     {{/foreach}}
     {{/get}}
@@ -65,7 +65,7 @@
           {{#if feature_image}}<img src="{{img_url feature_image size="xs"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
         </div>
         <div>
-          <div style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#7a5c0a;margin-bottom:6px;">{{primary_tag.name}}</div>
+          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#7a5c0a;margin-bottom:6px;">{{primary_tag.name}}</div>
           <div style="font:600 15px/1.28 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;">{{title}}</div>
         </div>
       </a>
@@ -86,7 +86,7 @@
       <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
       <h2 style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
     </div>
-    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
+    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
   </div>
   <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
     {{#foreach posts}}
@@ -96,7 +96,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
       </div>
       <h3 style="font:600 19px/1.22 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
     </a>
@@ -118,10 +118,10 @@
   <div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;">
     <div style="width:100%;max-width:1280px;margin:0 auto;padding:0 24px;">
       <div style="max-width:440px;">
-        <div style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);margin-bottom:16px;">Photo of the Day</div>
+        <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);margin-bottom:16px;">Photo of the Day</div>
         <h2 style="font:700 clamp(26px,3vw,36px)/1.1 var(--gh-font-heading,'Archivo'),sans-serif;color:#fff;margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
         {{#if custom_excerpt}}<p style="font:400 17px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.82);margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
-        <div style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,0.65);">{{#if feature_image_caption}}{{{feature_image_caption}}}{{else}}Photograph by {{primary_author.name}}{{/if}}</div>
+        <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,0.65);">{{#if feature_image_caption}}{{{feature_image_caption}}}{{else}}Photograph by {{primary_author.name}}{{/if}}</div>
       </div>
     </div>
   </div>
@@ -138,7 +138,7 @@
       <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
       <h2 style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
     </div>
-    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
+    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
   </div>
   <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
     {{#foreach posts}}
@@ -148,7 +148,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
+        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
       </div>
       <h3 style="font:600 19px/1.22 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
     </a>
@@ -164,7 +164,7 @@
   <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
       <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-      <span style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">Watch</span>
+      <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--accent,#f5c518);">Watch</span>
     </div>
     <!-- Click-to-play YouTube embed — the iframe only loads once clicked,
          so an unplayed feature costs nothing on page load. -->
@@ -191,7 +191,7 @@
     <a href="{{url}}" style="text-decoration:none;color:inherit;display:block;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
         <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 12px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:#16130d;">Editor's Pick</span>
+        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:#16130d;">Editor's Pick</span>
       </div>
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:18px;background:#2b3a55;">
         {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
@@ -206,7 +206,7 @@
       <a class="card-link" href="{{url}}" style="display:flex;gap:18px;align-items:baseline;padding:18px 0;border-bottom:1px solid #e6e3dc;text-decoration:none;color:inherit;">
         <span style="font:800 26px/1 var(--gh-font-heading,'Archivo');color:#7a5c0a;flex:0 0 auto;width:34px;">{{@number}}</span>
         <div>
-          <div style="font:700 10px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#6b6459;margin-bottom:6px;">{{primary_tag.name}}</div>
+          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#6b6459;margin-bottom:6px;">{{primary_tag.name}}</div>
           <div style="font:600 17px/1.28 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;">{{title}}</div>
         </div>
       </a>
