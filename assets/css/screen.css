@@ -1174,3 +1174,11 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
   .carousel__track, .carousel__track--4, .carousel__track--picks, .carousel__track--brief { grid-auto-columns: 84%; }
   .fr__thumb { width: 96px; }
 }
+
+/* Writer monogram — shown wherever a writer has no profile photo */
+.avatar-initials {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto; border-radius: 50%;
+  background: var(--band); color: var(--accent, #f5c518);
+  font-family: var(--gh-font-heading,'Archivo'), sans-serif; font-weight: 800; letter-spacing: .02em; line-height: 1;
+}
+.article-image-frame > .avatar-initials { width: 100% !important; height: 100% !important; }

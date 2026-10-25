@@ -346,6 +346,14 @@
     update();
   });
 
+  // Writer monograms: "Elena Sørensen" → "ES", "Prince" → "P".
+  document.querySelectorAll('.avatar-initials[data-name]').forEach((el) => {
+    const parts = el.getAttribute('data-name').trim().split(/\s+/).filter(Boolean);
+    const first = parts[0] ? Array.from(parts[0])[0] : '';
+    const last = parts.length > 1 ? Array.from(parts[parts.length - 1])[0] : '';
+    el.textContent = (first + last).toUpperCase();
+  });
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');

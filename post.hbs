@@ -29,7 +29,7 @@
       {{#if primary_author.profile_image}}
       <img src="{{img_url primary_author.profile_image size="s"}}" alt="{{primary_author.name}}" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex:0 0 auto;" />
       {{else}}
-      <div style="width:46px;height:46px;border-radius:50%;background:var(--ink-muted);flex:0 0 auto;"></div>
+      {{#primary_author}}{{> "avatar-initials" size="46" font="17"}}{{/primary_author}}
       {{/if}}
       <div>
         <a href="{{primary_author.url}}" style="font:700 14px/1.2 var(--gh-font-heading,'Archivo');color:var(--ink);text-decoration:none;">By {{primary_author.name}}</a>
@@ -118,11 +118,12 @@
     {{#if primary_author.profile_image}}
     <img src="{{img_url primary_author.profile_image size="s"}}" alt="{{primary_author.name}}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 auto;" />
     {{else}}
-    <div style="width:56px;height:56px;border-radius:50%;background:var(--ink-muted);flex:0 0 auto;"></div>
+    {{#primary_author}}{{> "avatar-initials" size="56" font="21"}}{{/primary_author}}
     {{/if}}
     <div>
       <a href="{{primary_author.url}}" style="font:700 15px/1.2 var(--gh-font-heading,'Archivo');color:var(--ink);text-decoration:none;margin-bottom:6px;display:block;">{{primary_author.name}}</a>
-      <p style="font:400 15px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0;">{{primary_author.bio}}</p>
+      {{#if primary_author.bio}}<p style="font:400 15px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 10px;">{{primary_author.bio}}</p>{{/if}}
+      <a class="link-underline" href="{{primary_author.url}}" style="font:600 13px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;">More from {{primary_author.name}} →</a>
     </div>
   </div>
 </section>

@@ -8,7 +8,7 @@
       {{#if primary_author.profile_image}}
       <img class="opinion__face" src="{{img_url primary_author.profile_image size="s"}}" alt="" loading="lazy" />
       {{else}}
-      <span class="opinion__face opinion__face--blank" aria-hidden="true"></span>
+      {{#primary_author}}{{> "avatar-initials" size="84" font="30"}}{{/primary_author}}
       {{/if}}
       <span class="opinion__text">
         <span class="opinion__title">{{title}}</span>

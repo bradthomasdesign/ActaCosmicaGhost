@@ -131,6 +131,22 @@ Bookmarks are stored in `localStorage` under the key `acta_saved` — the same k
 
 ---
 
+## Writer profiles
+
+Every writer manages their own profile in Ghost Admin — click your avatar (bottom left) → **Your profile**. The theme uses:
+
+| Profile field | Where it shows |
+|---|---|
+| **Profile picture** | Article byline, the author card at the end of each article, the writer's page, the Writers directory, and opinion-column cards. Writers without a photo get a monogram of their initials in the accent color. |
+| **Bio** | The author card at the end of each article, the writer's page, and the Writers directory |
+| **Meta title** (under SEO on the profile) | The writer's role or title — e.g. "Senior Science Correspondent" — shown above their name on their page and in the Writers directory |
+| **Location** | The writer's page |
+| **Website** and **social accounts** (X, Bluesky, Threads, Mastodon, Instagram, LinkedIn, YouTube, TikTok, Facebook) | Buttons on the writer's page — only for the accounts the writer has filled in |
+
+The author card at the end of every article links to "More from [writer]", so it stays useful even before a writer has written a bio.
+
+---
+
 ## Article options (internal tags)
 
 Add these in a post's **Post settings → Tags**. Tags starting with `#` are internal: they change how the post renders but never appear on public tag pages.

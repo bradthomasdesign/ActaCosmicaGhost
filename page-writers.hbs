@@ -27,7 +27,7 @@
     {{#foreach authors}}
     <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;gap:18px;align-items:flex-start;padding:24px;border:1px solid var(--rule-soft);border-radius:4px;background:var(--paper-raised);">
       <div class="article-image-frame avatar-ring" style="width:72px;height:72px;border-radius:50%;overflow:hidden;flex:0 0 auto;background:var(--ink-muted);">
-        {{#if profile_image}}<img src="{{img_url profile_image size="s"}}" alt="{{name}}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" loading="lazy" />{{/if}}
+        {{#if profile_image}}<img src="{{img_url profile_image size="s"}}" alt="{{name}}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" loading="lazy" />{{else}}{{> "avatar-initials" size="72" font="26"}}{{/if}}
       </div>
       <div style="min-width:0;">
         <div style="font:700 17px/1.2 var(--gh-font-heading,'Archivo');color:var(--ink);margin-bottom:4px;">{{name}}</div>
