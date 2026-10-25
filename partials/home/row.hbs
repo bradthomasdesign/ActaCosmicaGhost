@@ -1,7 +1,8 @@
 {{!-- Dispatches one homepage section page to its layout. Called inside a
       foreach over section pages, so the page's own fields are in scope.
       If a page carries more than one layout tag, the first match below wins. --}}
-{{#has tag="#home-feature-package"}}{{#if primary_tag}}{{> "home/feature-package" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
+{{#has tag="#home-ad"}}{{#if @custom.enable_ads}}{{#unless @member.paid}}{{#if html}}<aside class="ad ad--home-row" aria-label="Advertisement" data-ad><div class="ad__inner"><span class="ad__label">Advertisement</span><div class="ad__body">{{content}}</div></div></aside>{{/if}}{{/unless}}{{/if}}
+{{else}}{{#has tag="#home-feature-package"}}{{#if primary_tag}}{{> "home/feature-package" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
 {{else}}{{#has tag="#home-feature-rail"}}{{#if primary_tag}}{{> "home/feature-rail" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
 {{else}}{{#has tag="#home-briefing"}}{{#if primary_tag}}{{> "home/briefing" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
 {{else}}{{#has tag="#home-briefing-carousel"}}{{#if primary_tag}}{{> "home/briefing-carousel" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
@@ -11,4 +12,4 @@
 {{else}}{{#has tag="#home-standard-3-column-grid"}}{{#if primary_tag}}{{> "home/standard-3-column-grid" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
 {{else}}{{#has tag="#home-standard-4-column-grid"}}{{#if primary_tag}}{{> "home/standard-4-column-grid" section_tag=primary_tag.slug section_name=primary_tag.name section_url=primary_tag.url section_dek=custom_excerpt}}{{/if}}
 {{else}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}
-{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}
+{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}{{/has}}

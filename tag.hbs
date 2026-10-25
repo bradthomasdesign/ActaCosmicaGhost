@@ -71,6 +71,8 @@
       <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">By {{primary_author.name}}</div>
     </a>
     {{/unless}}
+    {{!-- In-feed ad (page slug ad-feed) after the first row-and-a-half of stories --}}
+    {{#match @number "=" 7}}{{> "ads/slot" ad_slug="ad-feed" ad_variant="feed"}}{{/match}}
     {{/foreach}}
   </div>
   <p id="cat-empty" style="display:none;font:400 20px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);text-align:center;padding:32px 0 12px;">No stories in this filter yet.</p>

@@ -77,6 +77,8 @@
   </div>
 </section>
 
+{{> "ads/slot" ad_slug="ad-home-top" ad_variant="home-top"}}
+
 {{!-- EDITOR'S PICKS — a carousel of featured posts beyond the three the
       front page already places (hero, lead, Editor's Pick): featured posts
       4–11, newest first. Appears once a fourth post is featured; mark posts
@@ -112,7 +114,7 @@
       the page's publish date, newest first. The newest row sits above
       Photo of the Day; any further rows follow it. Draft or delete a
       section page to remove its row. --}}
-{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid]" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid,hash-home-ad]" limit="30" include="tags" order="published_at desc" as |sections|}}
 {{#foreach sections limit="1"}}{{> "home/row"}}{{/foreach}}
 {{/get}}
 
@@ -140,7 +142,7 @@
 {{/get}}
 
 {{!-- Remaining homepage section rows (2nd newest onward) --}}
-{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid]" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid,hash-home-ad]" limit="30" include="tags" order="published_at desc" as |sections|}}
 {{#foreach sections from="2"}}{{> "home/row"}}{{/foreach}}
 {{/get}}
 

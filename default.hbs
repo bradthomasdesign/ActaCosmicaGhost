@@ -46,7 +46,8 @@
   {{!-- Homepage section/video pages are layout config, not destinations —
         keep them out of search results while still letting crawlers follow
         their links through to the stories. --}}
-  {{#is "page"}}{{#page}}{{#has tag="#home-spotlight,#home-feature-package,#home-feature-rail,#home-briefing,#home-briefing-carousel,#home-asymmetric-lead-list,#home-opinion-hedcut,#home-tag-columns,#home-standard-3-column-grid,#home-standard-4-column-grid,#home-video"}}<meta name="robots" content="noindex, follow" />{{/has}}{{/page}}{{/is}}
+  {{#is "page"}}{{#page}}{{#has tag="#home-spotlight,#home-feature-package,#home-feature-rail,#home-briefing,#home-briefing-carousel,#home-asymmetric-lead-list,#home-opinion-hedcut,#home-tag-columns,#home-standard-3-column-grid,#home-standard-4-column-grid,#home-video,#home-ad"}}<meta name="robots" content="noindex, follow" />{{/has}}{{/page}}{{/is}}
+  {{> "ads/head"}}
   {{ghost_head}}
 </head>
 <body class="{{body_class}}{{#if @custom.drop_cap_on_pages}} drop-cap-pages{{/if}}">
@@ -78,7 +79,9 @@
     </div>
   </div>
 
+  {{> "ads/slot" ad_slug="ad-header" ad_variant="header"}}
   {{{body}}}
+  {{> "ads/mobile-anchor"}}
 
   <script src="{{asset "js/main.js"}}" defer></script>
   {{!-- The Content API key is read at runtime from the search/Portal script

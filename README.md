@@ -165,6 +165,29 @@ The right side adapts to the reader: visitors see your cheapest paid plan with c
 
 ---
 
+## Ads
+
+Ads are **off by default**. Turn on **Enable ads** in Design settings, then fill each spot by publishing a page with the matching slug — put an image banner (an Image card linked to the advertiser) or ad-network code (an HTML card) in the page body. No page, no ad in that spot; draft or delete the page to pull it. **Paying members never see ads**, and no ad script loads for them.
+
+| Page slug | Where it appears | Banner size (desktop / phone) |
+|---|---|---|
+| `ad-header` | Strip at the very top of every page | 970×90 or 728×90 / 320×100 or 320×50 |
+| `ad-home-top` | Below the homepage lead stories | 970×250 or 728×90 / 300×250 or 320×100 |
+| `ad-feed` | Inside the story grid on section and writer pages | 970×250 or 728×90 / 300×250 or 320×100 |
+| `ad-in-article` | Top of an article (only when the reader can read the full story) | 300×250 or 336×280 |
+| `ad-post-footer` | End of an article, before the author card | 300×250 or 336×280 |
+| `ad-mobile-anchor` | Small sticky banner at the bottom of phones, with a close button | 320×50 or 320×100 |
+
+**Between homepage sections:** create a page tagged `#home-ad` with the ad in its body. It slots into the homepage section rows like any other section page (ordered by publish date), so you can run several.
+
+**Desktop + phone creatives:** put two Image cards in the page — the desktop banner first, the phone banner second — and the right one shows at each screen size. Export images at 2× for sharp screens.
+
+Banner links automatically open in a new tab and are marked `rel="sponsored"`.
+
+**AdSense:** paste your publisher ID (`ca-pub-…`) into **AdSense publisher ID** to load AdSense once on every page (this also enables Auto ads — if you use Auto ads' own anchor, skip the `ad-mobile-anchor` page so phones don't get two). Paste each ad unit's code into the slot pages above. **Ad consent mode** (on by default) tells Google ads to set no advertising cookies for visitors in the EEA, UK and Switzerland until a consent tool allows them — turn it off if your consent platform already sets these defaults. Static image banners set no cookies at all. You'll likely also need an `ads.txt` at your domain root, which your host provides, not the theme.
+
+---
+
 ## Writer profiles
 
 Every writer manages their own profile in Ghost Admin — click your avatar (bottom left) → **Your profile**. The theme uses:

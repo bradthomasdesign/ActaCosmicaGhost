@@ -69,6 +69,23 @@
         "group": "homepage",
         "description": "Direct .mp4/.webm URL — autoplays as the top story's background instead of its feature image"
       },
+      "enable_ads": {
+        "type": "boolean",
+        "default": false,
+        "description": "Show ad slots, filled from pages slugged ad-header, ad-feed, etc. Paid members never see ads."
+      },
+      "adsense_publisher_id": {
+        "type": "text",
+        "default": "",
+        "visibility": "enable_ads:true",
+        "description": "ca-pub-XXXXXXXXXXXXXXXX — loads AdSense (and Auto ads)"
+      },
+      "ad_consent_mode": {
+        "type": "boolean",
+        "default": true,
+        "visibility": "enable_ads:true",
+        "description": "Deny ad cookies in the EEA, UK and Switzerland until a consent tool allows them"
+      },
       "footer_description": {
         "type": "text",
         "default": "An independent, reader-funded newsroom covering science, nature, and the people exploring both — with rigor and beauty in equal measure."

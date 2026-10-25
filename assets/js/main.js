@@ -544,6 +544,42 @@
     }
   }
 
+  // --- Ads ---------------------------------------------------------------------
+  // Banner links open in a new tab and are marked as paid links for search
+  // engines (Ghost's link tool can't set rel="sponsored" itself).
+  document.querySelectorAll('[data-ad] a[href]').forEach((a) => {
+    a.target = '_blank';
+    a.rel = 'noopener sponsored';
+  });
+  // In-feed ads span a whole grid row; keep them on a row boundary so they
+  // never leave a half-empty row above them (the column count varies with
+  // the viewport, so this is recomputed on resize).
+  document.querySelectorAll('#cat-grid > [data-ad], #author-grid > [data-ad]').forEach((ad) => {
+    const grid = ad.parentElement;
+    const target = [...grid.children].indexOf(ad); // cards before it, as rendered
+    const place = () => {
+      const cols = getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+      const cards = [...grid.querySelectorAll(':scope > .card-link')];
+      const at = Math.max(cols, Math.round(target / cols) * cols);
+      const before = cards[at];
+      if (before) grid.insertBefore(ad, before); else grid.appendChild(ad);
+    };
+    place();
+    window.addEventListener('resize', place, { passive: true });
+  });
+  // Phone anchor: pad the page so it never covers the footer; × removes it.
+  const anchorAd = document.querySelector('[data-ad-anchor]');
+  if (anchorAd) {
+    const pad = () => document.documentElement.style.setProperty('--ad-anchor-height', `${anchorAd.offsetHeight}px`);
+    document.body.classList.add('has-ad-anchor');
+    pad();
+    window.addEventListener('load', pad);
+    anchorAd.querySelector('[data-ad-anchor-close]')?.addEventListener('click', () => {
+      anchorAd.hidden = true;
+      document.body.classList.remove('has-ad-anchor');
+    });
+  }
+
   // Writer monograms: "Elena Sørensen" → "ES", "Prince" → "P".
   document.querySelectorAll('.avatar-initials[data-name]').forEach((el) => {
     const parts = el.getAttribute('data-name').trim().split(/\s+/).filter(Boolean);
@@ -904,7 +940,8 @@
     const empty = document.getElementById('cat-empty');
     const count = document.getElementById('cat-count');
     const moreWrap = document.getElementById('load-more-wrap');
-    const cards = Array.from(catGrid.children);
+    // Story cards only — an in-feed ad slot can sit in the same grid.
+    const cards = Array.from(catGrid.querySelectorAll(':scope > .card-link'));
     const total = (hero ? 1 : 0) + cards.length;
     const nextAnchor = document.getElementById('cat-next-page');
     let nextPageUrl = nextAnchor ? nextAnchor.href : null;
@@ -953,6 +990,7 @@
           if (show) visible++;
         }
         catGrid.classList.toggle('show-all', filter !== '');
+        catGrid.querySelectorAll(':scope > [data-ad]').forEach((ad) => { ad.hidden = filter !== ''; });
         cards.forEach((card) => {
           if (filter === '') {
             card.style.display = '';
@@ -998,7 +1036,7 @@
           loadMoreBtn.textContent = 'Load More Stories';
           loadMoreBtn.disabled = false;
           if (!nextPageUrl && moreWrap) moreWrap.style.display = 'none';
-          const newTotal = (hero ? 1 : 0) + catGrid.children.length;
+          const newTotal = (hero ? 1 : 0) + catGrid.querySelectorAll(':scope > .card-link').length;
           if (count) count.textContent = `${newTotal}${nextPageUrl ? '+' : ''} stories`;
         } catch (e) {
           loadMoreBtn.textContent = 'Load More Stories';
@@ -1010,7 +1048,7 @@
 
   // --- Author page: load more ---------------------------------------------
   const authorGrid = document.getElementById('author-grid');
-  if (authorGrid && authorGrid.children.length > 6) {
+  if (authorGrid && authorGrid.querySelectorAll(':scope > .card-link').length > 6) {
     document.getElementById('author-load-more-wrap')?.style.setProperty('display', 'flex');
     document.getElementById('author-load-more-btn')?.addEventListener('click', () => {
       authorGrid.classList.add('show-all');
