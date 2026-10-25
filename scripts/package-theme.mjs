@@ -1,9 +1,10 @@
 // Packages the theme into a zip ready for Ghost Admin → Design → Upload theme.
 // Copies only the files Ghost actually needs (theme templates, partials,
-// compiled assets, package.json, license) into acta-cosmica/ and zips that —
-// deliberately excludes node_modules, .git, dev scripts, and the
-// still-Astro-era README/ATTRIBUTIONS/MARKETPLACE_PLAN docs, none of which
-// Ghost needs to run the theme.
+// compiled assets, package.json, license, README) into acta-cosmica/ and zips
+// that — deliberately excludes node_modules, .git, dev scripts, and the
+// internal ATTRIBUTIONS/MARKETPLACE_PLAN docs. The README ships because it's
+// the theme's manual: the page slugs, internal tags and settings that switch
+// features on.
 //
 // Usage: npm run package
 
@@ -35,6 +36,7 @@ const includes = [
   'assets/built',
   'package.json',
   'LICENSE.md',
+  'README.md',
 ];
 
 fs.rmSync(outDir, { recursive: true, force: true });
