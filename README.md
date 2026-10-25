@@ -212,6 +212,7 @@ Add these in a post's **Post settings → Tags**. Tags starting with `#` are int
 |---|---|
 | `#toc` | Adds an "In this story" contents list above the article, built from the post's H2 headings (H3s nest under them). Highlights the section being read; starts collapsed on phones. Hidden automatically if the post has fewer than two H2s. |
 | `#video` | Turns the post into a video post: the first uploaded video, YouTube or Vimeo embed in the body moves into the hero, with the feature image as its poster. Playback starts on click. Story cards for the post get a ▶ badge. |
+| ↳ persistent player | Once a reader presses play on a `#video` post, the video docks into a corner mini-player when they scroll past it, and keeps playing as they click through to other pages on the site. The mini-player has **Back to the article** (returns the video to the hero) and **Close** (stops playback). Readers who never press play — and search engines — get ordinary page loads. Turn it off, or move the mini-player to the bottom-left corner, under **Design settings → Post**. |
 | `#hero-split-right` / `#hero-split-left` | Magazine-style opening: headline and standfirst beside a square-cropped feature image (image on the right or left). Stacks headline-first on phones. |
 | `#hero-slideshow` | The feature image plus the images from the post's first gallery card become a manual slideshow hero (arrows, dots, ← / → keys, swipe). The gallery is removed from the body so photos aren't shown twice; captions come from each image's alt text. |
 | `#no-dropcap` | Removes the drop cap from this post's opening paragraph. |
@@ -220,6 +221,12 @@ Add these in a post's **Post settings → Tags**. Tags starting with `#` are int
 Only one hero layout applies per post. If a post has several, `#video` wins, then `#hero-split-right`, `#hero-split-left`, `#hero-slideshow`. Split and slideshow heroes need a feature image and fall back to the standard hero without one.
 
 **Stories without a feature image** render as text cards everywhere a card would show a photo: a heavy rule and the story's summary (its excerpt, or the opening of the post) fill the image space, so pictured and unpictured cards still line up. In the homepage "Latest" list, an unpictured story simply has no thumbnail.
+
+---
+
+### How the persistent player works (for developers)
+
+After a reader presses play, clicking an on-site link opens the next page in a full-screen frame above the article, so the video's player is never reloaded. Each framed page is a normal page load, so its scripts, ads and analytics run exactly as usual; the address bar and title follow the framed page, and Back steps through it before returning to the article. Links that leave the site (or go to `/ghost/`) replace the whole window. Add `data-mp-reload` to a link to always force a normal page load.
 
 ---
 

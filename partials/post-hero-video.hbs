@@ -5,9 +5,23 @@
       body is left untouched. --}}
 <section class="hero-video">
   <div class="hero-video__inner">
-    <div class="hero-video__frame" data-video-hero>
+    {{!-- The slot keeps the hero's shape when the frame docks into the corner
+          mini-player (the frame is restyled in place, never moved — moving
+          an iframe in the DOM would reload it and restart the video). --}}
+    <div class="hero-video__slot">
+    <div class="hero-video__frame" data-video-hero{{#if @custom.persistent_player}} data-persistent{{/if}} data-mini-side="{{#match @custom.mini_player_position "Bottom left"}}left{{else}}right{{/match}}">
+      <div class="mini-player__bar" hidden>
+        <span class="mini-player__title">{{title}}</span>
+        <button type="button" class="mini-player__btn" data-mini-expand aria-label="Back to the article">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        </button>
+        <button type="button" class="mini-player__btn" data-mini-close aria-label="Close video">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
       {{#if feature_image}}<img class="hero-video__poster" src="{{img_url feature_image size="xl"}}" alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}" />{{/if}}
       <button type="button" class="hero-video__play" aria-label="Play video" hidden><span aria-hidden="true"></span></button>
+    </div>
     </div>
     <div class="hero-video__text">
       {{#if primary_tag}}<div class="hero-kicker"><span aria-hidden="true"></span><a href="{{primary_tag.url}}">{{primary_tag.name}}</a></div>{{/if}}

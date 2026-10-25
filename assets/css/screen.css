@@ -866,9 +866,9 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
 /* Video hero — #video */
 .hero-video { background: var(--band); color: #fff; padding: 40px 24px 48px; }
 .hero-video__inner { max-width: 1120px; margin: 0 auto; }
+.hero-video__slot { position: relative; aspect-ratio: 16 / 9; margin-bottom: 32px; }
 .hero-video__frame {
-  position: relative; aspect-ratio: 16 / 9; overflow: hidden;
-  background: #2b3a55; margin-bottom: 32px;
+  position: absolute; inset: 0; overflow: hidden; background: #2b3a55;
 }
 .hero-video__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero-video__frame iframe, .hero-video__frame video,
@@ -1386,4 +1386,48 @@ form[data-members-form].loading button { opacity: 0.6; pointer-events: none; }
   position: absolute; top: 4px; right: 6px; width: 30px; height: 30px; border-radius: 50%;
   border: 1px solid var(--rule-strong); background: var(--paper-raised); color: var(--ink);
   font: 400 20px/1 var(--gh-font-heading,'Archivo'); cursor: pointer; padding: 0 0 2px;
+}
+
+/* ------------------------------------------------------------------------
+   Persistent video player: the #video hero frame docks into a corner
+   mini-player (restyled in place) and other pages open in a full-screen
+   frame above the article while the video keeps playing.
+   ------------------------------------------------------------------------ */
+.mini-player__bar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+  display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.75), rgba(0,0,0,0)); color: #fff;
+}
+.mini-player__bar[hidden] { display: none; }
+.mini-player__title {
+  flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 700 13px/1.2 var(--gh-font-heading,'Archivo');
+}
+.mini-player__btn {
+  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0,0,0,.55); color: #fff; display: flex; align-items: center; justify-content: center;
+}
+.mini-player__btn:hover { background: rgba(0,0,0,.8); }
+.hero-video__frame.is-mini {
+  --mini-w: min(380px, calc(100vw - 24px));
+  position: fixed; inset: auto 16px 16px auto; z-index: 95;
+  width: var(--mini-w); height: calc(var(--mini-w) * 9 / 16 + 44px);
+  box-shadow: 0 18px 46px rgba(0,0,0,.45); border-radius: 6px; background: #111;
+}
+/* In the mini-player the bar gets its own strip above the video. */
+.hero-video__frame.is-mini .mini-player__bar { height: 44px; background: #111; }
+.hero-video__frame.is-mini > :is(iframe, video, .kg-video-card, .kg-embed-card) { top: 44px !important; height: calc(100% - 44px) !important; }
+.hero-video__frame.is-mini[data-mini-side="left"] { inset: auto auto 16px 16px; }
+body.has-ad-anchor .hero-video__frame.is-mini { bottom: calc(var(--ad-anchor-height, 120px) + 12px); }
+@media (max-width: 640px) {
+  .hero-video__frame.is-mini { --mini-w: min(300px, calc(100vw - 24px)); inset: auto 12px 12px auto; }
+  .hero-video__frame.is-mini[data-mini-side="left"] { inset: auto auto 12px 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-video__frame.is-mini { animation: mini-in .22s ease-out; }
+  @keyframes mini-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+}
+.page-shell {
+  position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 90;
+  background: var(--paper);
 }

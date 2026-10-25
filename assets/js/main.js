@@ -242,10 +242,148 @@
           video.play().catch(() => {});
           video.focus();
         }
+        if (videoHero.hasAttribute('data-persistent') && window.top === window.self) {
+          setupPersistentPlayer(videoHero, iframe, video);
+        }
       }, { once: true });
     } else if (articleBody) {
       console.warn('[acta] #video post has no uploaded video, YouTube or Vimeo embed in its body — showing the poster only.');
     }
+  }
+
+  // --- Persistent video player ----------------------------------------------
+  // Only kicks in once a #video post's video has been played. From then on:
+  //  - scrolling the hero out of view docks the frame into a corner mini-player;
+  //  - clicking an on-site link opens that page in a full-screen frame over the
+  //    article (a normal page load, so every script, ad and analytics tag runs
+  //    as usual) while the video keeps playing underneath. The address bar and
+  //    title follow the framed page; Back past the first framed page returns to
+  //    the article.
+  // The video frame is restyled in place, never moved: moving an <iframe> in
+  // the DOM reloads it and the video would restart.
+  function setupPersistentPlayer(frame, iframe, video) {
+    const slot = frame.parentElement;
+    const bar = frame.querySelector('.mini-player__bar');
+    const articleUrl = location.href;
+    const articleTitle = document.title;
+    const announcer = document.createElement('p');
+    announcer.className = 'visually-hidden';
+    announcer.setAttribute('aria-live', 'polite');
+    document.body.appendChild(announcer);
+    let shell = null;
+    let active = true;
+    window.__actaShell = true; // lets framed pages know who framed them
+
+    const setMini = (on) => {
+      frame.classList.toggle('is-mini', on);
+      if (bar) bar.hidden = !on;
+    };
+    const io = new IntersectionObserver(([entry]) => {
+      if (active && !shell) setMini(!entry.isIntersecting);
+    }, { threshold: 0.25 });
+    io.observe(slot);
+
+    function stopVideo() {
+      active = false;
+      io.disconnect();
+      document.removeEventListener('click', onLinkClick, true);
+      if (video) video.pause();
+      if (iframe) {
+        // Reload without autoplay: stops playback, keeps the player in the hero.
+        const url = new URL(iframe.src, location.href);
+        url.searchParams.delete('autoplay');
+        iframe.src = url.toString();
+      }
+      setMini(false);
+    }
+
+    function closeShell() {
+      if (!shell) return;
+      shell.remove();
+      shell = null;
+      document.documentElement.style.overflow = '';
+      document.title = articleTitle;
+      if (location.href !== articleUrl) history.replaceState(null, '', articleUrl);
+      announcer.textContent = articleTitle;
+    }
+
+    function openShell(url) {
+      shell = document.createElement('iframe');
+      shell.className = 'page-shell';
+      shell.title = 'Page';
+      shell.src = url;
+      shell.addEventListener('load', () => {
+        let doc = null;
+        try { doc = shell.contentDocument; } catch {}
+        if (!doc || !doc.location || doc.location.origin !== location.origin) {
+          // Somewhere we can't frame (or read): finish with a normal load.
+          location.href = url;
+          return;
+        }
+        history.replaceState({ actaShell: true }, '', doc.location.href);
+        document.title = doc.title;
+        announcer.textContent = doc.title;
+        shell.focus();
+      });
+      document.body.appendChild(shell);
+      document.documentElement.style.overflow = 'hidden';
+      history.pushState({ actaShell: true }, '', url);
+      setMini(true);
+    }
+
+    function onLinkClick(e) {
+      if (!active || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a[href]');
+      if (!a || a.target || a.hasAttribute('download') || a.hasAttribute('data-mp-reload') || a.closest('[data-ad]')) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname.startsWith('/ghost')) return;
+      if (url.pathname === location.pathname && url.search === location.search) return; // in-page / Portal hash links
+      e.preventDefault();
+      if (shell) shell.src = url.href; else openShell(url.href);
+    }
+    document.addEventListener('click', onLinkClick, true);
+
+    window.addEventListener('popstate', (e) => {
+      if (shell && !(e.state && e.state.actaShell)) {
+        closeShell();
+        if (active) setMini(slot.getBoundingClientRect().bottom < 0);
+      }
+    });
+
+    frame.querySelector('[data-mini-expand]')?.addEventListener('click', () => {
+      closeShell();
+      setMini(false);
+      slot.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    });
+    frame.querySelector('[data-mini-close]')?.addEventListener('click', () => {
+      // Inside the shell, finish on the page the reader is on with a normal load.
+      if (shell) {
+        let here = null;
+        try { here = shell.contentWindow.location.href; } catch {}
+        location.href = here || location.href;
+        return;
+      }
+      stopVideo();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && frame.classList.contains('is-mini') && !shell) stopVideo();
+    });
+  }
+
+  // Inside the persistent-player frame, links that leave the site (or go to
+  // Ghost Admin) replace the whole window rather than loading in the frame.
+  let framedByShell = false;
+  try { framedByShell = window.top !== window.self && window.parent.__actaShell === true; } catch {}
+  if (framedByShell) {
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href]');
+      if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname.startsWith('/ghost') || a.target === '_top') {
+        e.preventDefault();
+        window.top.location.href = url.href;
+      }
+    });
   }
 
   // --- Slideshow hero (#hero-slideshow) -------------------------------------

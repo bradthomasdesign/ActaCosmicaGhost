@@ -69,6 +69,19 @@
         "group": "homepage",
         "description": "Direct .mp4/.webm URL — autoplays as the top story's background instead of its feature image"
       },
+      "persistent_player": {
+        "type": "boolean",
+        "default": true,
+        "group": "post",
+        "description": "Keep a playing #video post's video going in a mini-player as readers browse"
+      },
+      "mini_player_position": {
+        "type": "select",
+        "options": ["Bottom right", "Bottom left"],
+        "default": "Bottom right",
+        "group": "post",
+        "visibility": "persistent_player:true"
+      },
       "enable_ads": {
         "type": "boolean",
         "default": false,
