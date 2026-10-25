@@ -116,7 +116,7 @@ These homepage features are driven by Ghost pages rather than theme settings, so
 
 A row with no matching stories doesn't render.
 
-**Editor's Picks.** Feature posts with Ghost's **Featured** toggle. The first three featured posts fill the homepage hero, the lead story and the Editor's Pick block; featured posts four through eleven appear in an Editor's Picks carousel under the lead stories. With three or fewer featured posts the carousel doesn't show.
+**Editor's Picks.** Feature posts with Ghost's **Featured** toggle. The first three featured posts fill the homepage hero, the lead story and the Editor's Pick block; featured posts four through eleven appear in an Editor's Picks carousel under the lead stories, two large stories to a view. With three or fewer featured posts the carousel doesn't show.
 
 Section pages are automatically marked `noindex`, and if someone opens one at its own URL they see that section's row rather than an empty page.
 
@@ -158,6 +158,8 @@ Everything here follows your Ghost membership setup (**Settings → Membership**
 | Meta title | Optional override for the badge above the price (otherwise "Start your N-day free trial" or "Membership") |
 
 The right side adapts to the reader: visitors see your cheapest paid plan with checkout (or a free sign-up form if nothing is for sale yet, or a sign-in prompt on invite-only sites); free members see an Upgrade offer; paying members never see the band. It also steps aside on the membership page itself.
+
+**Newsletter band** — the dark sign-up band near the bottom of most pages. Its copy is the theme's default until you publish a page with the slug `newsletter-band`: the page **Title** becomes the headline, its **Excerpt** the line beneath, and its **Meta title** the small label above (default "The [site name] Dispatch"). The page body isn't used.
 
 **End-of-article prompt** — for logged-out readers on stories they can read in full (members-only stories already show the paywall prompt instead):
 - Publish a page with slug `newsletter-cta` for a newsletter sign-off card: Heading 2 + paragraphs in the body, Excerpt = small label (default "Sign up"), Meta title = button text (default "Subscribe"), Meta description = fine print.
@@ -225,7 +227,7 @@ Add these in a post's **Post settings → Tags**. Tags starting with `#` are int
 
 | Tag | What it does |
 |---|---|
-| `#toc` | Adds an "In this story" contents list above the article, built from the post's H2 headings (H3s nest under them). Highlights the section being read; starts collapsed on phones. Hidden automatically if the post has fewer than two H2s. |
+| *(automatic)* / `#no-toc` | Every post with two or more H2/H3 subheads gets an "In this story" contents list above the article: H2s are the entries, H3s nest under them (or are the entries in a post with no H2s). It highlights the section being read and starts collapsed on phones. Tag a post `#no-toc` to leave it out. |
 | `#video` | Turns the post into a video post: the first uploaded video, YouTube or Vimeo embed in the body moves into the hero, with the feature image as its poster. Playback starts on click. Story cards for the post get a ▶ badge. |
 | ↳ persistent player | Once a reader presses play on a `#video` post, the video docks into a corner mini-player when they scroll past it, and keeps playing as they click through to other pages on the site. The mini-player has **Back to the article** (returns the video to the hero) and **Close** (stops playback). Readers who never press play — and search engines — get ordinary page loads. Turn it off, or move the mini-player to the bottom-left corner, under **Design settings → Post**. |
 | `#hero-split-right` / `#hero-split-left` | Magazine-style opening: headline and standfirst beside a square-cropped feature image (image on the right or left). Stacks headline-first on phones. |

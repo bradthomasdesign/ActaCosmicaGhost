@@ -1,0 +1,5 @@
+{{!-- Label, headline and standfirst for the newsletter band. Empty values
+      fall back to the theme's default copy. --}}
+    <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.18em;text-transform:uppercase;color:var(--accent,{{@custom.accent_color}});margin-bottom:16px;">{{#if label}}{{label}}{{else}}The {{@site.title}} Dispatch{{/if}}</div>
+    <h2 style="font:700 clamp(28px,3.4vw,40px)/1.1 var(--gh-font-heading,'Archivo'),sans-serif;color:#fff;margin:0 0 14px;text-wrap:balance;">{{#if headline}}{{headline}}{{else}}The stories behind the science, every morning{{/if}}</h2>
+    <p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.72);margin:0 0 28px;">{{#if text}}{{text}}{{else}}One email. The reporting, photography, and discoveries worth your time — nothing else.{{/if}}</p>

@@ -95,9 +95,10 @@
 <!-- ARTICLE BODY -->
 <article class="{{post_class}} article-body" style="max-width:760px;margin:0 auto;padding:48px 24px 8px;font:400 calc(20px * var(--reading-scale, 1))/1.72 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-body);">
   {{#if access}}{{> "ads/slot" ad_slug="ad-in-article" ad_variant="in-article"}}{{/if}}
-  {{#has tag="#toc"}}
-  {{!-- "In this story" contents list, built by main.js from the post's own
-        H2/H3 section headings. Hides itself when there are fewer than two. --}}
+  {{#has tag="#no-toc"}}{{else}}
+  {{!-- "In this story" contents list — automatic: main.js builds it from the
+        post's own H2/H3 subheads and only shows it when there are two or
+        more. Tag a post #no-toc to leave it out. --}}
   <nav class="story-toc" aria-labelledby="story-toc-title" data-toc hidden>
     <details class="story-toc__details" open>
       <summary id="story-toc-title">In this story</summary>

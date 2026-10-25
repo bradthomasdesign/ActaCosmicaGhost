@@ -81,8 +81,8 @@
 
 {{!-- EDITOR'S PICKS — a carousel of featured posts beyond the three the
       front page already places (hero, lead, Editor's Pick): featured posts
-      4–11, newest first. Appears once a fourth post is featured; mark posts
-      with Ghost's Featured toggle. --}}
+      4–11, newest first, two to a view. Appears once a fourth post is
+      featured; mark posts with Ghost's Featured toggle. --}}
 {{#get "posts" filter="featured:true" limit="11" include="tags" as |picks|}}
 {{#foreach picks from="4" to="4"}}
 <section class="hrow hrow--picks reveal" aria-labelledby="picks-title">
@@ -93,10 +93,11 @@
     <ul class="carousel__track carousel__track--picks" aria-label="Editor's Picks">
 {{/foreach}}
       {{#foreach picks from="4"}}
-      <li><a class="grid-card card-link" href="{{url}}">
-        {{> "card-image" ratio="4/5" size="m"}}
+      <li><a class="grid-card pick-card card-link" href="{{url}}">
+        {{> "card-image" ratio="3/2" size="l"}}
         {{> "card-kicker"}}
         <h3>{{title}}</h3>
+        {{#if feature_image}}<p>{{excerpt words="28"}}</p>{{/if}}
       </a></li>
       {{/foreach}}
 {{#foreach picks from="4" to="4"}}

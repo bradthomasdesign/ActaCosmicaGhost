@@ -150,16 +150,17 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const articleBody = document.querySelector('.post-template .article-body');
 
-  // --- "In this story" contents list (#toc) --------------------------------
-  // Built from the article's own top-level H2s, with H3s nested under the
-  // H2 before them. Headings inside cards (callouts, toggles) aren't direct
-  // children of the body, so they're skipped. Fewer than two H2s: stays hidden.
+  // --- "In this story" contents list (automatic; #no-toc opts out) ----------
+  // Built from the article's own subheads: H2s are the entries, with H3s
+  // nested under the H2 before them (in a post with no H2s, the H3s are the
+  // entries). Headings inside cards (callouts, toggles) aren't direct
+  // children of the body, so they're skipped. Under two subheads: hidden.
   const toc = document.querySelector('[data-toc]');
   if (toc && articleBody) {
     const headings = [...articleBody.querySelectorAll(':scope > h2, :scope > h3')];
-    const h2Count = headings.filter((h) => h.tagName === 'H2').length;
+    const hasH2 = headings.some((h) => h.tagName === 'H2');
     const list = toc.querySelector('.story-toc__list');
-    if (h2Count >= 2 && list) {
+    if (headings.length >= 2 && list) {
       let currentSub = null;
       const links = [];
       headings.forEach((h, i) => {
@@ -170,7 +171,7 @@
         a.textContent = h.textContent.trim();
         li.appendChild(a);
         links.push([h, a]);
-        if (h.tagName === 'H2' || !list.lastElementChild) {
+        if (h.tagName === 'H2' || !hasH2 || !list.lastElementChild) {
           list.appendChild(li);
           currentSub = null;
         } else {

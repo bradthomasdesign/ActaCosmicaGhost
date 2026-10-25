@@ -46,6 +46,7 @@
   {{!-- Homepage section/video pages are layout config, not destinations —
         keep them out of search results while still letting crawlers follow
         their links through to the stories. --}}
+  {{#is "page"}}{{#page}}{{#match slug "~^" "ad-"}}<meta name="robots" content="noindex, follow" />{{/match}}{{#match slug "newsletter-band"}}<meta name="robots" content="noindex, follow" />{{/match}}{{#match slug "membership-cta"}}<meta name="robots" content="noindex, follow" />{{/match}}{{#match slug "newsletter-cta"}}<meta name="robots" content="noindex, follow" />{{/match}}{{#match slug "member-cta"}}<meta name="robots" content="noindex, follow" />{{/match}}{{/page}}{{/is}}
   {{#is "page"}}{{#page}}{{#has tag="#home-spotlight,#home-feature-package,#home-feature-rail,#home-briefing,#home-briefing-carousel,#home-asymmetric-lead-list,#home-opinion-hedcut,#home-tag-columns,#home-standard-3-column-grid,#home-standard-4-column-grid,#home-video,#home-ad"}}<meta name="robots" content="noindex, follow" />{{/has}}{{/page}}{{/is}}
   {{> "ads/head"}}
   {{ghost_head}}
