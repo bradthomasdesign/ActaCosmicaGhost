@@ -121,12 +121,16 @@
 .rc-option input:checked + span { background: var(--ink); color: var(--paper); }
 .rc-option input:focus-visible + span { outline: 2px solid var(--accent, #f5c518); outline-offset: -2px; }
 
-/* Ghost's comments widget picks light/dark itself from the surrounding text
-   color, but its iframe document never declares a color-scheme. When the page
-   is dark, the browser would paint an opaque white backdrop behind an iframe
-   whose scheme differs from its embedder's, so pin the iframe element to
-   light and let the widget's own (transparent) dark styling show through. */
-#ghost-comments-root iframe { color-scheme: light; }
+/* Ghost's own widgets (comments, the Portal account button and popups, and
+   search) render inside iframes whose documents never declare a
+   color-scheme. When the page is dark, the browser paints an opaque white
+   backdrop behind an iframe whose scheme differs from its embedder's — the
+   white square behind the Portal avatar button, the white comments box — so
+   pin these iframe elements to light and let each widget's own (transparent)
+   styling show through. */
+#ghost-comments-root iframe,
+#ghost-portal-root iframe,
+#sodo-search-root iframe { color-scheme: light; }
 
 /* Callout cards keep their tint family in dark mode, just deepened. */
 @media (prefers-color-scheme: dark) {
