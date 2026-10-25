@@ -1,7 +1,11 @@
 {{!-- Overrides the default navigation helper output for every call site
       in the theme (header tabs + drawer). Both call sites share this same
       item markup and rely on ancestor CSS (.header-nav-tabs / #drawer-nav)
-      for the actual visual treatment — see screen.css. --}}
+      for the actual visual treatment — see screen.css.
+
+      Prefix a label with "-" in Settings → Navigation to nest it under the
+      item above: main.js turns those into a dropdown in the header and an
+      indented sub-link in the drawer. Without JS they show as plain links. --}}
 {{#foreach navigation}}
 <a href="{{url}}" class="nav-link{{#if current}} nav-link-current{{/if}}">{{label}}</a>
 {{/foreach}}

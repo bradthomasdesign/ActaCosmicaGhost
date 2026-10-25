@@ -77,7 +77,11 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 | `footer_description` | Footer masthead blurb |
 | `show_footer_credit`, `footer_credit_label`, `footer_credit_name`, `footer_credit_url` | Optional "designed and built by" footer credit |
 
-Site navigation and secondary (footer) navigation are managed the standard Ghost way, under **Settings → Navigation**.
+Site navigation is managed the standard Ghost way, under **Settings → Navigation**:
+
+- **Primary navigation** drives the header's section bar and the slide-out menu. Links that don't fit on one line collapse into a **More** menu. To nest links, start a label with a dash — `-Astronomy` placed under `Science` becomes part of a Science dropdown in the header and an indented sub-link in the slide-out menu.
+- **Legal links** in the footer's bottom row come from pages tagged `#footer-legal-link` (newest first; the page title is the link text). Until you tag one, the theme shows its stock Privacy Policy, Terms of Use and Cookie Policy links (`/privacy/`, `/terms/`, `/cookies/`).
+- The footer's **Explore** column lists your published pages, skipping ones the footer already links (About, Membership, the legal pages) and the homepage section/video pages.
 
 Social links come from Ghost's own **Settings → General → Social accounts** (X, Facebook, LinkedIn, Bluesky, Threads, Mastodon, TikTok, YouTube, Instagram) and appear in the header and footer for every account you fill in. Ghost pre-fills Facebook and X with Ghost's own accounts on a new site — clear those fields if they aren't yours.
 

@@ -346,6 +346,154 @@
     update();
   });
 
+  // --- Navigation: "-" sub-items, dropdowns and the More menu ---------------
+  // In Settings → Navigation, a label starting with "-" belongs under the
+  // item above it. Group the flat list Ghost renders into parents + children.
+  function groupNavLinks(links) {
+    const groups = [];
+    links.forEach((a) => {
+      const label = a.textContent.trim();
+      if (label.startsWith('-') && groups.length) {
+        a.textContent = label.replace(/^-+\s*/, '');
+        groups[groups.length - 1].children.push(a);
+      } else {
+        if (label.startsWith('-')) a.textContent = label.replace(/^-+\s*/, '');
+        groups.push({ link: a, children: [] });
+      }
+    });
+    return groups;
+  }
+
+  // Drawer: children become indented sub-links under their parent.
+  const drawerNav = document.getElementById('drawer-nav');
+  if (drawerNav) {
+    groupNavLinks([...drawerNav.querySelectorAll('.nav-link')]).forEach((g) => {
+      g.children.forEach((c) => c.classList.add('nav-link--child'));
+    });
+  }
+
+  const navRow = document.querySelector('[data-nav-row]');
+  if (navRow) {
+    const chevron = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+    const groups = groupNavLinks([...navRow.querySelectorAll(':scope > .nav-link')]);
+    let openToggle = null;
+    let uid = 0;
+
+    function closeOpen(focusToggle) {
+      if (!openToggle) return;
+      openToggle.setAttribute('aria-expanded', 'false');
+      document.getElementById(openToggle.getAttribute('aria-controls')).hidden = true;
+      if (focusToggle) openToggle.focus();
+      openToggle = null;
+    }
+    function makeDropdown(toggle, panel) {
+      const id = `nav-dropdown-${++uid}`;
+      panel.id = id;
+      panel.className = 'nav-dropdown';
+      panel.hidden = true;
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', id);
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = toggle.getAttribute('aria-expanded') === 'true';
+        closeOpen(false);
+        if (!open) {
+          toggle.setAttribute('aria-expanded', 'true');
+          panel.hidden = false;
+          openToggle = toggle;
+        }
+      });
+      toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (toggle.getAttribute('aria-expanded') !== 'true') toggle.click();
+          const first = panel.querySelector('a');
+          if (first) first.focus();
+        }
+      });
+    }
+
+    // One header item per group: a plain link, or link + dropdown toggle.
+    function itemFor(g) {
+      if (!g.children.length) return g.link;
+      const item = document.createElement('div');
+      item.className = 'nav-item';
+      const toggle = document.createElement('button');
+      toggle.className = 'nav-dropdown-toggle';
+      toggle.setAttribute('aria-label', `More in ${g.link.textContent.trim()}`);
+      toggle.innerHTML = chevron;
+      const panel = document.createElement('div');
+      g.children.forEach((c) => panel.appendChild(c));
+      makeDropdown(toggle, panel);
+      item.append(g.link, toggle, panel);
+      return item;
+    }
+    const items = groups.map(itemFor);
+
+    // Lay items out; whatever doesn't fit on one line moves into "More".
+    // Only on screens where the header row is visible and wide enough —
+    // below that the row is a horizontal scroll strip.
+    const wideQuery = window.matchMedia('(min-width: 768px)');
+    let moreItem = null;
+    function layout() {
+      closeOpen(false);
+      navRow.replaceChildren(...items);
+      if (moreItem) moreItem = null;
+      if (!wideQuery.matches) { navRow.classList.remove('is-enhanced'); return; }
+      navRow.classList.add('is-enhanced');
+      if (navRow.scrollWidth <= navRow.clientWidth + 1) return;
+
+      moreItem = document.createElement('div');
+      moreItem.className = 'nav-item nav-item--more';
+      const toggle = document.createElement('button');
+      toggle.className = 'nav-dropdown-toggle nav-more-toggle';
+      toggle.innerHTML = `More ${chevron}`;
+      const panel = document.createElement('div');
+      makeDropdown(toggle, panel);
+      moreItem.append(toggle, panel);
+      navRow.appendChild(moreItem);
+
+      const overflow = [];
+      while (navRow.scrollWidth > navRow.clientWidth + 1 && items.length - overflow.length > 1) {
+        const last = items[items.length - 1 - overflow.length];
+        overflow.unshift(last);
+        last.remove();
+      }
+      overflow.forEach((it) => {
+        if (it.classList.contains('nav-item')) {
+          // A parent with children: list the parent, then its children indented.
+          const parentLink = it.querySelector(':scope > .nav-link');
+          panel.appendChild(parentLink.cloneNode(true));
+          it.querySelectorAll('.nav-dropdown .nav-link').forEach((c) => {
+            const clone = c.cloneNode(true);
+            clone.classList.add('nav-link--child');
+            panel.appendChild(clone);
+          });
+        } else {
+          panel.appendChild(it.cloneNode(true));
+        }
+      });
+    }
+    layout();
+    let navResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(navResizeTimer);
+      navResizeTimer = setTimeout(layout, 120);
+    }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+
+    document.addEventListener('click', (e) => {
+      if (openToggle && !document.getElementById(openToggle.getAttribute('aria-controls')).contains(e.target)) closeOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && openToggle) closeOpen(true);
+    });
+    window.addEventListener('scroll', () => {
+      if (openToggle && !openToggle.parentElement.contains(document.activeElement)) closeOpen(false);
+    }, { passive: true });
+  }
+
   // Writer monograms: "Elena Sørensen" → "ES", "Prince" → "P".
   document.querySelectorAll('.avatar-initials[data-name]').forEach((el) => {
     const parts = el.getAttribute('data-name').trim().split(/\s+/).filter(Boolean);
