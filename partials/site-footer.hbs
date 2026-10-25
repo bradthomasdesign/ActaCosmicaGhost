@@ -9,29 +9,31 @@
         <p style="font:400 14px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.55);margin:0;">{{@custom.footer_description}}</p>
       </div>
       <div style="display:flex;gap:56px;flex-wrap:wrap;">
-        {{!-- Published Ghost pages, oldest first — minus the ones the footer
-                  already links elsewhere (the Pages column and the legal row) and
-                  the section/video pages that only configure the homepage. --}}
-        {{#get "pages" limit="8" order="published_at asc" filter="slug:-[about,membership,privacy,terms,cookies]+tag:-[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid,hash-home-video]"}}
-        {{#if pages}}
+        {{!-- SECTIONS — the sections featured on the homepage (one link per
+              homepage section page, in homepage order), so the footer always
+              matches what the front page promotes rather than listing every tag.
+              Hidden when the homepage has no section rows. --}}
+        {{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid]" limit="12" include="tags" order="published_at desc" as |sections|}}
+        {{#if sections}}
         <div>
-          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Explore</div>
-          <div style="display:flex;flex-direction:column;gap:11px;">
-              {{#foreach pages}}
-              <a href="{{url}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">{{title}}</a>
-              {{/foreach}}
+          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Sections</div>
+          <div class="footer-sections" style="display:flex;flex-direction:column;gap:11px;">
+            {{#foreach sections}}{{#if primary_tag}}<a href="{{primary_tag.url}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">{{primary_tag.name}}</a>
+            {{/if}}{{/foreach}}
           </div>
         </div>
         {{/if}}
         {{/get}}
+        {{!-- ABOUT — Ghost's Secondary navigation (Settings → Navigation), so the
+              site owner picks exactly which pages appear here. --}}
+        {{#if @site.secondary_navigation}}
         <div>
-          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Pages</div>
-          <div style="display:flex;flex-direction:column;gap:11px;">
-            <a href="/about/" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">About</a>
-            <a href="/membership/" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Membership</a>
-            <a href="/#newsletter" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Newsletters</a>
+          <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">About</div>
+          <div class="footer-nav-links" style="display:flex;flex-direction:column;gap:11px;">
+            {{navigation type="secondary"}}
           </div>
         </div>
+        {{/if}}
         <div>
           <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Follow</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
