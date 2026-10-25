@@ -9,16 +9,21 @@
         <p style="font:400 14px/1.6 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.55);margin:0;">{{@custom.footer_description}}</p>
       </div>
       <div style="display:flex;gap:56px;flex-wrap:wrap;">
+        {{!-- Published Ghost pages, oldest first — minus the ones the footer
+                  already links elsewhere (the Pages column and the legal row) and
+                  the section/video pages that only configure the homepage. --}}
+        {{#get "pages" limit="8" order="published_at asc" filter="slug:-[about,membership,privacy,terms,cookies]+tag:-[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid,hash-home-video]"}}
+        {{#if pages}}
         <div>
           <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Explore</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            {{#get "tags" limit="5" filter="visibility:public"}}
-              {{#foreach tags}}
-              <a href="{{url}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">{{name}}</a>
+              {{#foreach pages}}
+              <a href="{{url}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">{{title}}</a>
               {{/foreach}}
-            {{/get}}
           </div>
         </div>
+        {{/if}}
+        {{/get}}
         <div>
           <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Pages</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
