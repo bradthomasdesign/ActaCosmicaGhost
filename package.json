@@ -42,7 +42,7 @@
         "type": "select",
         "options": ["System", "Light", "Dark"],
         "default": "System",
-        "description": "System follows each reader's device and lets them switch. Light or Dark locks the whole site to that mode and hides the switches."
+        "description": "System follows each reader's device. Light or Dark locks the site."
       },
       "accent_color": {
         "type": "color",
