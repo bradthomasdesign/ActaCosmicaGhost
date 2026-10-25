@@ -718,6 +718,43 @@
     });
   }
 
+  // --- Print ----------------------------------------------------------------
+  // Print button in the article toolbar, plus the bits of the print layout
+  // that need the page's own data: the running header (article title + site
+  // name, in @page margin boxes where supported), the colophon's retrieval
+  // date, and a "view online" line standing in for media that can't print.
+  if (document.body.classList.contains('post-template')) {
+    document.querySelectorAll('[data-print]').forEach((btn) => btn.addEventListener('click', () => window.print()));
+
+    const body = document.querySelector('.article-body');
+    if (body) {
+      body.querySelectorAll(':scope > .kg-embed-card, :scope > .kg-video-card, :scope > .kg-audio-card, :scope > .kg-file-card, :scope > .kg-before-after-card, :scope > iframe').forEach((el) => {
+        const note = document.createElement('p');
+        note.className = 'print-media-note';
+        note.textContent = el.matches('.kg-audio-card') ? '♪ Audio — listen at the original article (link below).'
+          : el.matches('.kg-file-card') ? 'Attachment — download it from the original article (link below).'
+          : el.matches('.kg-before-after-card') ? 'Interactive image comparison — view it at the original article (link below).'
+          : '▶ Video — watch it at the original article (link below).';
+        el.after(note);
+      });
+    }
+
+    const cssString = (str) => JSON.stringify(String(str));
+    const pageStyle = document.createElement('style');
+    pageStyle.media = 'print';
+    const title = (document.querySelector('.print-cover__title') || {}).textContent || document.title;
+    const site = (document.querySelector('.print-cover__masthead') || {}).textContent || '';
+    pageStyle.textContent = `@page { @top-left { content: ${cssString(title.trim())}; font: italic 8pt Georgia, serif; color: #555; }
+      @bottom-left { content: ${cssString(site.trim())}; font: 8pt Georgia, serif; color: #555; } }
+      @page :first { @top-left { content: none; } }`;
+    document.head.appendChild(pageStyle);
+
+    window.addEventListener('beforeprint', () => {
+      const d = new Date().toLocaleDateString(document.documentElement.lang || undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+      document.querySelectorAll('[data-print-date]').forEach((el) => { el.textContent = d; });
+    });
+  }
+
   // Writer monograms: "Elena Sørensen" → "ES", "Prince" → "P".
   document.querySelectorAll('.avatar-initials[data-name]').forEach((el) => {
     const parts = el.getAttribute('data-name').trim().split(/\s+/).filter(Boolean);

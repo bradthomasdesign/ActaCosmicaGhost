@@ -1431,3 +1431,86 @@ body.has-ad-anchor .hero-video__frame.is-mini { bottom: calc(var(--ad-anchor-hei
   position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 90;
   background: var(--paper);
 }
+
+/* ------------------------------------------------------------------------
+   Print: articles print as a newspaper-style document — a cover with the
+   masthead, dateline, headline, standfirst, byline and photo; serif body
+   text; running header/footer with page numbers (browsers that support
+   @page margin boxes); and a source colophon. On-screen chrome is dropped.
+   ------------------------------------------------------------------------ */
+.print-cover, .print-colophon, .print-media-note { display: none; }
+
+@media print {
+  :root, :root[data-theme] {
+    --paper: #fff !important; --paper-raised: #fff !important; --paper-alt: #fff !important;
+    --ink: #000 !important; --ink-body: #111 !important; --ink-soft: #333 !important; --ink-muted: #555 !important;
+    --rule: #bbb !important; --rule-soft: #ccc !important; --rule-faint: #ddd !important; --rule-strong: #888 !important;
+    --accent-ink: #000 !important;
+    color-scheme: light !important;
+  }
+  @page { size: auto; margin: 20mm 18mm 22mm; }
+  /* Page numbers; the running title and site name are added by main.js. */
+  @page { @bottom-right { content: counter(page) " / " counter(pages); font: 8pt Georgia, serif; color: #555; } }
+  html, body { background: #fff !important; color: #000 !important; }
+  body { padding: 0 !important; }
+
+  /* Everything that isn't the story */
+  body > header, header[style*="sticky"], .skip-link, #progress-bar, #search-overlay, #nav-drawer, #nav-scrim,
+  .byline-bar, .post-template main > section:not(.print-cover), .hero-split, .hero-video, .hero-slideshow,
+  .author-card, .post-comments, .post-related, #newsletter, .mband, .article-cta, footer, .ad, .ad-anchor,
+  .story-toc, .page-shell, .reader-controls-panel, [data-video-hero], .article-body > div[style*="flex-wrap"] {
+    display: none !important;
+  }
+
+  /* Cover */
+  .print-cover { display: block; margin: 0 0 8mm; padding-bottom: 6mm; border-bottom: 2pt solid #000; break-after: avoid; }
+  .print-cover__masthead {
+    font: 800 26pt/1 var(--gh-font-heading,'Archivo'), sans-serif; letter-spacing: -.01em; text-align: center;
+    padding-bottom: 3mm; border-bottom: 1pt solid #000; margin-bottom: 2mm;
+  }
+  .print-cover__dateline {
+    font: 700 8pt/1 var(--gh-font-heading,'Archivo'), sans-serif; letter-spacing: .14em; text-transform: uppercase;
+    text-align: center; padding-bottom: 2mm; border-bottom: 1pt solid #000; margin-bottom: 7mm;
+  }
+  .print-cover__title { font: 800 28pt/1.05 var(--gh-font-heading,'Archivo'), sans-serif; margin: 0 0 4mm; color: #000; }
+  .print-cover__dek { font: italic 400 13pt/1.4 var(--gh-font-body,'Newsreader'), Georgia, serif; margin: 0 0 3mm; color: #222; }
+  .print-cover__byline { font: 700 8.5pt/1 var(--gh-font-heading,'Archivo'), sans-serif; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 5mm; }
+  .print-cover__image { display: block; width: 100%; max-height: 110mm; object-fit: cover; }
+  .print-cover__gated { font: 400 11pt/1.5 Georgia, serif; margin: 6mm 0 0; padding: 4mm; border: 1pt solid #000; }
+
+  /* Body copy */
+  .article-body {
+    max-width: none !important; padding: 0 !important; margin: 0 !important;
+    font: 400 10.5pt/1.55 var(--gh-font-body,'Newsreader'), Georgia, serif !important; color: #111 !important;
+    text-align: justify; hyphens: auto; orphans: 3; widows: 3;
+  }
+  .article-body p { margin: 0 0 3.2mm; }
+  .article-body h2, .article-body h3 { break-after: avoid; text-align: left; color: #000; }
+  .article-body h2 { font-size: 14pt; margin: 6mm 0 2mm; }
+  .article-body h3 { font-size: 12pt; margin: 5mm 0 2mm; }
+  .article-body figure, .article-body img, .article-body blockquote, .article-body .kg-card { break-inside: avoid; }
+  .article-body img { max-width: 100% !important; height: auto !important; }
+  .article-body a { color: inherit; text-decoration: none; }
+  .article-body .kg-width-wide, .article-body .kg-width-full { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; transform: none !important; }
+
+  /* Media that can't print collapse to a pointer back to the article */
+  .article-body iframe, .article-body video, .article-body audio,
+  .article-body .kg-embed-card, .article-body .kg-video-card, .article-body .kg-audio-card, .article-body .kg-file-card,
+  .article-body .kg-product-card .kg-product-card-button, .article-body .kg-toggle-card-icon,
+  .article-body .kg-before-after-card { display: none !important; }
+  .print-media-note {
+    display: block; clear: both; font: italic 400 9.5pt/1.4 Georgia, serif; color: #444; margin: 0 0 3.2mm;
+    padding: 2mm 0; border-top: .5pt solid #999; border-bottom: .5pt solid #999;
+  }
+  .article-body .kg-bookmark-container { display: block !important; border: .5pt solid #999 !important; }
+  .article-body .kg-bookmark-thumbnail, .article-body .kg-bookmark-description, .article-body .kg-bookmark-icon { display: none !important; }
+  .article-body .kg-toggle-content { max-height: none !important; opacity: 1 !important; }
+
+  /* Members-only stories: only the cover and its note print */
+  .post-template main:has(.print-cover__gated) .article-body { display: none !important; }
+
+  .print-colophon {
+    display: block; margin-top: 8mm; padding-top: 3mm; border-top: 1pt solid #000;
+    font: 400 8pt/1.4 var(--gh-font-heading,'Archivo'), sans-serif; color: #444; text-align: left; word-break: break-all;
+  }
+}

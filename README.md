@@ -42,6 +42,7 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 - **Native share sheet on mobile** — on iOS and Android, the share buttons in the article byline collapse to a single "Share" tap that opens the OS share sheet; falls back to the individual social buttons on desktop
 - **Per-post article options** — internal tags for an "In this story" contents list, a video hero, split-image and slideshow heroes, and per-post drop caps (see [Article options](#article-options-internal-tags)); stories without a photo render as designed text cards
 - **Dark mode and reader controls** — a full dark theme that follows each reader's device by default, a light/dark switch in the header, and an "Aa" panel on every article for text size (Small / Default / Large) and appearance (Light / Dark / System). Choices are remembered per reader, applied before the page paints (no flash), and synced across open tabs. Site owners can lock the whole site to Light or Dark instead
+- **Print-ready articles** — a newspaper-style print layout with a cover, running headers, page numbers and a source line
 - **Reader UX** — reading progress bar, a writers directory with live story counts, and a branded 404 page
 - **Optional autoplaying hero video** — swap the top story's background for a looping video via a custom setting, no per-post upload needed
 - **Fully responsive**, accessible (skip link, focus-visible states, reduced-motion support throughout), and SEO-ready via Ghost's own `{{ghost_head}}` output
@@ -185,6 +186,20 @@ Ads are **off by default**. Turn on **Enable ads** in Design settings, then fill
 Banner links automatically open in a new tab and are marked `rel="sponsored"`.
 
 **AdSense:** paste your publisher ID (`ca-pub-…`) into **AdSense publisher ID** to load AdSense once on every page (this also enables Auto ads — if you use Auto ads' own anchor, skip the `ad-mobile-anchor` page so phones don't get two). Paste each ad unit's code into the slot pages above. **Ad consent mode** (on by default) tells Google ads to set no advertising cookies for visitors in the EEA, UK and Switzerland until a consent tool allows them — turn it off if your consent platform already sets these defaults. Static image banners set no cookies at all. You'll likely also need an `ads.txt` at your domain root, which your host provides, not the theme.
+
+---
+
+## Printing
+
+Every article has a **Print** button in its toolbar (hidden on stories the reader can't open in full). Printing — from the button or the browser's own Print command — produces a newspaper-style document rather than the web page:
+
+- a cover with the publication name, section and date, headline, standfirst, byline and feature image;
+- body text in serif type, justified, with the drop cap kept;
+- the article title along the top of each page after the first, and the site name plus page numbers ("2 / 5") along the bottom (in browsers that support print page margins — Chrome and Edge);
+- videos, audio, embeds and interactive cards replaced by a short "view it at the original article" line;
+- a closing line crediting the publication with the article's full URL and the date it was printed.
+
+Navigation, comments, related stories, sign-up prompts and ads are left off. On a members-only story a visitor can't read, only the cover prints, with a note pointing to the article.
 
 ---
 
