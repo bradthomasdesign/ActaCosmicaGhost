@@ -1,7 +1,7 @@
 {
   "name": "acta-cosmica",
   "description": "A photo-forward news and magazine theme for Ghost",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "engines": {
     "ghost": ">=6.37.0"
   },

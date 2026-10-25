@@ -1520,3 +1520,30 @@ body.has-ad-anchor .vhero__frame.is-mini { bottom: calc(var(--ad-anchor-height, 
     font: 400 8pt/1.4 var(--gh-font-heading,'Archivo'), sans-serif; color: #444; text-align: left; word-break: break-all;
   }
 }
+
+/* "In this story" as a sticky sidebar on wide screens. The list floats out
+   into the empty margin left of the 760px text column (negative margin, so
+   it never narrows the text) and sticks below the header while the article
+   scrolls; it stops at the end of the article. */
+@media (min-width: 1360px) {
+  .article-body { position: relative; }
+  .story-toc {
+    float: left; clear: left; position: sticky; top: 96px;
+    width: 240px; margin: 4px 0 0 -296px; padding: 0;
+    max-height: calc(100vh - 128px); overflow-y: auto; overscroll-behavior: contain;
+    background: none; border: 0; border-top: 3px solid var(--ink);
+  }
+  .story-toc summary { cursor: default; padding: 14px 0 10px; font-size: 12px; }
+  .story-toc summary::after { display: none; }
+  .story-toc__list { padding-bottom: 6px; }
+  .story-toc__list a {
+    font-size: 14px; line-height: 1.35; padding: 8px 0 8px 12px; gap: 10px;
+    border-left: 2px solid var(--rule);
+  }
+  .story-toc__list > li > a::before { flex-basis: 18px; }
+  .story-toc__list ol { padding-left: 28px; }
+  .story-toc__list ol a { font-size: 13px; padding: 6px 0 6px 12px; }
+  .story-toc__list a[aria-current="true"] { border-left-color: var(--accent, #f5c518); color: var(--ink); }
+  .story-toc__list a:hover { border-left-color: var(--rule-strong); }
+}
+@media print { .story-toc { display: none !important; } }

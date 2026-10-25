@@ -188,8 +188,20 @@
         });
       });
       toc.hidden = false;
+      // Wide screens: a sticky sidebar beside the article, always open.
       // Phones start collapsed so the story's opening still leads.
-      if (window.matchMedia('(max-width: 1023px)').matches) toc.querySelector('details').open = false;
+      const details = toc.querySelector('details');
+      const sidebarQuery = window.matchMedia('(min-width: 1360px)');
+      const syncTocMode = () => {
+        if (sidebarQuery.matches) details.open = true;
+        else if (window.matchMedia('(max-width: 1023px)').matches) details.open = false;
+      };
+      syncTocMode();
+      sidebarQuery.addEventListener('change', syncTocMode);
+      // In sidebar mode the summary isn't a toggle — keep the list open.
+      details.querySelector('summary').addEventListener('click', (e) => {
+        if (sidebarQuery.matches) e.preventDefault();
+      });
 
       // Highlight the section currently being read.
       if ('IntersectionObserver' in window) {
