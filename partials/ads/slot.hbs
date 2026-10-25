@@ -2,15 +2,6 @@
       image banner (optionally a desktop image followed by a mobile image) or
       ad-network code. Nothing renders when ads are off, for paying members,
       or when the slot's page doesn't exist. ad_variant styles the slot. --}}
-{{#if @custom.enable_ads}}{{#unless @member.paid}}
-{{#get "pages" filter="slug:{{ad_slug}}" limit="1"}}
-{{#foreach pages}}
-<aside class="ad ad--{{../../ad_variant}}" aria-label="Advertisement" data-ad>
-  <div class="ad__inner">
-    <span class="ad__label">Advertisement</span>
-    <div class="ad__body">{{content}}</div>
-  </div>
-</aside>
-{{/foreach}}
-{{/get}}
-{{/unless}}{{/if}}
+{{!-- Who sees ads: never paying members; with "Hide ads from" set to
+      All signed-in members, no signed-in member at all. --}}
+{{#if @custom.enable_ads}}{{#unless @member.paid}}{{#if @member}}{{#match @custom.hide_ads_from "Paying members"}}{{> "ads/slot-body"}}{{/match}}{{else}}{{> "ads/slot-body"}}{{/if}}{{/unless}}{{/if}}

@@ -2,20 +2,6 @@
       isn't a paying member. Consent Mode v2 baseline first: ad/analytics
       storage denied by default for EEA, UK and Swiss visitors until a
       consent platform grants it — so no ad cookies are set before consent. --}}
-{{#if @custom.enable_ads}}{{#unless @member.paid}}
-{{#if @custom.ad_consent_mode}}
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent', 'default', {
-    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied',
-    region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'],
-    wait_for_update: 500
-  });
-  gtag('consent', 'default', { ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted' });
-</script>
-{{/if}}
-{{#if @custom.adsense_publisher_id}}
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{@custom.adsense_publisher_id}}" crossorigin="anonymous"></script>
-{{/if}}
-{{/unless}}{{/if}}
+{{!-- Who sees ads: never paying members; with "Hide ads from" set to
+      All signed-in members, no signed-in member at all. --}}
+{{#if @custom.enable_ads}}{{#unless @member.paid}}{{#if @member}}{{#match @custom.hide_ads_from "Paying members"}}{{> "ads/head-body"}}{{/match}}{{else}}{{> "ads/head-body"}}{{/if}}{{/unless}}{{/if}}

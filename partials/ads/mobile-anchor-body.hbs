@@ -1,0 +1,9 @@
+{{#get "pages" filter="slug:ad-mobile-anchor" limit="1"}}
+{{#foreach pages}}
+<aside class="ad-anchor" aria-label="Advertisement" data-ad data-ad-anchor>
+  <span class="ad__label">Advertisement</span>
+  <div class="ad__body">{{content}}</div>
+  <button type="button" class="ad-anchor__close" aria-label="Close advertisement" data-ad-anchor-close>×</button>
+</aside>
+{{/foreach}}
+{{/get}}

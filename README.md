@@ -170,7 +170,7 @@ The right side adapts to the reader: visitors see your cheapest paid plan with c
 
 ## Ads
 
-Ads are **off by default**. Turn on **Enable ads** in Design settings, then fill each spot by publishing a page with the matching slug — put an image banner (an Image card linked to the advertiser) or ad-network code (an HTML card) in the page body. No page, no ad in that spot; draft or delete the page to pull it. **Paying members never see ads**, and no ad script loads for them.
+Ads are **off by default**. Turn on **Enable ads** in Design settings, then fill each spot by publishing a page with the matching slug — put an image banner (an Image card linked to the advertiser) or ad-network code (an HTML card) in the page body. No page, no ad in that spot; draft or delete the page to pull it. **Paying members never see ads**, and no ad script loads for them. Set **Hide ads from** to **All signed-in members** to also hide ads from free members — useful on a site with only a free tier, where signing up is the reader's way of supporting you.
 
 | Page slug | Where it appears | Banner size (desktop / phone) |
 |---|---|---|
