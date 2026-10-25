@@ -494,6 +494,56 @@
     }, { passive: true });
   }
 
+  // --- Membership pricing ----------------------------------------------------
+  // Yearly saving vs. twelve monthly payments, from the tier's own prices.
+  // Never shows "save 0%": no saving, no line.
+  function yearlySaving(monthly, yearly) {
+    const m = Number(monthly), y = Number(yearly);
+    if (!m || !y || y >= m * 12) return 0;
+    return Math.round((1 - y / (m * 12)) * 100);
+  }
+  document.querySelectorAll('[data-offer]').forEach((offer) => {
+    const pct = yearlySaving(offer.dataset.monthly, offer.dataset.yearly);
+    const slot = offer.querySelector('[data-offer-saving]');
+    if (slot && pct) slot.textContent = ` · save ${pct}%`;
+  });
+
+  const plans = document.querySelector('[data-plans]');
+  if (plans) {
+    const hasMonthly = plans.dataset.hasMonthly === 'true';
+    const hasYearly = plans.dataset.hasYearly === 'true';
+    const both = hasMonthly && hasYearly;
+    const switcher = plans.querySelector('.plans__switch');
+    const setBilling = (period) => {
+      plans.dataset.billing = period;
+      plans.querySelectorAll('.plans__switch [data-billing-option]').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.dataset.billingOption === period));
+      });
+      // The "or $X a year" line always advertises the other period.
+      plans.querySelectorAll('.plan__alt--to-yearly').forEach((b) => { b.hidden = !both || period === 'yearly'; });
+      plans.querySelectorAll('.plan__alt--to-monthly').forEach((b) => { b.hidden = !both || period === 'monthly'; });
+    };
+    plans.querySelectorAll('[data-billing-option]').forEach((b) => {
+      b.addEventListener('click', () => setBilling(b.dataset.billingOption));
+    });
+    if (switcher && both) switcher.hidden = false;
+    setBilling(both ? (plans.dataset.default === 'yearly' ? 'yearly' : 'monthly') : (hasYearly && !hasMonthly ? 'yearly' : 'monthly'));
+
+    const paid = [...plans.querySelectorAll('.plan--paid')];
+    paid.forEach((card) => {
+      const pct = yearlySaving(card.dataset.monthly, card.dataset.yearly);
+      const slot = card.querySelector('[data-plan-saving]');
+      if (slot && pct) slot.textContent = ` · save ${pct}%`;
+    });
+    // "Most popular" goes on the cheapest paid plan when there's a choice.
+    if (paid.length > 1) {
+      const cheapest = paid.reduce((a, b) => (Number(b.dataset.monthly) < Number(a.dataset.monthly) ? b : a));
+      cheapest.classList.add('is-popular');
+      const tag = cheapest.querySelector('.plan__popular');
+      if (tag) tag.hidden = false;
+    }
+  }
+
   // Writer monograms: "Elena Sørensen" → "ES", "Prince" → "P".
   document.querySelectorAll('.avatar-initials[data-name]').forEach((el) => {
     const parts = el.getAttribute('data-name').trim().split(/\s+/).filter(Boolean);

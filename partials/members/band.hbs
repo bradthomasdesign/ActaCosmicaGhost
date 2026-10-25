@@ -1,0 +1,27 @@
+{{!-- Membership band (rendered from site-footer.hbs inside the membership-cta
+      page's context). Left: the page's copy. Right: whatever this reader can
+      actually do, following Ghost's own signup settings. --}}
+<section class="mband reveal" aria-label="Membership">
+  <div class="mband__inner">
+    <div class="mband__copy">
+      {{#if custom_excerpt}}<div class="mband__top"><span class="mband__eyebrow">{{custom_excerpt}}</span>{{#if meta_description}}<span class="mband__issue">{{meta_description}}</span>{{/if}}</div>{{/if}}
+      <div class="mband__body">{{content}}</div>
+    </div>
+    <div class="mband__offer">
+      {{#if upgrade}}
+        {{> "members/offer-paid" badge=meta_title}}
+      {{else}}{{#match @site.members_signup_access "invite"}}
+        {{> "members/offer-signin"}}
+      {{else}}{{#if @site.paid_members_enabled}}
+        {{> "members/offer-paid" badge=meta_title}}
+      {{else}}
+        {{!-- Free signup when the Free plan is offered and anyone may join;
+              otherwise a sign-in prompt. portal_plans is an array, so the
+              free form is emitted from a loop and CSS hides the sign-in
+              prompt whenever the form is present. --}}
+        {{#match @site.members_signup_access "all"}}{{#foreach @site.portal_plans}}{{#match this "free"}}{{> "members/offer-free"}}{{/match}}{{/foreach}}{{/match}}
+        {{> "members/offer-signin"}}
+      {{/if}}{{/match}}{{/if}}
+    </div>
+  </div>
+</section>

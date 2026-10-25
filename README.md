@@ -136,6 +136,35 @@ Bookmarks are stored in `localStorage` under the key `acta_saved` — the same k
 
 ---
 
+## Membership
+
+Everything here follows your Ghost membership setup (**Settings → Membership**) — prices, tiers, trials and who may sign up are never typed into the theme.
+
+**Membership page** (`/membership/`, the `page-membership.hbs` template). Shows a card per public tier with its description and benefits:
+- Paid tiers appear once paid memberships can actually be bought (Stripe connected). The **Free** tier appears when "Free" is ticked under Signup portal → Available tiers.
+- When both monthly and yearly prices are offered (Signup portal → Available prices), a **Monthly / Yearly** switch flips every price and checkout button, opening on your default price. Each paid plan also shows the other period with the yearly saving ("or $50 a year · save 17%") — the saving line only appears when yearly is genuinely cheaper.
+- Tiers with a free trial say "Start your N-day trial". With more than one paid tier, the cheapest is marked **Most popular**.
+- Signed-in readers see "Change plan" / "My account" instead of signup buttons.
+- The page body (anything you write in the editor) appears below the plans under "Where your money goes".
+
+**Membership band** — a sign-up band above the footer on every page. Turn it on by publishing a page with the slug `membership-cta`; draft or delete that page to turn it off.
+
+| Page field | Shows as |
+|---|---|
+| Body | A Heading 2 headline followed by paragraphs. Highlight a few words in the headline (⌘/Ctrl + Alt + H) to set them in italic accent color. |
+| Excerpt | Small label at the top (e.g. "Membership · Acta Cosmica") |
+| Meta description | A second label on the right (e.g. "Reader-funded since 2026") |
+| Meta title | Optional override for the badge above the price (otherwise "Start your N-day free trial" or "Membership") |
+
+The right side adapts to the reader: visitors see your cheapest paid plan with checkout (or a free sign-up form if nothing is for sale yet, or a sign-in prompt on invite-only sites); free members see an Upgrade offer; paying members never see the band. It also steps aside on the membership page itself.
+
+**End-of-article prompt** — for logged-out readers on stories they can read in full (members-only stories already show the paywall prompt instead):
+- Publish a page with slug `newsletter-cta` for a newsletter sign-off card: Heading 2 + paragraphs in the body, Excerpt = small label (default "Sign up"), Meta title = button text (default "Subscribe"), Meta description = fine print.
+- Or publish `member-cta` for a membership pitch: Heading 2 + paragraphs, Excerpt = label, Meta title = button text (default "Become a member"). If both exist, the newsletter card wins.
+- With neither page published, nothing extra appears.
+
+---
+
 ## Writer profiles
 
 Every writer manages their own profile in Ghost Admin — click your avatar (bottom left) → **Your profile**. The theme uses:

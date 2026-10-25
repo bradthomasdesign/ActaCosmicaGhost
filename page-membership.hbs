@@ -19,60 +19,65 @@
   {{#if custom_excerpt}}<p style="font:400 clamp(19px,1.8vw,24px)/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0;max-width:660px;">{{custom_excerpt}}</p>{{/if}}
 </section>
 
-<!-- TIERS — pulled live from Ghost's Members/Tiers settings, so pricing and
-     benefits are edited in Admin (Settings → Membership), never in the theme. -->
-{{#get "tiers" include="benefits" filter="visibility:public+type:paid" as |paidTiers|}}
-<section class="reveal" style="max-width:1120px;margin:0 auto;padding:24px 24px 8px;">
-  <div class="tier-grid" style="display:grid;grid-template-columns:repeat({{paidTiers.length}},1fr);gap:28px;align-items:stretch;">
-    {{#foreach paidTiers}}
-    {{#match @number "=" 2}}
-    <div class="tier-card" style="display:flex;flex-direction:column;border:1px solid var(--band);background:var(--band);border-radius:4px;padding:clamp(26px,3vw,36px);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--accent,{{@custom.accent_color}});">{{name}}</span>
-        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--accent,{{@custom.accent_color}});padding:5px 9px;border-radius:100px;">Most popular</span>
-      </div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:14px;">
-        <span style="font:800 clamp(38px,4vw,52px)/1 var(--gh-font-heading,'Archivo');color:#fff;">{{price monthly_price currency=currency}}</span>
-        <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,0.6);">/ month</span>
-      </div>
-      {{#if description}}<p style="font:400 16px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.72);margin:0 0 24px;">{{description}}</p>{{/if}}
-      {{#if benefits}}
-      <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;">
-        {{#foreach benefits}}
-        <li style="display:flex;gap:10px;font:400 15px/1.45 var(--gh-font-body,'Newsreader'),Georgia,serif;color:rgba(255,255,255,0.85);">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent,{{@custom.accent_color}})" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M20 6 9 17l-5-5" /></svg>
-          <span>{{name}}</span>
-        </li>
-        {{/foreach}}
-      </ul>
+<!-- TIERS — built from Ghost's own tiers (Settings → Membership → Tiers):
+     names, prices, benefits and trials are edited in Admin, never here. The
+     page offers exactly what Ghost's signup popup offers: paid plans only
+     once Stripe is connected, and only the billing periods ticked under
+     Signup portal → Available prices. -->
+{{#get "tiers" include="monthly_price,yearly_price,benefits" filter="visibility:public" limit="20" as |allTiers|}}
+<section class="plans reveal" data-plans
+  data-has-monthly="{{#foreach @site.portal_plans}}{{#match this "monthly"}}true{{/match}}{{/foreach}}"
+  data-has-yearly="{{#foreach @site.portal_plans}}{{#match this "yearly"}}true{{/match}}{{/foreach}}"
+  data-default="{{@site.portal_default_plan}}">
+  {{#if @member}}<p class="plans__greeting">You're signed in as <strong>{{@member.email}}</strong>.</p>{{/if}}
+  {{#if @site.paid_members_enabled}}
+  <div class="plans__switch" role="group" aria-label="Billing period" hidden>
+    <button type="button" data-billing-option="monthly" aria-pressed="false">Monthly</button>
+    <button type="button" data-billing-option="yearly" aria-pressed="false">Yearly</button>
+  </div>
+  {{/if}}
+  <div class="plans__grid">
+    {{#foreach allTiers}}
+    {{#match type "free"}}
+    {{!-- portal_plans is an array, so test membership with a loop --}}
+    {{#foreach @site.portal_plans}}{{#match this "free"}}
+    <div class="plan plan--free">
+      <div class="plan__name">{{../name}}</div>
+      <div class="plan__price"><span class="plan__amount">Free</span></div>
+      {{#if ../description}}<p class="plan__desc">{{../description}}</p>{{/if}}
+      {{#if ../benefits}}<ul class="plan__benefits">{{#foreach ../benefits}}<li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent,#f5c518)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>{{name}}</span></li>{{/foreach}}</ul>{{/if}}
+      {{#if @member}}
+      <button type="button" class="plan__button" data-portal="account">My account</button>
+      {{else}}
+      <button type="button" class="plan__button" data-portal="signup/free">Join free</button>
       {{/if}}
-      <button type="button" data-portal="signup/{{slug}}" style="margin-top:auto;text-align:center;font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;padding:15px 24px;border:none;border-radius:2px;cursor:pointer;background:var(--accent,{{@custom.accent_color}});color:var(--accent-text,#16130d);">Join {{name}}</button>
     </div>
+    {{/match}}{{/foreach}}
     {{else}}
-    <div class="tier-card" style="display:flex;flex-direction:column;border:1px solid var(--rule-soft);background:var(--paper-raised);border-radius:4px;padding:clamp(26px,3vw,36px);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">{{name}}</span>
-      </div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:14px;">
-        <span style="font:800 clamp(38px,4vw,52px)/1 var(--gh-font-heading,'Archivo');color:var(--ink);">{{price monthly_price currency=currency}}</span>
-        <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted);">/ month</span>
-      </div>
-      {{#if description}}<p style="font:400 16px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 24px;">{{description}}</p>{{/if}}
-      {{#if benefits}}
-      <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;">
-        {{#foreach benefits}}
-        <li style="display:flex;gap:10px;font:400 15px/1.45 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-body);">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent,{{@custom.accent_color}})" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M20 6 9 17l-5-5" /></svg>
-          <span>{{name}}</span>
-        </li>
-        {{/foreach}}
-      </ul>
+    {{#if @site.paid_members_enabled}}
+    <div class="plan plan--paid" data-monthly="{{monthly_price}}" data-yearly="{{yearly_price}}">
+      <div class="plan__name">{{name}}<span class="plan__popular" hidden>Most popular</span></div>
+      <div class="plan__price plan__price--monthly"><span class="plan__amount">{{price monthly_price currency=currency}}</span><span class="plan__per">/ month</span></div>
+      {{#if yearly_price}}<div class="plan__price plan__price--yearly"><span class="plan__amount">{{price yearly_price currency=currency}}</span><span class="plan__per">/ year</span></div>{{/if}}
+{{#if yearly_price}}
+      <button type="button" class="plan__alt plan__alt--to-yearly" data-billing-option="yearly" hidden>or {{price yearly_price currency=currency}} a year<span data-plan-saving></span></button>
+      <button type="button" class="plan__alt plan__alt--to-monthly" data-billing-option="monthly" hidden>or {{price monthly_price currency=currency}} a month</button>
       {{/if}}
-      <button type="button" data-portal="signup/{{slug}}" style="margin-top:auto;text-align:center;font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;padding:15px 24px;border:none;border-radius:2px;cursor:pointer;background:var(--ink);color:var(--paper);">Join {{name}}</button>
+      {{#if trial_days}}<p class="plan__trial">Free trial for {{trial_days}} days</p>{{/if}}
+      {{#if description}}<p class="plan__desc">{{description}}</p>{{/if}}
+      {{#if benefits}}<ul class="plan__benefits">{{#foreach benefits}}<li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent,#f5c518)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>{{name}}</span></li>{{/foreach}}</ul>{{/if}}
+      {{#if @member}}
+      <button type="button" class="plan__button" data-portal="account/plans">Change plan</button>
+      {{else}}
+      <button type="button" class="plan__button plan__button--monthly" data-portal="signup/{{id}}/monthly">{{#if trial_days}}Start your {{trial_days}}-day trial{{else}}Choose plan{{/if}}</button>
+      {{#if yearly_price}}<button type="button" class="plan__button plan__button--yearly" data-portal="signup/{{id}}/yearly">{{#if trial_days}}Start your {{trial_days}}-day trial{{else}}Choose plan{{/if}}</button>{{/if}}
+      {{/if}}
     </div>
+    {{/if}}
     {{/match}}
     {{/foreach}}
   </div>
+  {{#if @site.paid_members_enabled}}<p class="plans__trust">Cancel anytime · Secure checkout by Stripe · Instant access</p>{{/if}}
   <p style="font:400 16px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);text-align:center;margin:24px 0 0;">Prefer to give once? <a data-portal="donation" href="#/portal/donation" style="color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Make a one-time contribution</a>. Cancel anytime from your account.</p>
 </section>
 {{/get}}
@@ -91,7 +96,7 @@
 {{> "newsletter" heading="Not ready to join? Start with the newsletter" sub="A weekly briefing on the reporting and discoveries worth your time — always free."}}
 </main>
 
-{{> "site-footer"}}
+{{> "site-footer" hide_member_band=true}}
 {{> "nav-drawer"}}
 
 {{/page}}

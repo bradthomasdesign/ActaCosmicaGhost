@@ -1,0 +1,36 @@
+{{!-- End-of-article prompt for logged-out readers on stories they can read
+      in full (on gated stories the paywall prompt takes this spot instead).
+      Driven by pages: newsletter-cta (newsletter sign-off card) wins over
+      member-cta (membership pitch). Neither published → nothing renders. --}}
+{{#if @site.members_enabled}}{{#unless @member}}{{#if access}}
+{{#get "pages" filter="slug:newsletter-cta" limit="1"}}
+{{#if pages}}
+{{#foreach pages}}
+<aside class="article-cta article-cta--newsletter" aria-label="Newsletter">
+  <div class="article-cta__kicker">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}Sign up{{/if}}</div>
+  <div class="article-cta__body">{{content}}</div>
+  <form class="article-cta__form" data-members-form="signup">
+    <input data-members-email type="email" aria-label="Email address" placeholder="Your email address" required />
+    <button type="submit">{{#if meta_title}}{{meta_title}}{{else}}Subscribe{{/if}}</button>
+    <p class="message-success" role="status">Check your inbox to confirm your subscription.</p>
+    <p class="message-error" role="alert"></p>
+  </form>
+  <p class="article-cta__fine">{{#if meta_description}}{{meta_description}}{{else}}No spam. Unsubscribe any time.{{/if}}</p>
+</aside>
+{{/foreach}}
+{{else}}
+{{#get "pages" filter="slug:member-cta" limit="1"}}
+{{#foreach pages}}
+<aside class="article-cta article-cta--member" aria-label="Membership">
+  {{#if custom_excerpt}}<div class="article-cta__kicker">{{custom_excerpt}}</div>{{/if}}
+  <div class="article-cta__body">{{content}}</div>
+  <div class="article-cta__actions">
+    <button type="button" class="article-cta__button" data-portal="signup">{{#if meta_title}}{{meta_title}}{{else}}Become a member{{/if}}</button>
+    <a class="article-cta__link" href="{{@site.url}}/membership/">See the plans</a>
+  </div>
+</aside>
+{{/foreach}}
+{{/get}}
+{{/if}}
+{{/get}}
+{{/if}}{{/unless}}{{/if}}

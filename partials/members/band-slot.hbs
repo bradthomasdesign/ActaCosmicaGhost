@@ -1,0 +1,15 @@
+{{!-- MEMBERSHIP BAND — shown on every page while a page with the slug
+      membership-cta is published (draft or delete it to hide the band).
+      Never shown to paying members, to free members when there's nothing to
+      upgrade to, when memberships are off, or on the membership page. --}}
+{{#get "pages" filter="slug:membership-cta" limit="1"}}
+{{#foreach pages}}
+{{#if @site.members_enabled}}{{#unless @member.paid}}
+{{#if @member}}
+{{#if @site.paid_members_enabled}}{{> "members/band" upgrade=true}}{{/if}}
+{{else}}
+{{> "members/band"}}
+{{/if}}
+{{/unless}}{{/if}}
+{{/foreach}}
+{{/get}}

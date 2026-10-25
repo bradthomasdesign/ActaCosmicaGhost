@@ -1,0 +1,20 @@
+{{!-- Paid-plan offer: the cheapest public paid tier's price, with the yearly
+      alternative and its saving (computed in main.js), and a checkout button.
+      Free members get an Upgrade button into their Portal account instead.
+      badge: optional override for the trial/membership badge. --}}
+{{#get "tiers" filter="type:paid+visibility:public" include="monthly_price,yearly_price,benefits" limit="20" as |paidTiers|}}
+{{#foreach paidTiers limit="1"}}
+<div class="offer" data-offer data-monthly="{{monthly_price}}" data-yearly="{{yearly_price}}">
+  <div class="offer__badge">{{#if ../../badge}}{{../../badge}}{{else}}{{#if trial_days}}Start your {{trial_days}}-day free trial{{else}}Membership{{/if}}{{/if}}</div>
+  <div class="offer__price"><span class="offer__amount">{{price monthly_price currency=currency}}</span><span class="offer__per">/ month</span></div>
+  {{#if yearly_price}}<p class="offer__alt">or {{price yearly_price currency=currency}} a year<span data-offer-saving></span></p>{{/if}}
+  {{#if @member}}
+  <button type="button" class="offer__button" data-portal="account/plans">Upgrade</button>
+  {{else}}
+  <button type="button" class="offer__button" data-portal="signup/{{id}}/monthly">{{#if trial_days}}Start your free trial{{else}}Become a member{{/if}}</button>
+  {{#if yearly_price}}<button type="button" class="offer__secondary" data-portal="signup/{{id}}/yearly">Pay yearly instead</button>{{/if}}
+  {{/if}}
+  <a class="offer__compare" href="{{@site.url}}/membership/">Compare plans</a>
+</div>
+{{/foreach}}
+{{/get}}
