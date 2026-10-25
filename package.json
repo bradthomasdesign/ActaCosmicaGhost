@@ -38,6 +38,12 @@
       "include": ["audio", "video", "nft", "product", "file", "header_v2"]
     },
     "custom": {
+      "color_scheme": {
+        "type": "select",
+        "options": ["System", "Light", "Dark"],
+        "default": "System",
+        "description": "System follows each reader's device and lets them switch. Light or Dark locks the whole site to that mode and hides the switches."
+      },
       "accent_color": {
         "type": "color",
         "default": "#f5c518"

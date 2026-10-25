@@ -40,6 +40,7 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 - **Full Koenig editor card support** — bookmark, gallery, callout, toggle, button, header, and before/after image-comparison cards are styled directly by the theme; audio, video, NFT, product, and file cards are served by Ghost's own default card assets (see `card_assets` in `package.json`) rather than reimplemented, so they stay in sync with Ghost core
 - **Saved stories** — readers can bookmark any article with the bookmark button in the byline bar; bookmarks live in `localStorage` (no account required) and are displayed on a dedicated `/saved` page with one-tap removal
 - **Native share sheet on mobile** — on iOS and Android, the share buttons in the article byline collapse to a single "Share" tap that opens the OS share sheet; falls back to the individual social buttons on desktop
+- **Dark mode and reader controls** — a full dark theme that follows each reader's device by default, a light/dark switch in the header, and an "Aa" panel on every article for text size (Small / Default / Large) and appearance (Light / Dark / System). Choices are remembered per reader, applied before the page paints (no flash), and synced across open tabs. Site owners can lock the whole site to Light or Dark instead
 - **Reader UX** — reading progress bar, a writers directory with live story counts, and a branded 404 page
 - **Optional autoplaying hero video** — swap the top story's background for a looping video via a custom setting, no per-post upload needed
 - **Fully responsive**, accessible (skip link, focus-visible states, reduced-motion support throughout), and SEO-ready via Ghost's own `{{ghost_head}}` output
@@ -69,6 +70,7 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 | Setting | Purpose |
 |---|---|
 | `accent_color` | Site-wide accent color (progress bar, kickers, buttons, accent squares) |
+| `color_scheme` | **System** (default) follows each reader's device and shows the light/dark switch and the Appearance option in the article "Aa" panel. **Light** or **Dark** locks every page to that mode and hides both switches (text size stays available) |
 | `accent_text_light` | Turn on if a dark accent color makes button text hard to read (swaps button text from dark to white) |
 | `hero_video_url` | Direct `.mp4`/`.webm` URL — autoplays as the top story's background instead of its feature image |
 | `footer_description` | Footer masthead blurb |

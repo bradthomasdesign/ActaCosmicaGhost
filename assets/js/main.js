@@ -41,6 +41,112 @@
     }
   }
 
+  // --- Appearance + text size ---------------------------------------------
+  // The inline <head> script applies saved choices before first paint; this
+  // wires up the header toggle and the article "Aa" panel, and keeps every
+  // open tab in sync. A site-level lock (Light/Dark theme setting) sets
+  // data-scheme-lock on <html>, and the switches aren't rendered at all.
+  const root = document.documentElement;
+  const schemeLocked = root.hasAttribute('data-scheme-lock');
+  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function readPref(key) {
+    try { return localStorage.getItem(key); } catch { return null; }
+  }
+  function writePref(key, value) {
+    try {
+      if (value) localStorage.setItem(key, value); else localStorage.removeItem(key);
+    } catch {}
+  }
+  function isDark() {
+    const forced = root.getAttribute('data-theme');
+    return forced ? forced === 'dark' : darkQuery.matches;
+  }
+  function syncAppearanceUI() {
+    const label = isDark() ? 'Switch to light mode' : 'Switch to dark mode';
+    document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+    });
+    const pref = readPref('acta_theme') || 'system';
+    document.querySelectorAll('input[name="rc-theme"]').forEach((r) => { r.checked = r.value === pref; });
+    const size = root.getAttribute('data-text-size') || 'default';
+    document.querySelectorAll('input[name="rc-size"]').forEach((r) => { r.checked = r.value === size; });
+  }
+  function applyTheme(pref) {
+    if (schemeLocked) return;
+    if (pref === 'light' || pref === 'dark') root.setAttribute('data-theme', pref);
+    else root.removeAttribute('data-theme');
+    syncAppearanceUI();
+  }
+  function applyTextSize(size) {
+    if (size === 'small' || size === 'large') root.setAttribute('data-text-size', size);
+    else root.removeAttribute('data-text-size');
+    syncAppearanceUI();
+  }
+
+  document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      writePref('acta_theme', next);
+      applyTheme(next);
+    });
+  });
+  document.querySelectorAll('input[name="rc-theme"]').forEach((r) => {
+    r.addEventListener('change', () => {
+      writePref('acta_theme', r.value === 'system' ? null : r.value);
+      applyTheme(r.value);
+    });
+  });
+  document.querySelectorAll('input[name="rc-size"]').forEach((r) => {
+    r.addEventListener('change', () => {
+      writePref('acta_text_size', r.value === 'default' ? null : r.value);
+      applyTextSize(r.value);
+    });
+  });
+  darkQuery.addEventListener('change', syncAppearanceUI);
+
+  // Cross-tab sync. Removed on pagehide so the listener doesn't keep the
+  // page out of the back/forward cache.
+  function onStorage(e) {
+    if (e.key === 'acta_theme') applyTheme(e.newValue || 'system');
+    if (e.key === 'acta_text_size') applyTextSize(e.newValue || 'default');
+  }
+  window.addEventListener('storage', onStorage);
+  window.addEventListener('pagehide', () => window.removeEventListener('storage', onStorage));
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      window.addEventListener('storage', onStorage);
+      applyTheme(readPref('acta_theme') || 'system');
+      applyTextSize(readPref('acta_text_size') || 'default');
+    }
+  });
+  syncAppearanceUI();
+
+  // "Aa" popover: a plain disclosure. Escape or a click outside closes it
+  // and returns focus to the button.
+  const rcBtn = document.getElementById('reader-controls-btn');
+  const rcPanel = document.getElementById('reader-controls-panel');
+  if (rcBtn && rcPanel) {
+    const setOpen = (open, restoreFocus) => {
+      rcPanel.hidden = !open;
+      rcBtn.setAttribute('aria-expanded', String(open));
+      if (open) {
+        const checked = rcPanel.querySelector('input:checked') || rcPanel.querySelector('input');
+        if (checked) checked.focus();
+      } else if (restoreFocus) {
+        rcBtn.focus();
+      }
+    };
+    rcBtn.addEventListener('click', () => setOpen(rcPanel.hidden, false));
+    document.addEventListener('click', (e) => {
+      if (!rcPanel.hidden && !rcPanel.contains(e.target) && !rcBtn.contains(e.target)) setOpen(false, false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !rcPanel.hidden) setOpen(false, true);
+    });
+  }
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');
@@ -280,20 +386,20 @@
 
     if (results.length === 0) {
       panel.style.display = 'block';
-      panel.innerHTML = `<div style="padding:28px 24px;text-align:center;font:400 16px/1.5 'Newsreader',Georgia,serif;color:#6b6459;">No results for "<strong style="color:#16130d;">${escapeHtml(q)}</strong>"</div>`;
+      panel.innerHTML = `<div style="padding:28px 24px;text-align:center;font:400 16px/1.5 'Newsreader',Georgia,serif;color:var(--ink-muted);">No results for "<strong style="color:var(--ink);">${escapeHtml(q)}</strong>"</div>`;
       return;
     }
 
     panel.style.display = 'block';
     panel.innerHTML = results.map((a, i) => `
-      <a class="card-link" href="${escapeHtml(a.url)}" style="display:flex;gap:16px;align-items:center;padding:14px 20px;text-decoration:none;color:inherit;${i < results.length - 1 ? 'border-bottom:1px solid #f0ede8;' : ''}">
+      <a class="card-link" href="${escapeHtml(a.url)}" style="display:flex;gap:16px;align-items:center;padding:14px 20px;text-decoration:none;color:inherit;${i < results.length - 1 ? 'border-bottom:1px solid var(--rule-faint);' : ''}">
         <div class="article-image-frame" style="flex:0 0 auto;width:68px;height:50px;border-radius:4px;overflow:hidden;background:${a.bg};">
           ${a.image ? `<img src="${escapeHtml(a.image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">` : ''}
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font:600 14px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6459;margin-bottom:5px;">${escapeHtml(a.kicker)}</div>
-          <div style="font:600 15px/1.25 'Archivo',sans-serif;color:#16130d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(a.title)}</div>
-          <div style="font:400 14px/1 'Archivo';color:#6b6459;margin-top:4px;">${escapeHtml(a.byline)}${a.byline && a.readTime ? ' · ' : ''}${escapeHtml(a.readTime)}</div>
+          <div style="font:600 14px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px;">${escapeHtml(a.kicker)}</div>
+          <div style="font:600 15px/1.25 'Archivo',sans-serif;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(a.title)}</div>
+          <div style="font:400 14px/1 'Archivo';color:var(--ink-muted);margin-top:4px;">${escapeHtml(a.byline)}${a.byline && a.readTime ? ' · ' : ''}${escapeHtml(a.readTime)}</div>
         </div>
       </a>
     `).join('');
@@ -360,7 +466,7 @@
       if (!url) return;
       await navigator.clipboard.writeText(url);
       const original = btn.innerHTML;
-      btn.innerHTML = '<span style="font:700 14px/1 Archivo;color:#16130d;">Copied</span>';
+      btn.innerHTML = '<span style="font:700 14px/1 Archivo;color:var(--ink);">Copied</span>';
       setTimeout(() => { btn.innerHTML = original; }, 1500);
     });
   });
@@ -426,9 +532,9 @@
         el.style.padding = '9px 15px';
         el.style.borderRadius = '100px';
         el.style.cursor = 'pointer';
-        el.style.color = active ? '#fff' : '#4a4437';
-        el.style.background = active ? '#16130d' : 'transparent';
-        el.style.border = `1px solid ${active ? '#16130d' : '#948d80'}`;
+        el.style.color = active ? 'var(--paper)' : 'var(--ink-soft)';
+        el.style.background = active ? 'var(--ink)' : 'transparent';
+        el.style.border = `1px solid ${active ? 'var(--ink)' : 'var(--rule-strong)'}`;
         el.classList.toggle('chip-active', active);
         el.setAttribute('data-chip', el.dataset.chip);
       }
@@ -542,11 +648,11 @@
           </div>
           <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
             <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-            <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">${kicker}</span>
+            <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">${kicker}</span>
           </div>
-          <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0 0 9px;text-wrap:balance;">${title}</h3>
-          ${dek ? `<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:#6b6459;margin:0 0 10px;">${dek}</p>` : ''}
-          <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:#6b6459;">${date}${date && readTime ? ' · ' : ''}${readTime}</div>
+          <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);margin:0 0 9px;text-wrap:balance;">${title}</h3>
+          ${dek ? `<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">${dek}</p>` : ''}
+          <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">${date}${date && readTime ? ' · ' : ''}${readTime}</div>
         </a>`;
     }
 
@@ -610,8 +716,10 @@
       bookmarkBtn.setAttribute('aria-pressed', String(saved));
       bookmarkBtn.setAttribute('aria-label', saved ? 'Remove from saved' : 'Save for later');
       if (icon) {
-        icon.setAttribute('fill', saved ? 'var(--accent,#f5c518)' : 'none');
-        icon.setAttribute('stroke', saved ? 'var(--accent,#f5c518)' : '#16130d');
+        // Set via style, not attributes: SVG presentation attributes don't
+        // resolve var(), and the unsaved stroke follows the ink color.
+        icon.style.fill = saved ? 'var(--accent,#f5c518)' : 'none';
+        icon.style.stroke = saved ? 'var(--accent,#f5c518)' : 'currentColor';
       }
     }
 
