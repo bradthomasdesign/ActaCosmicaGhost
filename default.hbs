@@ -20,6 +20,10 @@
   </noscript>
   <link rel="stylesheet" href="{{asset "built/screen.css"}}" />
   <style>:root { --accent: {{@custom.accent_color}}; --accent-text: {{#if @custom.accent_text_light}}#fff{{else}}#16130d{{/if}}; }</style>
+  {{!-- Homepage section/video pages are layout config, not destinations —
+        keep them out of search results while still letting crawlers follow
+        their links through to the stories. --}}
+  {{#is "page"}}{{#page}}{{#has tag="#home-spotlight,#home-video"}}<meta name="robots" content="noindex, follow" />{{/has}}{{/page}}{{/is}}
   {{ghost_head}}
 </head>
 <body class="{{body_class}}{{#if @custom.drop_cap_on_pages}} drop-cap-pages{{/if}}">
@@ -54,11 +58,11 @@
   {{{body}}}
 
   <script src="{{asset "js/main.js"}}" defer></script>
+  {{!-- The Content API key is read at runtime from the search/Portal script
+        tags Ghost injects via ghost_head (see contentApi() in main.js), so
+        there's no key to paste into the theme settings. --}}
   <script>
-    window.ACTA_CONTENT_API = {
-      url: "{{@site.url}}",
-      key: "{{@custom.content_api_key}}"
-    };
+    window.ACTA_CONTENT_API = { url: "{{@site.url}}" };
   </script>
   {{ghost_foot}}
 </body>

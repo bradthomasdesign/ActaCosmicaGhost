@@ -31,6 +31,10 @@
   {{content}}
 </article>
 
+{{!-- A homepage section page opened at its own URL shows the same row it
+      contributes to the homepage, rather than an empty page. --}}
+{{#has tag="#home-spotlight"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/has}}
+
 {{> "newsletter"}}
 </main>
 

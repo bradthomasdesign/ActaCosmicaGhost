@@ -10,6 +10,37 @@
     });
   }
 
+  // Homepage video feature — click-to-play YouTube. The video comes from
+  // the #home-video page's body, rendered inert inside a <template>: the
+  // first YouTube embed or link found there wins. The iframe is only
+  // created on click, so an unplayed video costs nothing on page load.
+  const videoFeature = document.getElementById('video-feature');
+  if (videoFeature) {
+    const source = videoFeature.querySelector('template[data-video-source]');
+    const html = source ? source.innerHTML : '';
+    const match = html.match(/(?:youtube(?:-nocookie)?\.com\/(?:embed\/|watch\?v=|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/);
+    const videoId = videoFeature.getAttribute('data-youtube-id') || (match ? match[1] : '');
+    const playBtn = videoFeature.querySelector('button');
+    if (!videoId) {
+      // Nothing playable on the page yet — don't advertise a dead button.
+      if (playBtn) playBtn.hidden = true;
+      videoFeature.style.cursor = 'default';
+    } else {
+      const play = () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+        iframe.title = (videoFeature.querySelector('h2') || {}).textContent || 'Video';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+        videoFeature.replaceChildren(iframe);
+        videoFeature.style.cursor = 'default';
+        iframe.focus();
+      };
+      videoFeature.addEventListener('click', play, { once: true });
+    }
+  }
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');
@@ -138,8 +169,17 @@
   // --- Search -----------------------------------------------------------
   // Same weighted-scoring approach as the Astro build, but the index is no
   // longer baked in at build time — it's fetched once from Ghost's Content
-  // API (public, read-only key configured as a theme setting) and cached
-  // in memory for the rest of the session.
+  // API and cached in memory for the rest of the session.
+
+  // Ghost injects its search (sodo-search) and Portal scripts via
+  // ghost_head, each carrying the site's public, read-only Content API key
+  // in data-key — reuse that rather than asking for a key in theme settings.
+  function contentApi() {
+    const tag = document.querySelector('script[data-sodo-search][data-key], script[data-ghost][data-key]');
+    const key = tag ? tag.getAttribute('data-key') : '';
+    const url = ((window.ACTA_CONTENT_API || {}).url || '').replace(/\/$/, '');
+    return { url, key };
+  }
 
   function escapeHtml(s) {
     return String(s)
@@ -184,7 +224,7 @@
   let searchIndexPromise = null;
   function getSearchIndex() {
     if (searchIndexPromise) return searchIndexPromise;
-    const { url, key } = window.ACTA_CONTENT_API || {};
+    const { url, key } = contentApi();
     if (!url || !key) {
       searchIndexPromise = Promise.resolve([]);
       return searchIndexPromise;
@@ -542,7 +582,7 @@
     if (slugs.length === 0) {
       renderSaved([]);
     } else {
-      const { url: apiUrl, key: apiKey } = window.ACTA_CONTENT_API || {};
+      const { url: apiUrl, key: apiKey } = contentApi();
       if (apiUrl && apiKey) {
         const filter = encodeURIComponent(`slug:[${slugs.join(',')}]`);
         const fields = 'slug,title,custom_excerpt,feature_image,reading_time,url,published_at';

@@ -75,35 +75,14 @@
   </div>
 </section>
 
-{{!-- Spotlight rows — driven by the "Spotlight category 1/2" theme settings.
-      Each renders as its own homepage row when the tag has non-featured
-      posts; silently skipped otherwise (e.g. tag doesn't exist yet). --}}
-{{#get "posts" filter="primary_tag:{{@custom.spotlight_category_1}}+featured:false" limit="4" include="tags"}}
-{{#if posts}}
-<section class="reveal" style="max-width:1280px;margin:0 auto;padding:40px 24px;">
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #16130d;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
-      <h2 style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
-    </div>
-    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
-  </div>
-  <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
-    {{#foreach posts}}
-    <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
-      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;margin-bottom:14px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
-      </div>
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
-        <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
-      </div>
-      <h3 style="font:600 19px/1.22 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
-    </a>
-    {{/foreach}}
-  </div>
-</section>
-{{/if}}
+{{!-- Homepage section rows — one Ghost page per row. Each section page has
+      its public section tag FIRST (that's what picks the posts and names
+      the row), plus the internal tag #home-spotlight. Rows are ordered by
+      the page's publish date, newest first. The newest row sits above
+      Photo of the Day; any further rows follow it. Draft or delete a
+      section page to remove its row. --}}
+{{#get "pages" filter="tag:hash-home-spotlight" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#foreach sections limit="1"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/foreach}}
 {{/get}}
 
 <!-- PHOTO OF THE DAY — post tagged #photo-of-day in Admin. Ghost's tag:
@@ -129,37 +108,17 @@
 {{/foreach}}
 {{/get}}
 
-{{!-- Spotlight row 2 --}}
-{{#get "posts" filter="primary_tag:{{@custom.spotlight_category_2}}+featured:false" limit="4" include="tags"}}
-{{#if posts}}
-<section class="reveal" style="max-width:1280px;margin:0 auto;padding:40px 24px;">
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #16130d;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="width:26px;height:26px;background:var(--accent,#f5c518);display:block;"></span>
-      <h2 style="font:800 24px/1 var(--gh-font-heading,'Archivo');letter-spacing:.02em;text-transform:uppercase;color:#16130d;margin:0;">{{#foreach posts}}{{#if @first}}{{primary_tag.name}}{{/if}}{{/foreach}}</h2>
-    </div>
-    {{#foreach posts}}{{#if @first}}<a class="link-underline" href="{{primary_tag.url}}" style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.08em;text-transform:uppercase;color:#4a4437;text-decoration:none;">See all →</a>{{/if}}{{/foreach}}
-  </div>
-  <div class="cards-2-mobile" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;">
-    {{#foreach posts}}
-    <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
-      <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;margin-bottom:14px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
-      </div>
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
-        <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
-        <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#16130d;">{{primary_tag.name}}</span>
-      </div>
-      <h3 style="font:600 19px/1.22 var(--gh-font-heading,'Archivo'),sans-serif;color:#16130d;margin:0;text-wrap:balance;">{{title}}</h3>
-    </a>
-    {{/foreach}}
-  </div>
-</section>
-{{/if}}
+{{!-- Remaining homepage section rows (2nd newest onward) --}}
+{{#get "pages" filter="tag:hash-home-spotlight" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#foreach sections from="2"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/foreach}}
 {{/get}}
 
-<!-- VIDEO FEATURE — configured via the "Featured video" theme settings -->
-{{#if @custom.featured_video_youtube_id}}
+<!-- VIDEO FEATURE -->
+{{!-- A Ghost page tagged #home-video: its title is the caption, its feature
+      image the poster, and the first YouTube link or embed in its body is
+      the video. Draft or delete the page to hide it. --}}
+{{#get "pages" filter="tag:hash-home-video" limit="1" include="tags"}}
+{{#foreach pages}}
 <section style="background:#16130d;padding:64px 0;margin-top:24px;">
   <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
@@ -168,20 +127,22 @@
     </div>
     <!-- Click-to-play YouTube embed — the iframe only loads once clicked,
          so an unplayed feature costs nothing on page load. -->
-    <div id="video-feature" data-youtube-id="{{@custom.featured_video_youtube_id}}" style="position:relative;width:100%;aspect-ratio:21/9;overflow:hidden;cursor:pointer;background:#2b3a55;">
-      {{#if @custom.featured_video_thumbnail}}<img src="{{@custom.featured_video_thumbnail}}" alt="{{@custom.featured_video_title}}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />{{/if}}
+    <div id="video-feature" data-youtube-id="" style="position:relative;width:100%;aspect-ratio:21/9;overflow:hidden;cursor:pointer;background:#2b3a55;">
+      {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />{{/if}}
       <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.15));display:flex;align-items:center;justify-content:center;">
         <button type="button" aria-label="Play video" style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;">
           <span style="display:block;width:0;height:0;border-left:24px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:7px;"></span>
         </button>
       </div>
       <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;">
-        <h2 style="font:700 clamp(24px,2.6vw,34px)/1.1 var(--gh-font-heading,'Archivo'),sans-serif;color:#fff;margin:0;max-width:640px;text-wrap:balance;">{{@custom.featured_video_title}}</h2>
+        <h2 style="font:700 clamp(24px,2.6vw,34px)/1.1 var(--gh-font-heading,'Archivo'),sans-serif;color:#fff;margin:0;max-width:640px;text-wrap:balance;">{{title}}</h2>
       </div>
+      <template data-video-source>{{content}}</template>
     </div>
   </div>
 </section>
-{{/if}}
+{{/foreach}}
+{{/get}}
 
 <!-- EDITOR'S PICK — 3rd featured post — + MOST READ -->
 {{#get "posts" filter="featured:true" limit="1" page="3" include="tags" as |editorsPick|}}

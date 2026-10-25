@@ -4,7 +4,7 @@ A photo-forward news and magazine theme for [Ghost](https://ghost.org), built ar
 
 Ported from the original Astro version of Acta Cosmica into a native Ghost theme, so publishers get Ghost's built-in editor, memberships, comments, search, and newsletters instead of a static-site content pipeline.
 
-**Requires Ghost `>=5.0.0`.**
+**Requires Ghost `>=6.37.0`** (for the full set of native social accounts).
 
 ---
 
@@ -71,14 +71,30 @@ Configured under **Settings → Design → Brand** in Ghost Admin:
 | `accent_color` | Site-wide accent color (progress bar, kickers, buttons, accent squares) |
 | `accent_text_light` | Turn on if a dark accent color makes button text hard to read (swaps button text from dark to white) |
 | `hero_video_url` | Direct `.mp4`/`.webm` URL — autoplays as the top story's background instead of its feature image |
-| `spotlight_category_1` / `spotlight_category_2` | Tag slugs featured as their own homepage rows |
 | `footer_description` | Footer masthead blurb |
 | `show_footer_credit`, `footer_credit_label`, `footer_credit_name`, `footer_credit_url` | Optional "designed and built by" footer credit |
-| `social_bluesky`, `social_mastodon`, `social_instagram`, `social_youtube` | Icon-only social links (Facebook/Twitter/Threads use Ghost's own built-in social settings) |
-| `content_api_key` | A **Content API** key (Settings → Integrations → Add custom integration), used client-side by the search overlay — safe to expose, as Content API keys are read-only |
-| `featured_video_youtube_id`, `featured_video_title`, `featured_video_thumbnail` | Homepage click-to-play video feature |
 
 Site navigation and secondary (footer) navigation are managed the standard Ghost way, under **Settings → Navigation**.
+
+Social links come from Ghost's own **Settings → General → Social accounts** (X, Facebook, LinkedIn, Bluesky, Threads, Mastodon, TikTok, YouTube, Instagram) and appear in the header and footer for every account you fill in. Ghost pre-fills Facebook and X with Ghost's own accounts on a new site — clear those fields if they aren't yours.
+
+Search and the saved-stories page use the site's public Content API key, which the theme reads automatically from the scripts Ghost already adds to every page — there's no key to configure.
+
+---
+
+## Homepage sections and video
+
+These homepage features are driven by Ghost pages rather than theme settings, so you can add, reorder, or hide them without touching Design settings.
+
+**Section rows.** Each homepage row of four stories is one Ghost page:
+
+1. **Pages → New page**, titled after the section (e.g. "Homepage section: Science" — the title isn't shown on the homepage).
+2. In **Page settings → Tags**, add the section's public tag **first** (e.g. `Science`), then the internal tag `#home-spotlight`. The first tag picks the stories and names the row.
+3. Publish. Rows are ordered by the page's publish date, newest first; the newest row sits above Photo of the Day and the rest follow it. Republish a page to move its row to the top. Draft or delete the page to remove the row.
+
+Section pages are automatically marked `noindex`, and if someone opens one at its own URL they see that section's row rather than an empty page.
+
+**Video feature.** Create a page tagged `#home-video`. Its title is the caption, its feature image is the poster, and the first YouTube embed or link in its body is the video, which plays in place when clicked. Draft or delete the page to hide the feature.
 
 ---
 
@@ -91,7 +107,20 @@ The saved stories feature requires a one-time step in Ghost Admin:
 3. Publish the page.
 4. Optionally add `/saved/` to your site navigation under **Settings → Navigation**.
 
-Bookmarks are stored in `localStorage` under the key `acta_saved` — the same key used by the original Astro build, so any reader who bookmarked stories there will see them carry over automatically. No account or login is required. The `content_api_key` custom setting must be configured for the saved page to fetch and display post data.
+Bookmarks are stored in `localStorage` under the key `acta_saved` — the same key used by the original Astro build, so any reader who bookmarked stories there will see them carry over automatically. No account or login is required.
+
+---
+
+## Upgrading from earlier versions
+
+Several theme settings moved to native Ghost features. After uploading the new version, redo these once in Ghost Admin so your site looks the same as before:
+
+| Old theme setting | Where it lives now |
+|---|---|
+| Spotlight category 1 / 2 | One page per row tagged `<your tag>` + `#home-spotlight` — see [Homepage sections and video](#homepage-sections-and-video). Publish the old "category 1" page last so it stays the top row. |
+| Featured video ID / title / thumbnail | A page tagged `#home-video` with the YouTube link in its body, the title as its title, and the thumbnail as its feature image |
+| Bluesky / Mastodon / Instagram / YouTube | **Settings → General → Social accounts** |
+| Content API key | Nothing to do — read automatically |
 
 ---
 

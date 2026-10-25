@@ -197,7 +197,7 @@ considered typographic design — backed by Ghost's own native membership,
 comments, and newsletter tools, so subscriber conversion isn't bolted on
 after the fact.
 
-**This Theme Requires Ghost 5.0.0+ 🎉**
+**This Theme Requires Ghost 6.37+ 🎉**
 
 Ported from the original Astro version of Acta Cosmica into a native Ghost
 theme, so publishers get Ghost's built-in Koenig editor, memberships,
@@ -252,7 +252,7 @@ comments, search, and newsletters instead of a static-site content pipeline.
 ✔ Branded 404 page
 
 **⚙️ Built On**
-- Ghost 5.0.0+ — native Koenig editor, memberships, comments, newsletters
+- Ghost 6.37+ — native Koenig editor, memberships, comments, newsletters
 - Tailwind CSS v4 — compiled to a static stylesheet, no runtime dependency
 - Google Fonts — Archivo + Newsreader
 - Hand-tuned inline SVG icons — no icon library dependency

@@ -30,10 +30,15 @@
         <div>
           <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px;">Follow</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            {{#if @custom.social_bluesky}}<a href="{{@custom.social_bluesky}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Bluesky</a>{{/if}}
-            {{#if (social_url "facebook")}}<a href="{{social_url "facebook"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Facebook</a>{{/if}}
-            {{#if @custom.social_mastodon}}<a href="{{@custom.social_mastodon}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Mastodon</a>{{/if}}
-            {{#if @custom.social_instagram}}<a href="{{@custom.social_instagram}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Instagram</a>{{/if}}
+            {{#if (social_url type="bluesky")}}<a href="{{social_url type="bluesky"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Bluesky</a>{{/if}}
+            {{#if (social_url type="facebook")}}<a href="{{social_url type="facebook"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Facebook</a>{{/if}}
+            {{#if (social_url type="mastodon")}}<a href="{{social_url type="mastodon"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Mastodon</a>{{/if}}
+            {{#if (social_url type="instagram")}}<a href="{{social_url type="instagram"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Instagram</a>{{/if}}
+            {{#if (social_url type="youtube")}}<a href="{{social_url type="youtube"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">YouTube</a>{{/if}}
+            {{#if (social_url type="twitter")}}<a href="{{social_url type="twitter"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">X</a>{{/if}}
+            {{#if (social_url type="threads")}}<a href="{{social_url type="threads"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Threads</a>{{/if}}
+            {{#if (social_url type="linkedin")}}<a href="{{social_url type="linkedin"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">LinkedIn</a>{{/if}}
+            {{#if (social_url type="tiktok")}}<a href="{{social_url type="tiktok"}}" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">TikTok</a>{{/if}}
             <a href="/#newsletter" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">Newsletter</a>
             <a href="{{@site.url}}/rss/" style="font:400 14px/1 var(--gh-font-heading,'Archivo');color:rgba(255,255,255,0.6);text-decoration:none;">RSS Feed</a>
           </div>
