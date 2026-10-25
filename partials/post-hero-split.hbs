@@ -1,0 +1,14 @@
+{{!-- Split hero (#hero-split-left / #hero-split-right): headline, dek and
+      beside a square-cropped feature image (the byline bar follows below). On phones both variants
+      stack the same way — headline first — so reading order never changes. --}}
+<section class="hero-split hero-split--{{side}}">
+  <div class="hero-split__text">
+    {{#if primary_tag}}<div class="hero-kicker"><span aria-hidden="true"></span><a href="{{primary_tag.url}}">{{primary_tag.name}}</a></div>{{/if}}
+    <h1 class="hero-split__title">{{title}}</h1>
+    {{#if custom_excerpt}}<p class="hero-split__dek">{{custom_excerpt}}</p>{{/if}}
+  </div>
+  <figure class="hero-split__media">
+    <img src="{{img_url feature_image size="l"}}" srcset="{{img_url feature_image size="m"}} 960w, {{img_url feature_image size="l"}} 1280w" sizes="(max-width: 860px) 100vw, 50vw" alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}" />
+    {{#if feature_image_caption}}<figcaption>{{{feature_image_caption}}}</figcaption>{{/if}}
+  </figure>
+</section>

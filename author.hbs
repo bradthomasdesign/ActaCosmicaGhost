@@ -57,14 +57,14 @@
     {{#foreach posts}}
     <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:15px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
         <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">{{primary_tag.name}}</span>
       </div>
       <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
-      {{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
+      {{#if feature_image}}{{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}{{/if}}
       <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">{{date published_at format="MMM D, YYYY"}} · {{reading_time}}</div>
     </a>
     {{/foreach}}

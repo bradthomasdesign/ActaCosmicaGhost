@@ -147,6 +147,181 @@
     });
   }
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const articleBody = document.querySelector('.post-template .article-body');
+
+  // --- "In this story" contents list (#toc) --------------------------------
+  // Built from the article's own top-level H2s, with H3s nested under the
+  // H2 before them. Headings inside cards (callouts, toggles) aren't direct
+  // children of the body, so they're skipped. Fewer than two H2s: stays hidden.
+  const toc = document.querySelector('[data-toc]');
+  if (toc && articleBody) {
+    const headings = [...articleBody.querySelectorAll(':scope > h2, :scope > h3')];
+    const h2Count = headings.filter((h) => h.tagName === 'H2').length;
+    const list = toc.querySelector('.story-toc__list');
+    if (h2Count >= 2 && list) {
+      let currentSub = null;
+      const links = [];
+      headings.forEach((h, i) => {
+        if (!h.id) h.id = `section-${i + 1}`;
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent.trim();
+        li.appendChild(a);
+        links.push([h, a]);
+        if (h.tagName === 'H2' || !list.lastElementChild) {
+          list.appendChild(li);
+          currentSub = null;
+        } else {
+          if (!currentSub) {
+            currentSub = document.createElement('ol');
+            list.lastElementChild.appendChild(currentSub);
+          }
+          currentSub.appendChild(li);
+        }
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          h.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+          history.replaceState(null, '', `#${h.id}`);
+        });
+      });
+      toc.hidden = false;
+      // Phones start collapsed so the story's opening still leads.
+      if (window.matchMedia('(max-width: 1023px)').matches) toc.querySelector('details').open = false;
+
+      // Highlight the section currently being read.
+      if ('IntersectionObserver' in window) {
+        const visible = new Set();
+        const mark = () => {
+          let active = null;
+          for (const [h, a] of links) {
+            if (visible.has(h) || h.getBoundingClientRect().top < 120) active = a;
+            if (visible.has(h)) break;
+          }
+          links.forEach(([, a]) => a.removeAttribute('aria-current'));
+          if (active) active.setAttribute('aria-current', 'true');
+        };
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => (en.isIntersecting ? visible.add(en.target) : visible.delete(en.target)));
+          mark();
+        }, { rootMargin: '-90px 0px -55% 0px' });
+        links.forEach(([h]) => io.observe(h));
+      }
+    }
+  }
+
+  // --- Video hero (#video) ---------------------------------------------------
+  // Lift the first uploaded video / YouTube / Vimeo embed out of the body into
+  // the hero frame. It's only moved once a supported video is found, so a
+  // #video post without one keeps a plain poster and an untouched body.
+  const videoHero = document.querySelector('[data-video-hero]');
+  if (videoHero && articleBody) {
+    const embedRe = /(youtube(?:-nocookie)?\.com|youtu\.be|vimeo\.com)/i;
+    const source = [...articleBody.querySelectorAll('.kg-video-card, .kg-embed-card, iframe')]
+      .find((el) => el.matches('.kg-video-card') || embedRe.test((el.matches('iframe') ? el : el.querySelector('iframe') || {}).src || ''));
+    const card = source && (source.closest('.kg-video-card, .kg-embed-card, figure') || source);
+    const playBtn = videoHero.querySelector('.hero-video__play');
+    if (card && playBtn) {
+      card.remove();
+      playBtn.hidden = false;
+      playBtn.addEventListener('click', () => {
+        const poster = videoHero.querySelector('.hero-video__poster');
+        if (poster) poster.remove();
+        playBtn.remove();
+        videoHero.appendChild(card);
+        const iframe = card.matches('iframe') ? card : card.querySelector('iframe');
+        const video = card.querySelector('video');
+        if (iframe) {
+          const url = new URL(iframe.src, location.href);
+          url.searchParams.set('autoplay', '1');
+          iframe.src = url.toString();
+          iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+          iframe.focus();
+        } else if (video) {
+          video.play().catch(() => {});
+          video.focus();
+        }
+      }, { once: true });
+    } else if (articleBody) {
+      console.warn('[acta] #video post has no uploaded video, YouTube or Vimeo embed in its body — showing the poster only.');
+    }
+  }
+
+  // --- Slideshow hero (#hero-slideshow) -------------------------------------
+  // Slide one is the feature image (server-rendered); the first gallery card's
+  // images are appended and that gallery is removed from the body.
+  const slideshow = document.querySelector('[data-slideshow]');
+  if (slideshow && articleBody) {
+    const track = slideshow.querySelector('.hero-slideshow__track');
+    const gallery = articleBody.querySelector('.kg-gallery-card');
+    const imgs = gallery ? [...gallery.querySelectorAll('img')] : [];
+    if (track && imgs.length) {
+      imgs.forEach((src, i) => {
+        const fig = document.createElement('figure');
+        fig.className = 'hero-slideshow__slide';
+        fig.setAttribute('aria-roledescription', 'slide');
+        fig.setAttribute('aria-label', String(i + 2));
+        const blur = document.createElement('div');
+        blur.className = 'hero-slideshow__blur';
+        blur.style.backgroundImage = `url("${src.currentSrc || src.src}")`;
+        const img = document.createElement('img');
+        img.src = src.src;
+        if (src.srcset) { img.srcset = src.srcset; img.sizes = '(max-width: 1280px) 100vw, 1280px'; }
+        img.alt = src.alt || '';
+        img.loading = 'lazy';
+        fig.append(blur, img);
+        if (src.alt) {
+          const cap = document.createElement('figcaption');
+          cap.textContent = src.alt;
+          fig.appendChild(cap);
+        }
+        track.appendChild(fig);
+      });
+      gallery.remove();
+
+      const slides = [...track.children];
+      const prev = slideshow.querySelector('.hero-slideshow__arrow--prev');
+      const next = slideshow.querySelector('.hero-slideshow__arrow--next');
+      const dots = slideshow.querySelector('.hero-slideshow__dots');
+      const status = slideshow.querySelector('.hero-slideshow__status');
+      let index = 0;
+      const dotBtns = slides.map((_, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', `Photo ${i + 1} of ${slides.length}`);
+        b.addEventListener('click', () => go(i));
+        dots.appendChild(b);
+        return b;
+      });
+      function go(i) {
+        index = Math.max(0, Math.min(slides.length - 1, i));
+        slides.forEach((s, n) => s.classList.toggle('is-active', n === index));
+        dotBtns.forEach((b, n) => b.setAttribute('aria-current', String(n === index)));
+        prev.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        status.textContent = `Photo ${index + 1} of ${slides.length}`;
+      }
+      prev.hidden = next.hidden = dots.hidden = false;
+      prev.addEventListener('click', () => go(index - 1));
+      next.addEventListener('click', () => go(index + 1));
+      slideshow.tabIndex = 0;
+      slideshow.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+      });
+      let touchX = null;
+      track.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', (e) => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
+        touchX = null;
+      });
+      go(0);
+    }
+  }
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');
@@ -641,7 +816,7 @@
       return `
         <a class="card-link" href="${escapeHtml(p.url)}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
           <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:15px;background:#2b3a55;">
-            ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">` : ''}
+            ${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">` : `<div class="text-card-fill" data-layout="text"><p>${dek}</p></div>`}
             <button class="unsave-btn" type="button" data-slug="${escapeHtml(p.slug)}" aria-label="Remove from saved" style="position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(22,19,13,0.55);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent,#f5c518)" stroke="var(--accent,#f5c518)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
             </button>
@@ -651,7 +826,7 @@
             <span style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">${kicker}</span>
           </div>
           <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);margin:0 0 9px;text-wrap:balance;">${title}</h3>
-          ${dek ? `<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">${dek}</p>` : ''}
+          ${dek && img ? `<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">${dek}</p>` : ''}
           <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">${date}${date && readTime ? ' · ' : ''}${readTime}</div>
         </a>`;
     }

@@ -40,14 +40,14 @@
     {{#foreach latestFeatured}}
     <a href="{{url}}" style="text-decoration:none;color:inherit;display:block;">
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:16/10;margin-bottom:20px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <span style="width:5px;height:17px;background:var(--accent,#f5c518);display:block;"></span>
         <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">{{primary_tag.name}}</span>
       </div>
       <h2 style="font:700 clamp(28px,3vw,38px)/1.08 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:var(--ink);margin:0 0 14px;text-wrap:balance;">{{title}}</h2>
-      {{#if custom_excerpt}}<p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 14px;max-width:620px;">{{custom_excerpt}}</p>{{/if}}
+      {{#if feature_image}}{{#if custom_excerpt}}<p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 14px;max-width:620px;">{{custom_excerpt}}</p>{{/if}}{{/if}}
       <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">By {{primary_author.name}} · {{reading_time}}</div>
     </a>
     {{/foreach}}
@@ -61,9 +61,11 @@
       {{#get "posts" filter="featured:false" limit="6" include="tags"}}
       {{#foreach posts}}
       <a class="rail-item card-link" href="{{url}}" style="display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:inherit;">
+        {{#if feature_image}}
         <div class="article-image-frame" style="position:relative;overflow:hidden;flex:0 0 auto;width:96px;height:70px;background:#2b3a55;">
-          {{#if feature_image}}<img src="{{img_url feature_image size="xs"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+          <img src="{{img_url feature_image size="xs"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{> "video-badge"}}
         </div>
+        {{/if}}
         <div>
           <div style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px;">{{primary_tag.name}}</div>
           <div style="font:600 15px/1.28 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);">{{title}}</div>
@@ -155,10 +157,10 @@
         <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.16em;text-transform:uppercase;color:var(--ink);">Editor's Pick</span>
       </div>
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:18px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
       </div>
       <h2 style="font:700 clamp(24px,2.4vw,32px)/1.12 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);margin:0 0 12px;text-wrap:balance;">{{title}}</h2>
-      {{#if custom_excerpt}}<p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0;max-width:520px;">{{custom_excerpt}}</p>{{/if}}
+      {{#if feature_image}}{{#if custom_excerpt}}<p style="font:400 18px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0;max-width:520px;">{{custom_excerpt}}</p>{{/if}}{{/if}}
     </a>
     <div>
       <div style="font:800 15px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding-bottom:14px;border-bottom:2px solid var(--ink);margin-bottom:4px;">Most Read</div>

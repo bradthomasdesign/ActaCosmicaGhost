@@ -1,0 +1,18 @@
+{{!-- Video hero (#video): the first uploaded video, YouTube or Vimeo embed in
+      the post body is lifted into this frame by main.js, with the feature
+      image as its poster. Nothing autoplays — playback starts on click. If
+      the body has no supported video, the frame just shows the poster and the
+      body is left untouched. --}}
+<section class="hero-video">
+  <div class="hero-video__inner">
+    <div class="hero-video__frame" data-video-hero>
+      {{#if feature_image}}<img class="hero-video__poster" src="{{img_url feature_image size="xl"}}" alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}" />{{/if}}
+      <button type="button" class="hero-video__play" aria-label="Play video" hidden><span aria-hidden="true"></span></button>
+    </div>
+    <div class="hero-video__text">
+      {{#if primary_tag}}<div class="hero-kicker"><span aria-hidden="true"></span><a href="{{primary_tag.url}}">{{primary_tag.name}}</a></div>{{/if}}
+      <h1 class="hero-video__title">{{title}}</h1>
+      {{#if custom_excerpt}}<p class="hero-video__dek">{{custom_excerpt}}</p>{{/if}}
+    </div>
+  </div>
+</section>

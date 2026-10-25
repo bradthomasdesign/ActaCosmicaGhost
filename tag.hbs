@@ -29,10 +29,10 @@
 <!-- LEAD FEATURE -->
 {{#foreach posts}}
 {{#if @first}}
-<section id="cat-hero" data-sub="{{tags.[1].name}}" style="max-width:1280px;margin:0 auto;padding:20px 24px 44px;">
+<section id="cat-hero" data-sub="{{#foreach tags from="2" limit="1"}}{{name}}{{/foreach}}" style="max-width:1280px;margin:0 auto;padding:20px 24px 44px;">
   <a href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-wrap:wrap;gap:44px;align-items:center;">
     <div class="article-image-frame" style="position:relative;overflow:hidden;flex:1 1 440px;min-width:0;aspect-ratio:3/2;background:#2b3a55;">
-      {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+      {{#if feature_image}}<img src="{{img_url feature_image size="l"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
     </div>
     <div style="flex:1 1 340px;min-width:0;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;">
@@ -40,7 +40,7 @@
         <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">{{primary_tag.name}} · The Big Story</span>
       </div>
       <h2 style="font:700 clamp(30px,3.4vw,44px)/1.06 var(--gh-font-heading,'Archivo'),sans-serif;letter-spacing:-0.01em;color:var(--ink);margin:0 0 16px;text-wrap:balance;">{{title}}</h2>
-      {{#if custom_excerpt}}<p style="font:400 19px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}
+      {{#if feature_image}}{{#if custom_excerpt}}<p style="font:400 19px/1.55 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-soft);margin:0 0 18px;">{{custom_excerpt}}</p>{{/if}}{{/if}}
       <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">By {{primary_author.name}} · {{reading_time}}</div>
     </div>
   </a>
@@ -58,16 +58,16 @@
   <div id="cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:36px 32px;">
     {{#foreach posts}}
     {{#unless @first}}
-    <a class="card-link" href="{{url}}" data-sub="{{tags.[1].name}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
+    <a class="card-link" href="{{url}}" data-sub="{{#foreach tags from="2" limit="1"}}{{name}}{{/foreach}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:3/2;margin-bottom:15px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
         <span style="font:700 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.14em;text-transform:uppercase;color:var(--ink);">{{primary_tag.name}}</span>
       </div>
       <h3 style="font:600 21px/1.2 var(--gh-font-heading,'Archivo'),sans-serif;color:var(--ink);margin:0 0 9px;text-wrap:balance;">{{title}}</h3>
-      {{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}
+      {{#if feature_image}}{{#if custom_excerpt}}<p style="font:400 15px/1.5 var(--gh-font-body,'Newsreader'),Georgia,serif;color:var(--ink-muted);margin:0 0 10px;">{{custom_excerpt}}</p>{{/if}}{{/if}}
       <div style="font:600 14px/1 var(--gh-font-heading,'Archivo');letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);">By {{primary_author.name}}</div>
     </a>
     {{/unless}}

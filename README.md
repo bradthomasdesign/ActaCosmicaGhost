@@ -40,6 +40,7 @@ npm run package   # builds + zips the theme into dist-theme/acta-cosmica.zip, re
 - **Full Koenig editor card support** — bookmark, gallery, callout, toggle, button, header, and before/after image-comparison cards are styled directly by the theme; audio, video, NFT, product, and file cards are served by Ghost's own default card assets (see `card_assets` in `package.json`) rather than reimplemented, so they stay in sync with Ghost core
 - **Saved stories** — readers can bookmark any article with the bookmark button in the byline bar; bookmarks live in `localStorage` (no account required) and are displayed on a dedicated `/saved` page with one-tap removal
 - **Native share sheet on mobile** — on iOS and Android, the share buttons in the article byline collapse to a single "Share" tap that opens the OS share sheet; falls back to the individual social buttons on desktop
+- **Per-post article options** — internal tags for an "In this story" contents list, a video hero, split-image and slideshow heroes, and per-post drop caps (see [Article options](#article-options-internal-tags)); stories without a photo render as designed text cards
 - **Dark mode and reader controls** — a full dark theme that follows each reader's device by default, a light/dark switch in the header, and an "Aa" panel on every article for text size (Small / Default / Large) and appearance (Light / Dark / System). Choices are remembered per reader, applied before the page paints (no flash), and synced across open tabs. Site owners can lock the whole site to Light or Dark instead
 - **Reader UX** — reading progress bar, a writers directory with live story counts, and a branded 404 page
 - **Optional autoplaying hero video** — swap the top story's background for a looping video via a custom setting, no per-post upload needed
@@ -110,6 +111,25 @@ The saved stories feature requires a one-time step in Ghost Admin:
 4. Optionally add `/saved/` to your site navigation under **Settings → Navigation**.
 
 Bookmarks are stored in `localStorage` under the key `acta_saved` — the same key used by the original Astro build, so any reader who bookmarked stories there will see them carry over automatically. No account or login is required.
+
+---
+
+## Article options (internal tags)
+
+Add these in a post's **Post settings → Tags**. Tags starting with `#` are internal: they change how the post renders but never appear on public tag pages.
+
+| Tag | What it does |
+|---|---|
+| `#toc` | Adds an "In this story" contents list above the article, built from the post's H2 headings (H3s nest under them). Highlights the section being read; starts collapsed on phones. Hidden automatically if the post has fewer than two H2s. |
+| `#video` | Turns the post into a video post: the first uploaded video, YouTube or Vimeo embed in the body moves into the hero, with the feature image as its poster. Playback starts on click. Story cards for the post get a ▶ badge. |
+| `#hero-split-right` / `#hero-split-left` | Magazine-style opening: headline and standfirst beside a square-cropped feature image (image on the right or left). Stacks headline-first on phones. |
+| `#hero-slideshow` | The feature image plus the images from the post's first gallery card become a manual slideshow hero (arrows, dots, ← / → keys, swipe). The gallery is removed from the body so photos aren't shown twice; captions come from each image's alt text. |
+| `#no-dropcap` | Removes the drop cap from this post's opening paragraph. |
+| `#dropcap` | On a **page**, adds the drop cap that posts get by default. |
+
+Only one hero layout applies per post. If a post has several, `#video` wins, then `#hero-split-right`, `#hero-split-left`, `#hero-slideshow`. Split and slideshow heroes need a feature image and fall back to the standard hero without one.
+
+**Stories without a feature image** render as text cards everywhere a card would show a photo: a heavy rule and the story's summary (its excerpt, or the opening of the post) fill the image space, so pictured and unpictured cards still line up. In the homepage "Latest" list, an unpictured story simply has no thumbnail.
 
 ---
 

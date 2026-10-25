@@ -17,7 +17,7 @@
     {{#foreach posts}}
     <a class="card-link" href="{{url}}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;">
       <div class="article-image-frame" style="position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;margin-bottom:14px;background:#2b3a55;">
-        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{/if}}
+        {{#if feature_image}}<img src="{{img_url feature_image size="m"}}" alt="{{title}}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;" />{{else}}{{> "text-card-fill"}}{{/if}}{{> "video-badge"}}
       </div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
         <span style="width:4px;height:14px;background:var(--accent,#f5c518);display:block;"></span>
