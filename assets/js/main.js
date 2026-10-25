@@ -5,7 +5,7 @@
   // visitors get paused on the poster frame (their feature image, if set)
   // instead, rather than gating playback on JS running successfully.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.hero-video').forEach((video) => {
+    document.querySelectorAll('video.hero-video').forEach((video) => {
       video.pause();
     });
   }
@@ -221,12 +221,12 @@
     const source = [...articleBody.querySelectorAll('.kg-video-card, .kg-embed-card, iframe')]
       .find((el) => el.matches('.kg-video-card') || embedRe.test((el.matches('iframe') ? el : el.querySelector('iframe') || {}).src || ''));
     const card = source && (source.closest('.kg-video-card, .kg-embed-card, figure') || source);
-    const playBtn = videoHero.querySelector('.hero-video__play');
+    const playBtn = videoHero.querySelector('.vhero__play');
     if (card && playBtn) {
       card.remove();
       playBtn.hidden = false;
       playBtn.addEventListener('click', () => {
-        const poster = videoHero.querySelector('.hero-video__poster');
+        const poster = videoHero.querySelector('.vhero__poster');
         if (poster) poster.remove();
         playBtn.remove();
         videoHero.appendChild(card);
