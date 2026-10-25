@@ -1,0 +1,20 @@
+{{#get "posts" filter="tag:{{section_tag}}" limit="27" include="tags" as |rowPosts|}}
+{{#if rowPosts}}
+<section class="hrow hrow--briefing-carousel reveal" data-layout-row="briefing-carousel">
+  {{> "home/row-head" name=../section_name url=../section_url dek=../section_dek}}
+  <div class="carousel" data-carousel>
+    <ul class="carousel__track carousel__track--brief" aria-label="{{../section_name}} stories">
+      {{#foreach rowPosts}}
+      <li class="brief__cell">
+        <a class="brief__item card-link" href="{{url}}">
+          {{#if feature_image}}<span class="brief__thumb"><img src="{{img_url feature_image size="xs"}}" alt="" loading="lazy" />{{> "video-badge"}}</span>{{/if}}
+          <span class="brief__text">{{> "card-kicker"}}<span class="brief__title">{{title}}</span></span>
+        </a>
+      </li>
+      {{/foreach}}
+    </ul>
+    {{> "home/carousel-arrows"}}
+  </div>
+</section>
+{{/if}}
+{{/get}}

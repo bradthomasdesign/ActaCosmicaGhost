@@ -89,11 +89,28 @@ Search and the saved-stories page use the site's public Content API key, which t
 
 These homepage features are driven by Ghost pages rather than theme settings, so you can add, reorder, or hide them without touching Design settings.
 
-**Section rows.** Each homepage row of four stories is one Ghost page:
+**Section rows.** Each homepage row is one Ghost page:
 
 1. **Pages → New page**, titled after the section (e.g. "Homepage section: Science" — the title isn't shown on the homepage).
-2. In **Page settings → Tags**, add the section's public tag **first** (e.g. `Science`), then the internal tag `#home-spotlight`. The first tag picks the stories and names the row.
+2. In **Page settings → Tags**, add the section's public tag **first** (e.g. `Science`), then **one** layout tag from the table below. The first tag picks the stories (every post carrying that tag) and names the row. Optionally write an **Excerpt** — it appears as an italic standfirst under the row heading.
 3. Publish. Rows are ordered by the page's publish date, newest first; the newest row sits above Photo of the Day and the rest follow it. Republish a page to move its row to the top. Draft or delete the page to remove the row.
+
+| Layout tag | Row |
+|---|---|
+| `#home-spotlight` | Four stories across (the original row; posts whose *primary* tag matches, excluding featured posts) |
+| `#home-feature-package` | Big photo lead with headline overlaid, a second story, and stories 3–5 as a numbered list |
+| `#home-feature-rail` | Big photo lead plus four equal image-right stories |
+| `#home-briefing` | Up to 9 compact headlines with small thumbnails in a 3-column grid (the 9th shows on wide screens) |
+| `#home-briefing-carousel` | Up to 27 briefing items, three to a column, in a swipeable carousel |
+| `#home-asymmetric-lead-list` | A lead with two smaller stories beneath, and up to nine headlines down the side |
+| `#home-opinion-hedcut` | Up to 6 columnist cards: author photo, italic headline, byline |
+| `#home-tag-columns` | One column per **public tag on the page** (in tag order), each with a lead and four headlines — the only layout that doesn't need a first tag; the excerpt shows as a small label above |
+| `#home-standard-3-column-grid` | Up to 9 cards in a carousel, three visible |
+| `#home-standard-4-column-grid` | Up to 9 cards in a carousel, four visible |
+
+A row with no matching stories doesn't render.
+
+**Editor's Picks.** Feature posts with Ghost's **Featured** toggle. The first three featured posts fill the homepage hero, the lead story and the Editor's Pick block; featured posts four through eleven appear in an Editor's Picks carousel under the lead stories. With three or fewer featured posts the carousel doesn't show.
 
 Section pages are automatically marked `noindex`, and if someone opens one at its own URL they see that section's row rather than an empty page.
 

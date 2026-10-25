@@ -1,0 +1,26 @@
+{{!-- One column per PUBLIC tag on the section page, in the page's tag order.
+      Each column: that tag's newest story as a lead, then four headlines. --}}
+<section class="hrow hrow--tag-columns reveal" data-layout-row="tag-columns">
+  {{#if section_dek}}<p class="hrow__eyebrow">{{section_dek}}</p>{{/if}}
+  <div class="tagcols">
+    {{#foreach tags}}
+    {{#get "posts" filter="tag:{{slug}}" limit="5" include="tags" as |colPosts|}}
+    {{#if colPosts}}
+    <div class="tagcol">
+      <h2 class="tagcol__head"><a href="{{../url}}">{{../name}}</a></h2>
+      {{#foreach colPosts}}
+      {{#if @first}}
+      <a class="tagcol__lead card-link" href="{{url}}">
+        {{> "card-image" ratio="3/2" size="m"}}
+        <h3>{{title}}</h3>
+      </a>
+      {{else}}
+      <a class="tagcol__item card-link" href="{{url}}">{{title}}</a>
+      {{/if}}
+      {{/foreach}}
+    </div>
+    {{/if}}
+    {{/get}}
+    {{/foreach}}
+  </div>
+</section>

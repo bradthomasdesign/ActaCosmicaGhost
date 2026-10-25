@@ -1,0 +1,19 @@
+{{#get "posts" filter="tag:{{section_tag}}" limit="9" include="tags" as |rowPosts|}}
+{{#if rowPosts}}
+<section class="hrow hrow--grid reveal" data-layout-row="standard-4-column-grid">
+  {{> "home/row-head" name=../section_name url=../section_url dek=../section_dek}}
+  <div class="carousel" data-carousel>
+    <ul class="carousel__track carousel__track--4" aria-label="{{../section_name}} stories">
+      {{#foreach rowPosts}}
+      <li><a class="grid-card card-link" href="{{url}}">
+        {{> "card-image" ratio="3/2" size="m"}}
+        {{> "card-kicker"}}
+        <h3>{{title}}</h3>
+      </a></li>
+      {{/foreach}}
+    </ul>
+    {{> "home/carousel-arrows"}}
+  </div>
+</section>
+{{/if}}
+{{/get}}

@@ -77,14 +77,43 @@
   </div>
 </section>
 
+{{!-- EDITOR'S PICKS — a carousel of featured posts beyond the three the
+      front page already places (hero, lead, Editor's Pick): featured posts
+      4–11, newest first. Appears once a fourth post is featured; mark posts
+      with Ghost's Featured toggle. --}}
+{{#get "posts" filter="featured:true" limit="11" include="tags" as |picks|}}
+{{#foreach picks from="4" to="4"}}
+<section class="hrow hrow--picks reveal" aria-labelledby="picks-title">
+  <div class="hrow__head">
+    <div class="hrow__title"><span aria-hidden="true"></span><h2 id="picks-title">Editor's Picks</h2></div>
+  </div>
+  <div class="carousel" data-carousel>
+    <ul class="carousel__track carousel__track--picks" aria-label="Editor's Picks">
+{{/foreach}}
+      {{#foreach picks from="4"}}
+      <li><a class="grid-card card-link" href="{{url}}">
+        {{> "card-image" ratio="4/5" size="m"}}
+        {{> "card-kicker"}}
+        <h3>{{title}}</h3>
+      </a></li>
+      {{/foreach}}
+{{#foreach picks from="4" to="4"}}
+    </ul>
+    {{> "home/carousel-arrows"}}
+  </div>
+</section>
+{{/foreach}}
+{{/get}}
+
 {{!-- Homepage section rows — one Ghost page per row. Each section page has
       its public section tag FIRST (that's what picks the posts and names
-      the row), plus the internal tag #home-spotlight. Rows are ordered by
+      the row), plus one internal layout tag (#home-spotlight,
+      #home-feature-package, #home-briefing, … — see partials/home/row.hbs). Rows are ordered by
       the page's publish date, newest first. The newest row sits above
       Photo of the Day; any further rows follow it. Draft or delete a
       section page to remove its row. --}}
-{{#get "pages" filter="tag:hash-home-spotlight" limit="30" include="tags" order="published_at desc" as |sections|}}
-{{#foreach sections limit="1"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/foreach}}
+{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid]" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#foreach sections limit="1"}}{{> "home/row"}}{{/foreach}}
 {{/get}}
 
 <!-- PHOTO OF THE DAY — post tagged #photo-of-day in Admin. Ghost's tag:
@@ -111,8 +140,8 @@
 {{/get}}
 
 {{!-- Remaining homepage section rows (2nd newest onward) --}}
-{{#get "pages" filter="tag:hash-home-spotlight" limit="30" include="tags" order="published_at desc" as |sections|}}
-{{#foreach sections from="2"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/foreach}}
+{{#get "pages" filter="tag:[hash-home-spotlight,hash-home-feature-package,hash-home-feature-rail,hash-home-briefing,hash-home-briefing-carousel,hash-home-asymmetric-lead-list,hash-home-opinion-hedcut,hash-home-tag-columns,hash-home-standard-3-column-grid,hash-home-standard-4-column-grid]" limit="30" include="tags" order="published_at desc" as |sections|}}
+{{#foreach sections from="2"}}{{> "home/row"}}{{/foreach}}
 {{/get}}
 
 <!-- VIDEO FEATURE -->

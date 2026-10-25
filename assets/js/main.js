@@ -322,6 +322,30 @@
     }
   }
 
+  // --- Homepage carousels ----------------------------------------------------
+  // Scroll-snap tracks work by swipe/trackpad on their own; this adds arrow
+  // buttons (shown only when the track actually overflows) that page by one
+  // visible width and grey out at either end.
+  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector('.carousel__track');
+    const arrows = carousel.querySelector('.carousel__arrows');
+    const prev = carousel.querySelector('[data-carousel-prev]');
+    const next = carousel.querySelector('[data-carousel-next]');
+    if (!track || !arrows || !prev || !next) return;
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      arrows.hidden = max <= 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max - 2;
+    };
+    const page = (dir) => track.scrollBy({ left: dir * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+    prev.addEventListener('click', () => page(-1));
+    next.addEventListener('click', () => page(1));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  });
+
   // Reading progress
   const bar = document.getElementById('progress-bar');
   const headerEl = document.querySelector('header');

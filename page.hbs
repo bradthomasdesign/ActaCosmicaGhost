@@ -33,7 +33,7 @@
 
 {{!-- A homepage section page opened at its own URL shows the same row it
       contributes to the homepage, rather than an empty page. --}}
-{{#has tag="#home-spotlight"}}{{#if primary_tag}}{{> "home-spotlight-row" section_tag=primary_tag.slug}}{{/if}}{{/has}}
+{{#has tag="#home-spotlight,#home-feature-package,#home-feature-rail,#home-briefing,#home-briefing-carousel,#home-asymmetric-lead-list,#home-opinion-hedcut,#home-tag-columns,#home-standard-3-column-grid,#home-standard-4-column-grid"}}{{> "home/row"}}{{/has}}
 
 {{> "newsletter"}}
 </main>

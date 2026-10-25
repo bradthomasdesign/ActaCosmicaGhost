@@ -1,0 +1,37 @@
+{{#get "posts" filter="tag:{{section_tag}}" limit="12" include="tags,authors" as |rowPosts|}}
+{{#if rowPosts}}
+<section class="hrow hrow--asymmetric reveal" data-layout-row="asymmetric-lead-list">
+  {{> "home/row-head" name=../section_name url=../section_url dek=../section_dek}}
+  <div class="asym">
+    <div class="asym__main">
+      {{#foreach rowPosts limit="1"}}
+      <a class="asym__lead card-link" href="{{url}}">
+        {{> "card-image" ratio="16/10" size="l"}}
+        {{> "card-kicker"}}
+        <h3>{{title}}</h3>
+        {{#if feature_image}}{{#if custom_excerpt}}<p>{{custom_excerpt}}</p>{{/if}}{{/if}}
+        <div class="card-meta">By {{primary_author.name}} · {{reading_time}}</div>
+      </a>
+      {{/foreach}}
+      <div class="asym__subs">
+        {{#foreach rowPosts from="2" to="3"}}
+        <a class="asym__sub card-link" href="{{url}}">
+          {{> "card-image" ratio="3/2" size="m"}}
+          {{> "card-kicker"}}
+          <h3>{{title}}</h3>
+        </a>
+        {{/foreach}}
+      </div>
+    </div>
+    <ul class="asym__list">
+      {{#foreach rowPosts from="4"}}
+      <li><a class="brief__item card-link" href="{{url}}">
+          {{#if feature_image}}<span class="brief__thumb"><img src="{{img_url feature_image size="xs"}}" alt="" loading="lazy" />{{> "video-badge"}}</span>{{/if}}
+          <span class="brief__text">{{> "card-kicker"}}<span class="brief__title">{{title}}</span></span>
+        </a></li>
+      {{/foreach}}
+    </ul>
+  </div>
+</section>
+{{/if}}
+{{/get}}

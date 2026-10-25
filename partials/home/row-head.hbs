@@ -1,0 +1,10 @@
+{{!-- Shared header for homepage section rows: section name, optional
+      standfirst (the section page's excerpt) and a "See all" link. --}}
+<div class="hrow__head">
+  <div class="hrow__title">
+    <span aria-hidden="true"></span>
+    <h2>{{name}}</h2>
+  </div>
+  {{#if url}}<a class="link-underline hrow__more" href="{{url}}">See all →</a>{{/if}}
+</div>
+{{#if dek}}<p class="hrow__dek">{{dek}}</p>{{/if}}
