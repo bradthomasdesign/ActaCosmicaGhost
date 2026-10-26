@@ -11,7 +11,7 @@ Both are loaded directly from Google Fonts (`default.hbs`) — no local font fil
 
 ## Icons
 
-No icon library is used. Every icon in the theme is a hand-authored inline SVG.
+No icon library is bundled; every icon is an inline SVG in the templates. The social brand marks (Bluesky, Facebook, Mastodon, YouTube, Instagram, X, Threads, TikTok, LinkedIn) are path data from [Simple Icons](https://simpleicons.org), released under [CC0 1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md) (public domain — no attribution required; credited here for provenance). The brands themselves remain trademarks of their owners. All other icons are hand-authored.
 
 ## Card assets
 
